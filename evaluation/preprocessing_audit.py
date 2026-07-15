@@ -13,11 +13,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Add parent directory to path so we can import config
-sys.path.append("c:/FYP/23CSE498-Project-Phase-II")
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
 
 # Paths
-BASE_DIR = "c:/FYP/23CSE498-Project-Phase-II"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PROCESSED_DIR = os.path.join(BASE_DIR, "datasets", "processed")
 RAW_DIR = os.path.join(BASE_DIR, "datasets", "raw")
 VERIFY_DIR = os.path.join(BASE_DIR, "results", "preprocessing_verification")
@@ -770,17 +770,17 @@ Below are the visualization plots generated to verify preprocessing correctness:
 
 #### 1. Patient Feature Comparison (Before vs. After Preprocessing)
 The plot displays Heart Rate, SpO2, MAP, Temperature, and Respiration before (raw values with missingness) and after (imputed and standardized) preprocessing:
-![Patient Preprocessing Comparison](file:///c:/FYP/23CSE498-Project-Phase-II/results/preprocessing_verification/patient_preprocessing_comparison.png)
+![Patient Preprocessing Comparison](patient_preprocessing_comparison.png)
 
 #### 2. Short Stay Padding Verification
 The plot displays pre-padding behavior on a short-stay ICU patient ($T < 24$ hours), showing how the early hours of features are padded with zeros to ensure a consistent sequence length of 24 for LSTM layers:
-![Padding Verification](file:///c:/FYP/23CSE498-Project-Phase-II/results/preprocessing_verification/padding_verification.png)
+![Padding Verification](padding_verification.png)
 
 ---
 
 ### 7. Reports Generated
-* **Markdown Report**: [Preprocessing_Verification_Report.md](file:///c:/FYP/23CSE498-Project-Phase-II/results/preprocessing_verification/Preprocessing_Verification_Report.md)
-* **PDF Report**: [Preprocessing_Verification_Report.pdf](file:///c:/FYP/23CSE498-Project-Phase-II/results/preprocessing_verification/Preprocessing_Verification_Report.pdf)
+* **Markdown Report**: [Preprocessing_Verification_Report.md](Preprocessing_Verification_Report.md)
+* **PDF Report**: [Preprocessing_Verification_Report.pdf](Preprocessing_Verification_Report.pdf)
 
 ---
 

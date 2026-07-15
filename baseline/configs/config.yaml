@@ -1,0 +1,38 @@
+# Centralized LSTM baseline configurations
+
+# Seed for reproducibility
+seed: 42
+
+# Device (will fall back to cpu if cuda/mps is not available)
+device: "cuda"
+
+# Path parameters
+paths:
+  data_dir: "datasets/processed"
+  checkpoint_dir: "baseline/checkpoints"
+  results_dir: "baseline/results"
+  log_dir: "baseline/logs"
+
+# Dataset parameters
+dataset:
+  sequence_length: 24
+  num_features: 40
+  label_column: "SepsisLabel"
+
+# Model architecture parameters
+model:
+  input_dim: 40
+  hidden_dim: 64
+  num_layers: 2
+  dropout: 0.3
+  output_dim: 1  # Binary classification (SepsisLabel: 0 or 1)
+
+# Training parameters
+training:
+  epochs: 50
+  batch_size: 128
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  patience: 8            # Early stopping patience (epochs to wait for improvement in val AUROC)
+  scheduler_step: 10     # Step size for StepLR (epochs)
+  scheduler_gamma: 0.5   # Decay factor for learning rate
