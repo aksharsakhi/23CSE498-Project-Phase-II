@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
@@ -68,7 +69,7 @@ def main():
     # Read feature columns list from metadata json
     metadata_path = os.path.join(data_dir, "preprocessing_metadata.json")
     with open(metadata_path, 'r') as f:
-        meta_json = json = yaml.safe_load(f) # json or yaml
+        meta_json = json.load(f)
     feature_columns = meta_json['feature_columns']
     
     logger.info("Partitioning global dataset into Non-IID client splits...")

@@ -153,17 +153,87 @@ The model achieves a high sensitivity (Recall = 72.17\%), catching a majority of
 \label{fig:baseline_confusion}
 \end{figure}
 
-\section{Future Roadmap: Federated Extension}
-This centralized baseline will serve as a comparison benchmark for our federated experiments:
+\section{Federated Learning via FedAvg}
+To address the privacy requirements in healthcare data sharing, we implemented a decentralized training framework using the Federated Averaging (FedAvg) algorithm. The centralized LSTM architecture was converted into a modular federated pipeline.
+
+\subsection{Non-IID Client Simulation}
+We simulated three heterogeneous hospital clients by partitioning the processed dataset. To resemble real-world healthcare demographics and institutional variation, we split the data based on patient age and hospital system source:
 \begin{itemize}
-\item \textbf{FedAvg Split}: Patients will be split by their original hospital indicator ($Hospital_0$ and $Hospital_1$) to simulate decentralized client nodes.
-\item \textbf{FedProx Implementation}: We will evaluate the impact of local model constraint ($\mu$) on mitigating performance loss during local parameter deviations.
-\item \textbf{Ditto Personalization}: Ditto objective will balance global generalization with local hospital personalization.
-\item \textbf{FPDAF Deployment}: We will incorporate temporal self-attention layers, local personalized heads, and online CUSUM monitoring to dynamically detect and adapt to population drifts.
+\item \textbf{Client 0 (Hospital 0, Age $<$ 60)}: 92,613 training samples, with a local sepsis positive rate of 3.24\%.
+\item \textbf{Client 1 (Hospital 0, Age $\ge$ 60)}: 151,916 training samples, with a local sepsis positive rate of 3.09\%.
+\item \textbf{Client 2 (Hospital 1, All Ages)}: 233,140 training samples, with a local sepsis positive rate of 2.07\%.
+\end{itemize}
+
+This partitioning strategy simulates two distinct forms of clinical heterogeneity: demographic shifts (Client 0 vs. Client 1) and institutional shifts (Hospital 0 vs. Hospital 1).
+
+\subsection{Federated Optimization Loop}
+The federated training is coordinated by a global server:
+\begin{enumerate}
+\item \textbf{Broadcast}: The global model weights are distributed to registered clients.
+\item \textbf{Local Training}: Each client trains the model on its local dataset for $E=2$ local epochs with a batch size of 128, a learning rate of 0.001, and local class weights ($w_{pos}$ dynamically computed based on local positive ratio).
+\item \textbf{Aggregation}: The server collects the local updates and computes a weighted average:
+$$W_{global}^{t+1} = \sum_{k=1}^K \frac{n_k}{N} W_k^{t+1}$$
+where $n_k$ is the local sample size of client $k$ and $N = \sum n_k$.
+\end{enumerate}
+
+Early stopping is enforced on the global validation AUROC (patience of 6 rounds). 
+
+\subsection{Results and Baseline Comparison}
+Federated training early-stopped at round 7 (best round 1, global validation AUROC of 0.7972). Fig.~\ref{fig:fed_curves} presents validation loss and AUROC across communication rounds. 
+
+Table~\ref{tab:comparison} summarizes the final global test performance of the FedAvg model compared to the Centralized Baseline.
+
+\begin{figure}[htbp]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.23\textwidth]{images/federated_rounds_loss.png} &
+\includegraphics[width=0.23\textwidth]{images/federated_rounds_auroc.png} \\
+(a) Validation Loss & (b) Validation AUROC
+\end{tabular}
+\caption{Global model performance across communication rounds.}
+\label{fig:fed_curves}
+\end{figure}
+
+\begin{table}[htbp]
+\caption{Comparative Test Results: Centralized vs. FedAvg}
+\label{tab:comparison}
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Metric} & \textbf{Centralized} & \textbf{FedAvg} & \textbf{Difference} \\
+\midrule
+Accuracy & 75.09\% & 75.94\% & +0.85\% \\
+Precision & 7.14\% & 6.94\% & -0.20\% \\
+Recall & 72.17\% & 67.19\% & -4.97\% \\
+F1 Score & 0.1300 & 0.1259 & -0.0041 \\
+\textbf{AUROC} & \textbf{0.8058} & \textbf{0.7844} & \textbf{-0.0214} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Under demographic and institutional Non-IID distributions, the global model experiences a drop of 2.14\% in test AUROC and 4.97\% in test Recall compared to the centralized model. This performance gap is a common drawback of FedAvg, as a single global weight configuration struggles to generalize across heterogeneous patient splits. Fig.~\ref{fig:fed_roc_cm} plots the comparative ROC curve and the global model confusion matrix.
+
+\begin{figure}[htbp]
+\centering
+\begin{tabular}{cc}
+\includegraphics[width=0.23\textwidth]{images/federated_comparative_roc.png} &
+\includegraphics[width=0.23\textwidth]{images/federated_confusion_matrix.png} \\
+(a) ROC Curve & (b) Confusion Matrix
+\end{tabular}
+\caption{Federated global model test evaluation.}
+\label{fig:fed_roc_cm}
+\end{figure}
+
+\section{Future Roadmap: Personalization and Drift Adaptation}
+To close the accuracy gap observed in the FedAvg baseline, our future roadmap consists of:
+\begin{itemize}
+\item \textbf{FedProx}: Introducing a proximal regularization term to local optimization to constrain parameters near global weights, improving optimization stability on heterogeneous client splits.
+\item \textbf{Ditto}: Applying bi-level optimization to decouple global model aggregation from local personalized models, enabling clients to adapt to local demographic splits.
+\item \textbf{FPDAF (Proposed)}: Deploying self-attention heads for explainable time-series modeling, personalized classification layers (FedPer), and online Cumulative Sum (CUSUM) residuals monitoring to flag concept drift in clinical streams.
 \end{itemize}
 
 \section{Conclusion \& Project End Goal}
-This paper establishes the foundation for a Unified Explainable Federated Learning Framework. We preprocessed 40,327 clinical patient records, performed exploratory analyses, and evaluated a centralized baseline LSTM model that yields a solid test AUROC of 0.8058 and a sensitivity of 72.17\%. 
+This work demonstrates a complete decentralized pipeline for sepsis prediction using FedAvg. On a cohort of 40,327 ICU patients split into three Non-IID clients, the global model achieved a test AUROC of 0.7844 and a Recall of 67.19\%. The observed performance degradation highlights the necessity of personalization.
 
 The ultimate end goal of this research project is to develop and validate a production-ready clinical early warning framework (FPDAF) deployable across heterogeneous hospital networks. By maintaining absolute data decentralization (addressing the privacy gap), dynamically personalizing models to adapt to local hospital cohorts (addressing the accuracy gap), detecting concept drift in patient populations in real-time, and rendering deep learning decisions explainable via temporal attention maps and SHAP scores (addressing the clinical trust gap), this framework aims to serve as a reliable, privacy-compliant bedside assistant that reduces sepsis mortality rates in intensive care units.
 
