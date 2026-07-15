@@ -15,8 +15,8 @@ This report presents an independent validation and quality assurance audit of th
 | Metric | Train Split | Validation Split | Test Split | Combined | Overall Audit Status |
 | :--- | :---: | :---: | :---: | :---: | :---: |
 | **Patients** | 28,228 | 6,049 | 6,050 | 40,327 | **PASS WITH WARNINGS** |
-| **Sliding Windows** | 480,380 | 101,366 | 102,955 | 684,701 | **Score: 95/100** |
-| **Sepsis Positive** | 12,405 (2.58%) | 2,718 (2.68%) | 2,488 (2.42%) | 17,611 | **0 Patient Overlaps** |
+| **Sliding Windows** | 477,669 | 104,038 | 102,994 | 684,701 | **Score: 95/100** |
+| **Sepsis Positive** | 12,513 (2.62%) | 2,443 (2.35%) | 2,655 (2.58%) | 17,611 | **0 Patient Overlaps** |
 | **NaN / Infinite Count** | 0 / 0 | 0 / 0 | 0 / 0 | 0 / 0 | **0 Data Leakage** |
 
 ---
@@ -33,22 +33,22 @@ The preprocessed dataset is generated from the raw PhysioNet Computing in Cardio
 ### 4. Verification Details
 
 #### Stage 1: File Existence check
-* `train.pt`: **Found** (1768.37 MB)
-* `validation.pt`: **Found** (373.15 MB)
-* `test.pt`: **Found** (379.00 MB)
+* `train.pt`: **Found** (1758.39 MB)
+* `validation.pt`: **Found** (382.99 MB)
+* `test.pt`: **Found** (379.14 MB)
 * `scaler.pkl`: **Found** (1.51 KB)
-* `preprocessing_metadata.json`: **Found** (1.64 KB)
+* `preprocessing_metadata.json`: **Found** (1.58 KB)
 
 #### Stage 2: Tensor structure check
 * **Keys verified**: `features`, `labels`, `patient_ids`, `hospital_ids` in all splits.
 * **Feature data shapes**:
-  * Train features: `torch.Size([480380, 24, 40])` (`torch.float32`)
-  * Validation features: `torch.Size([101366, 24, 40])` (`torch.float32`)
-  * Test features: `torch.Size([102955, 24, 40])` (`torch.float32`)
+  * Train features: `torch.Size([477669, 24, 40])` (`torch.float32`)
+  * Validation features: `torch.Size([104038, 24, 40])` (`torch.float32`)
+  * Test features: `torch.Size([102994, 24, 40])` (`torch.float32`)
 * **Label data shapes**:
-  * Train labels: `torch.Size([480380, 1])` (`torch.float32`)
-  * Validation labels: `torch.Size([101366, 1])` (`torch.float32`)
-  * Test labels: `torch.Size([102955, 1])` (`torch.float32`)
+  * Train labels: `torch.Size([477669, 1])` (`torch.float32`)
+  * Validation labels: `torch.Size([104038, 1])` (`torch.float32`)
+  * Test labels: `torch.Size([102994, 1])` (`torch.float32`)
 
 #### Stage 3: Missing values and range checks
 * **NaN Count**: 0 (Expected: 0)
@@ -56,14 +56,14 @@ The preprocessed dataset is generated from the raw PhysioNet Computing in Cardio
 * **Empty Tensors**: None
 
 #### Stage 4: Feature standardization check
-* **Overall training mean**: 0.04549196 (Expected: ~0)
-* **Overall training standard deviation**: 1.00042272 (Expected: ~1)
+* **Overall training mean**: 0.04607653 (Expected: ~0)
+* **Overall training standard deviation**: 1.00275338 (Expected: ~1)
 * *Verification*: Standard normal distribution successfully applied. Scaling parameters successfully stored in `scaler.pkl`.
 
 #### Stage 5: Label class imbalance checks
-* **Train split**: Positive = 12,405 (2.58%), Negative = 467,975
-* **Validation split**: Positive = 2,718 (2.68%), Negative = 98,648
-* **Test split**: Positive = 2,488 (2.42%), Negative = 100,467
+* **Train split**: Positive = 12,513 (2.62%), Negative = 465,156
+* **Validation split**: Positive = 2,443 (2.35%), Negative = 101,595
+* **Test split**: Positive = 2,655 (2.58%), Negative = 100,339
 * *Imbalance note*: Highly imbalanced class distribution, typical of clinical event forecasting. Model optimization must use weighted cross entropy or focal loss.
 
 #### Stage 6 & 7: Window generation & pre-padding check
@@ -80,84 +80,88 @@ The preprocessed dataset is generated from the raw PhysioNet Computing in Cardio
 * **Train vs. Test Overlap**: 0 patients
 * **Val vs. Test Overlap**: 0 patients
 * **Hospital stratified proportions (Hospital 0 / Hospital 1)**:
-  * Train split windows: Hospital 0 = 245,152 (51.0%), Hospital 1 = 235,228
-  * Validation split windows: Hospital 0 = 52,109 (51.4%), Hospital 1 = 49,257
-  * Test split windows: Hospital 0 = 52,794 (51.3%), Hospital 1 = 50,161
+  * Train split windows: Hospital 0 = 244,529 (51.2%), Hospital 1 = 233,140
+  * Validation split windows: Hospital 0 = 53,329 (51.3%), Hospital 1 = 50,709
+  * Test split windows: Hospital 0 = 52,197 (50.7%), Hospital 1 = 50,797
 
 ---
 
 ### 5. Warnings and Errors Summary
 
 #### Warnings:
-* [WARNING] Feature HR has non-zero train mean: 0.03447
-* [WARNING] Feature O2Sat has non-unit train std: 0.92775
-* [WARNING] Feature Temp has non-zero train mean: 0.03994
-* [WARNING] Feature Temp has non-unit train std: 0.82804
-* [WARNING] Feature MAP has non-unit train std: 0.97712
-* [WARNING] Feature DBP has non-zero train mean: 0.03049
-* [WARNING] Feature DBP has non-unit train std: 0.94231
-* [WARNING] Feature Resp has non-zero train mean: 0.03832
-* [WARNING] Feature EtCO2 has non-zero train mean: 0.05687
-* [WARNING] Feature EtCO2 has non-unit train std: 1.10886
-* [WARNING] Feature BaseExcess has non-zero train mean: 0.03672
-* [WARNING] Feature BaseExcess has non-unit train std: 1.03849
-* [WARNING] Feature HCO3 has non-zero train mean: 0.02200
-* [WARNING] Feature HCO3 has non-unit train std: 0.98808
-* [WARNING] Feature FiO2 has non-unit train std: 0.48611
-* [WARNING] Feature pH has non-zero train mean: 0.15815
-* [WARNING] Feature pH has non-unit train std: 0.96309
-* [WARNING] Feature PaCO2 has non-zero train mean: 0.10593
-* [WARNING] Feature PaCO2 has non-unit train std: 0.95877
-* [WARNING] Feature SaO2 has non-zero train mean: 0.10537
-* [WARNING] Feature SaO2 has non-unit train std: 1.07216
-* [WARNING] Feature AST has non-zero train mean: 0.02361
-* [WARNING] Feature AST has non-unit train std: 1.06855
-* [WARNING] Feature BUN has non-zero train mean: 0.07053
-* [WARNING] Feature BUN has non-unit train std: 1.02085
-* [WARNING] Feature Alkalinephos has non-zero train mean: 0.06311
-* [WARNING] Feature Alkalinephos has non-unit train std: 0.98516
-* [WARNING] Feature Calcium has non-zero train mean: 0.08527
-* [WARNING] Feature Calcium has non-unit train std: 0.88341
-* [WARNING] Feature Chloride has non-zero train mean: 0.07097
-* [WARNING] Feature Chloride has non-unit train std: 0.97332
-* [WARNING] Feature Creatinine has non-zero train mean: 0.02414
-* [WARNING] Feature Creatinine has non-unit train std: 0.96951
-* [WARNING] Feature Bilirubin_direct has non-zero train mean: 0.04655
-* [WARNING] Feature Bilirubin_direct has non-unit train std: 1.20507
-* [WARNING] Feature Glucose has non-unit train std: 0.92062
-* [WARNING] Feature Lactate has non-zero train mean: 0.07548
-* [WARNING] Feature Lactate has non-unit train std: 0.93933
-* [WARNING] Feature Magnesium has non-zero train mean: 0.11664
-* [WARNING] Feature Magnesium has non-unit train std: 0.87608
-* [WARNING] Feature Phosphate has non-zero train mean: 0.09818
-* [WARNING] Feature Phosphate has non-unit train std: 0.95201
-* [WARNING] Feature Potassium has non-zero train mean: 0.04092
-* [WARNING] Feature Potassium has non-unit train std: 0.88090
-* [WARNING] Feature Bilirubin_total has non-zero train mean: 0.05682
-* [WARNING] Feature Bilirubin_total has non-unit train std: 1.09695
-* [WARNING] Feature TroponinI has non-unit train std: 1.03626
-* [WARNING] Feature Hct has non-zero train mean: 0.01905
-* [WARNING] Feature Hct has non-unit train std: 0.89127
-* [WARNING] Feature Hgb has non-zero train mean: 0.01892
-* [WARNING] Feature Hgb has non-unit train std: 0.88794
-* [WARNING] Feature PTT has non-zero train mean: 0.06878
-* [WARNING] Feature PTT has non-unit train std: 1.04375
-* [WARNING] Feature WBC has non-zero train mean: 0.03655
-* [WARNING] Feature WBC has non-unit train std: 0.97740
-* [WARNING] Feature Fibrinogen has non-zero train mean: 0.07172
-* [WARNING] Feature Fibrinogen has non-unit train std: 1.06404
-* [WARNING] Feature Platelets has non-zero train mean: 0.01915
-* [WARNING] Feature Platelets has non-unit train std: 0.97766
-* [WARNING] Feature Age has non-zero train mean: 0.02427
-* [WARNING] Feature Age has non-unit train std: 0.97909
-* [WARNING] Feature Gender has non-unit train std: 1.02520
-* [WARNING] Feature Unit1 has non-unit train std: 0.96005
-* [WARNING] Feature Unit2 has non-zero train mean: -0.03530
-* [WARNING] Feature Unit2 has non-unit train std: 0.96145
-* [WARNING] Feature HospAdmTime has non-zero train mean: -0.03286
-* [WARNING] Feature HospAdmTime has non-unit train std: 1.14595
-* [WARNING] Feature ICULOS has non-zero train mean: 0.26275
-* [WARNING] Feature ICULOS has non-unit train std: 1.19827
+* [WARNING] Feature HR has non-zero train mean: 0.03422
+* [WARNING] Feature O2Sat has non-unit train std: 0.92320
+* [WARNING] Feature Temp has non-zero train mean: 0.03804
+* [WARNING] Feature Temp has non-unit train std: 0.84132
+* [WARNING] Feature SBP has non-zero train mean: 0.01252
+* [WARNING] Feature MAP has non-unit train std: 0.97697
+* [WARNING] Feature DBP has non-zero train mean: 0.03341
+* [WARNING] Feature DBP has non-unit train std: 0.93857
+* [WARNING] Feature Resp has non-zero train mean: 0.04142
+* [WARNING] Feature Resp has non-unit train std: 1.01304
+* [WARNING] Feature EtCO2 has non-zero train mean: 0.09025
+* [WARNING] Feature EtCO2 has non-unit train std: 1.09603
+* [WARNING] Feature BaseExcess has non-zero train mean: 0.02943
+* [WARNING] Feature BaseExcess has non-unit train std: 1.04921
+* [WARNING] Feature HCO3 has non-zero train mean: 0.02832
+* [WARNING] Feature HCO3 has non-unit train std: 0.98632
+* [WARNING] Feature FiO2 has non-unit train std: 0.48663
+* [WARNING] Feature pH has non-zero train mean: 0.15274
+* [WARNING] Feature pH has non-unit train std: 0.96980
+* [WARNING] Feature PaCO2 has non-zero train mean: 0.09907
+* [WARNING] Feature PaCO2 has non-unit train std: 0.96673
+* [WARNING] Feature SaO2 has non-zero train mean: 0.10646
+* [WARNING] Feature SaO2 has non-unit train std: 1.07432
+* [WARNING] Feature AST has non-zero train mean: 0.02573
+* [WARNING] Feature AST has non-unit train std: 1.06770
+* [WARNING] Feature BUN has non-zero train mean: 0.06780
+* [WARNING] Feature BUN has non-unit train std: 1.01977
+* [WARNING] Feature Alkalinephos has non-zero train mean: 0.05879
+* [WARNING] Feature Alkalinephos has non-unit train std: 0.98689
+* [WARNING] Feature Calcium has non-zero train mean: 0.08740
+* [WARNING] Feature Calcium has non-unit train std: 0.88230
+* [WARNING] Feature Chloride has non-zero train mean: 0.07145
+* [WARNING] Feature Chloride has non-unit train std: 0.97294
+* [WARNING] Feature Creatinine has non-zero train mean: 0.02614
+* [WARNING] Feature Creatinine has non-unit train std: 0.97200
+* [WARNING] Feature Bilirubin_direct has non-zero train mean: 0.04713
+* [WARNING] Feature Bilirubin_direct has non-unit train std: 1.23011
+* [WARNING] Feature Glucose has non-zero train mean: 0.01156
+* [WARNING] Feature Glucose has non-unit train std: 0.92593
+* [WARNING] Feature Lactate has non-zero train mean: 0.07138
+* [WARNING] Feature Lactate has non-unit train std: 0.94043
+* [WARNING] Feature Magnesium has non-zero train mean: 0.11335
+* [WARNING] Feature Magnesium has non-unit train std: 0.87796
+* [WARNING] Feature Phosphate has non-zero train mean: 0.10068
+* [WARNING] Feature Phosphate has non-unit train std: 0.95213
+* [WARNING] Feature Potassium has non-zero train mean: 0.04016
+* [WARNING] Feature Potassium has non-unit train std: 0.87635
+* [WARNING] Feature Bilirubin_total has non-zero train mean: 0.06143
+* [WARNING] Feature Bilirubin_total has non-unit train std: 1.10525
+* [WARNING] Feature TroponinI has non-zero train mean: 0.01224
+* [WARNING] Feature TroponinI has non-unit train std: 1.04680
+* [WARNING] Feature Hct has non-zero train mean: 0.01926
+* [WARNING] Feature Hct has non-unit train std: 0.89064
+* [WARNING] Feature Hgb has non-zero train mean: 0.02001
+* [WARNING] Feature Hgb has non-unit train std: 0.88804
+* [WARNING] Feature PTT has non-zero train mean: 0.09670
+* [WARNING] Feature PTT has non-unit train std: 1.04275
+* [WARNING] Feature WBC has non-zero train mean: 0.03852
+* [WARNING] Feature WBC has non-unit train std: 0.98115
+* [WARNING] Feature Fibrinogen has non-zero train mean: 0.07684
+* [WARNING] Feature Fibrinogen has non-unit train std: 1.06987
+* [WARNING] Feature Platelets has non-zero train mean: 0.01928
+* [WARNING] Feature Platelets has non-unit train std: 0.97453
+* [WARNING] Feature Age has non-zero train mean: 0.01758
+* [WARNING] Feature Age has non-unit train std: 0.98524
+* [WARNING] Feature Gender has non-unit train std: 1.02526
+* [WARNING] Feature Unit1 has non-unit train std: 0.96113
+* [WARNING] Feature Unit2 has non-zero train mean: -0.03780
+* [WARNING] Feature Unit2 has non-unit train std: 0.96117
+* [WARNING] Feature HospAdmTime has non-zero train mean: -0.03678
+* [WARNING] Feature HospAdmTime has non-unit train std: 1.16791
+* [WARNING] Feature ICULOS has non-zero train mean: 0.26049
+* [WARNING] Feature ICULOS has non-unit train std: 1.20427
 
 #### Errors:
 * None
@@ -170,17 +174,17 @@ Below are the visualization plots generated to verify preprocessing correctness:
 
 #### 1. Patient Feature Comparison (Before vs. After Preprocessing)
 The plot displays Heart Rate, SpO2, MAP, Temperature, and Respiration before (raw values with missingness) and after (imputed and standardized) preprocessing:
-![Patient Preprocessing Comparison](file:///c:/FYP/23CSE498-Project-Phase-II/results/preprocessing_verification/patient_preprocessing_comparison.png)
+![Patient Preprocessing Comparison](patient_preprocessing_comparison.png)
 
 #### 2. Short Stay Padding Verification
 The plot displays pre-padding behavior on a short-stay ICU patient ($T < 24$ hours), showing how the early hours of features are padded with zeros to ensure a consistent sequence length of 24 for LSTM layers:
-![Padding Verification](file:///c:/FYP/23CSE498-Project-Phase-II/results/preprocessing_verification/padding_verification.png)
+![Padding Verification](padding_verification.png)
 
 ---
 
 ### 7. Reports Generated
-* **Markdown Report**: [Preprocessing_Verification_Report.md](file:///c:/FYP/23CSE498-Project-Phase-II/results/preprocessing_verification/Preprocessing_Verification_Report.md)
-* **PDF Report**: [Preprocessing_Verification_Report.pdf](file:///c:/FYP/23CSE498-Project-Phase-II/results/preprocessing_verification/Preprocessing_Verification_Report.pdf)
+* **Markdown Report**: [Preprocessing_Verification_Report.md](Preprocessing_Verification_Report.md)
+* **PDF Report**: [Preprocessing_Verification_Report.pdf](Preprocessing_Verification_Report.pdf)
 
 ---
 
