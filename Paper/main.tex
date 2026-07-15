@@ -77,10 +77,10 @@ To bridge these gaps, we present the Federated Personalized Drift-Aware Attentio
 \subsection{Federated Learning in Healthcare}
 Federated Averaging (FedAvg) proposed by McMahan et al. establishes the baseline for decentralized collaborative optimization. However, in non-IID settings, local optimization diverges from the global objective. FedProx introduces a proximal term to penalize local weights from diverging too far from global weights, enhancing stability. Ditto approaches personalization as a bi-level optimization problem, balancing global collaboration with local customization.
 
-\subsection{Concept Drift & Explainability}
+\subsection{Concept Drift \& Explainability}
 Concept drift monitoring, such as Cumulative Sum (CUSUM) control charts, tracks residuals of sequential predictions to identify statistical population shifts. Explainable AI (XAI) using Shapley Additive exPlanations (SHAP) and Multi-Head Self-Attention maps features and temporal slices to explain predictions, helping clinicians verify feature importances against established clinical protocols.
 
-\section{Methodology & Data Preprocessing}
+\section{Methodology \& Data Preprocessing}
 \subsection{Dataset Organization}
 The framework is evaluated using the PhysioNet Computing in Cardiology Challenge 2019 dataset, comprising 40,327 patient files containing 40 hourly physiological parameters (e.g., HR, SpO2, Temp, MAP) and a binary SepsisLabel target.
 

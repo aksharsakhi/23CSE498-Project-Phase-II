@@ -51,3 +51,11 @@ results/*.csv
 *.log
 wandb/
 runs/
+
+# ===== LaTeX Build Output =====
+*.aux
+*.out
+*.toc
+*.synctex.gz
+*.fls
+*.fdb_latexmk
