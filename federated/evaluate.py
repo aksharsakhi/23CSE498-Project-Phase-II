@@ -8,7 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 # Add parent directory to sys.path to enable correct imports
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from federated.utils.helpers import set_seed, load_config, setup_logging, get_device
+from federated.utils.helpers import set_seed, load_config, setup_logging, get_device, split_non_iid_dataset
 from federated.evaluation.evaluator import FederatedEvaluator
 from baseline.models.lstm import CentralizedLSTM
 
@@ -51,7 +51,7 @@ def main():
     log_dir = os.path.join(os.path.dirname(base_dir), config['paths']['log_dir'])
     logger = setup_logging(log_dir, log_filename="evaluate.log")
     
-    logger.info("=== Initialize Federated Three-Way Evaluation (FedAvg vs FedProx vs Centralized) ===")
+    logger.info("=== Initialize Federated Four-Way Evaluation (FedAvg vs FedProx vs Ditto vs Centralized) ===")
     
     set_seed(config['seed'])
     logger.info(f"Random seed set to: {config['seed']}.")
@@ -73,7 +73,7 @@ def main():
     batch_size = config['local_training']['batch_size']
     test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
     
-    # 6. Setup model structure
+    # 6. Initialize LSTM Model Shells
     model_fedavg = CentralizedLSTM(
         input_dim=config['model']['input_dim'],
         hidden_dim=config['model']['hidden_dim'],
@@ -83,6 +83,22 @@ def main():
     ).to(device)
     
     model_fedprox = CentralizedLSTM(
+        input_dim=config['model']['input_dim'],
+        hidden_dim=config['model']['hidden_dim'],
+        num_layers=config['model']['num_layers'],
+        dropout=config['model']['dropout'],
+        output_dim=config['model']['output_dim']
+    ).to(device)
+    
+    model_ditto_glob = CentralizedLSTM(
+        input_dim=config['model']['input_dim'],
+        hidden_dim=config['model']['hidden_dim'],
+        num_layers=config['model']['num_layers'],
+        dropout=config['model']['dropout'],
+        output_dim=config['model']['output_dim']
+    ).to(device)
+    
+    model_ditto_pers = CentralizedLSTM(
         input_dim=config['model']['input_dim'],
         hidden_dim=config['model']['hidden_dim'],
         num_layers=config['model']['num_layers'],
@@ -114,92 +130,153 @@ def main():
         logger.warning(f"FedProx model checkpoint not found at: {best_fedprox_path}.")
         has_fedprox = False
         
-    if not has_fedavg and not has_fedprox:
-        logger.error("No model checkpoints found. Please train models first.")
-        sys.exit(1)
+    # Load Ditto Global consensus model
+    best_ditto_glob_path = os.path.join(checkpoint_dir, "best_ditto_global_model.pt")
+    if os.path.exists(best_ditto_glob_path):
+        logger.info(f"Loading best Ditto global consensus model: {best_ditto_glob_path}")
+        ckpt_ditto_glob = torch.load(best_ditto_glob_path, map_location=device)
+        model_ditto_glob.load_state_dict(ckpt_ditto_glob['model_state_dict'])
+        has_ditto_glob = True
+    else:
+        logger.warning(f"Ditto Global model checkpoint not found at: {best_ditto_glob_path}.")
+        has_ditto_glob = False
         
-    # 7. Run Inference Loop
-    y_true = None
+    # 7. Run Inference for Global Models
+    y_true_global = None
     y_probs_fedavg = None
     y_probs_fedprox = None
+    y_probs_ditto_glob = None
     
     if has_fedavg:
         logger.info("Running FedAvg inference...")
-        y_true, y_probs_fedavg = run_model_inference(model_fedavg, test_loader, device)
-        fedavg_metrics = FederatedEvaluator.compute_metrics(y_true, y_probs_fedavg)
+        y_true_global, y_probs_fedavg = run_model_inference(model_fedavg, test_loader, device)
+        fedavg_metrics = FederatedEvaluator.compute_metrics(y_true_global, y_probs_fedavg)
     else:
         fedavg_metrics = None
         
     if has_fedprox:
         logger.info("Running FedProx inference...")
-        y_true, y_probs_fedprox = run_model_inference(model_fedprox, test_loader, device)
-        fedprox_metrics = FederatedEvaluator.compute_metrics(y_true, y_probs_fedprox)
+        y_true_global, y_probs_fedprox = run_model_inference(model_fedprox, test_loader, device)
+        fedprox_metrics = FederatedEvaluator.compute_metrics(y_true_global, y_probs_fedprox)
     else:
         fedprox_metrics = None
         
-    # 8. Compute and Save Performance Metrics
+    if has_ditto_glob:
+        logger.info("Running Ditto Global inference...")
+        y_true_global, y_probs_ditto_glob = run_model_inference(model_ditto_glob, test_loader, device)
+        ditto_glob_metrics = FederatedEvaluator.compute_metrics(y_true_global, y_probs_ditto_glob)
+    else:
+        ditto_glob_metrics = None
+        
+    # 8. Run Inference for Ditto Personalized Models
+    # Split the global test set into same Non-IID client splits for personalized evaluation
+    scaler_path = os.path.join(data_dir, "scaler.pkl")
+    metadata_path = os.path.join(data_dir, "preprocessing_metadata.json")
+    with open(metadata_path, 'r') as f:
+        meta_json = json.load(f)
+    feature_columns = meta_json['feature_columns']
+    
+    logger.info("Partitioning test dataset for client-specific personalization evaluation...")
+    test_splits = split_non_iid_dataset(global_test, scaler_path, feature_columns)
+    
+    y_true_pers_concat = []
+    y_probs_pers_concat = []
+    has_ditto_pers = True
+    
+    for i in range(config['federated']['num_clients']):
+        client_test_path = os.path.join(checkpoint_dir, f"client_{i}_personalized_model.pt")
+        if not os.path.exists(client_test_path):
+            logger.warning(f"Client {i} personalized checkpoint not found at: {client_test_path}. Skipping Ditto Personalized evaluation.")
+            has_ditto_pers = False
+            break
+            
+        logger.info(f"Loading client {i} personalized weights...")
+        ckpt = torch.load(client_test_path, map_location=device)
+        model_ditto_pers.load_state_dict(ckpt['personalized_weights'])
+        
+        client_test_dataset = InMemorySepsisDataset(test_splits[i])
+        client_test_loader = DataLoader(client_test_dataset, batch_size=batch_size, shuffle=False)
+        
+        c_targets, c_probs = run_model_inference(model_ditto_pers, client_test_loader, device)
+        y_true_pers_concat.extend(c_targets)
+        y_probs_pers_concat.extend(c_probs)
+        
+    if has_ditto_pers:
+        y_true_pers_concat = np.array(y_true_pers_concat)
+        y_probs_pers_concat = np.array(y_probs_pers_concat)
+        ditto_pers_metrics = FederatedEvaluator.compute_metrics(y_true_pers_concat, y_probs_pers_concat)
+        logger.info("Ditto Personalized model evaluation completed across clients.")
+    else:
+        ditto_pers_metrics = None
+        
+    # 9. Compute and Save JSON metrics reports
     results_dir = os.path.join(os.path.dirname(base_dir), config['paths']['results_dir'])
     os.makedirs(results_dir, exist_ok=True)
     
-    # Save standard JSON metrics
-    if fedavg_metrics:
-        with open(os.path.join(results_dir, "test_metrics_fedavg.json"), 'w') as f:
-            json.dump(fedavg_metrics, f, indent=4)
-    if fedprox_metrics:
-        with open(os.path.join(results_dir, "test_metrics_fedprox.json"), 'w') as f:
-            json.dump(fedprox_metrics, f, indent=4)
+    if ditto_glob_metrics:
+        with open(os.path.join(results_dir, "test_metrics_ditto_global.json"), 'w') as f:
+            json.dump(ditto_glob_metrics, f, indent=4)
+    if ditto_pers_metrics:
+        with open(os.path.join(results_dir, "test_metrics_ditto_personalized.json"), 'w') as f:
+            json.dump(ditto_pers_metrics, f, indent=4)
             
-    # Load Centralized Metrics
+    # Load Centralized Baseline Metrics
     cent_results_dir = os.path.join(os.path.dirname(base_dir), config['paths']['centralized_results_dir'])
     centralized_metrics_path = os.path.join(cent_results_dir, "test_metrics.json")
     
-    # 9. Generate Comparisons
-    comparison_save_path = os.path.join(results_dir, "three_way_comparison.json")
-    
-    # Run three-way report compilation
-    # Fallback to empty dict if one of the runs is missing (to prevent crashes during partial tests)
+    # Compile 4-way comparison report
     dummy_metrics = {
         'accuracy': 0.0, 'precision': 0.0, 'recall': 0.0, 'f1_score': 0.0, 'auroc': 0.0,
         'confusion_matrix': {'tp': 0, 'fp': 0, 'tn': 0, 'fn': 0}
     }
     
-    comparison = FederatedEvaluator.save_three_way_comparison_report(
+    comparison_save_path = os.path.join(results_dir, "four_way_comparison.json")
+    comparison = FederatedEvaluator.save_four_way_comparison_report(
         fedavg_metrics=fedavg_metrics if fedavg_metrics else dummy_metrics,
         fedprox_metrics=fedprox_metrics if fedprox_metrics else dummy_metrics,
+        ditto_glob_metrics=ditto_glob_metrics if ditto_glob_metrics else dummy_metrics,
+        ditto_pers_metrics=ditto_pers_metrics if ditto_pers_metrics else dummy_metrics,
         centralized_metrics_path=centralized_metrics_path,
         save_path=comparison_save_path
     )
-    logger.info(f"Saved three-way baseline comparison metrics JSON to: {comparison_save_path}")
+    logger.info(f"Saved four-way comparative metrics JSON to: {comparison_save_path}")
     
-    # Generate Plots
-    if has_fedavg and has_fedprox:
-        FederatedEvaluator.generate_three_way_comparison_plots(
-            y_true=y_true,
+    # 10. Generate Overlay plots
+    if has_fedavg and has_fedprox and has_ditto_glob and has_ditto_pers:
+        FederatedEvaluator.generate_four_way_comparison_plots(
+            y_true_global=y_true_global,
             y_probs_fedavg=y_probs_fedavg,
             y_probs_fedprox=y_probs_fedprox,
+            y_probs_ditto_global=y_probs_ditto_glob,
+            y_true_local_concat=y_true_pers_concat,
+            y_probs_ditto_pers_concat=y_probs_pers_concat,
             centralized_metrics_path=centralized_metrics_path,
             save_dir=results_dir
         )
-        logger.info(f"Three-way comparative charts saved in: {results_dir}")
+        logger.info(f"Four-way comparative overlays and matrices saved under: {results_dir}")
         
     # Log comparative metrics to console
-    logger.info("=== Three-Way Test Performance Summary ===")
-    logger.info("  Metric             |   Centralized   |     FedAvg      |     FedProx     |   Difference (Prox-Avg) ")
-    logger.info("  -------------------|-----------------|-----------------|-----------------|-------------------------")
+    logger.info("=== Four-Way Test Performance Summary ===")
+    logger.info("  Metric             |  Centralized  |    FedAvg     |    FedProx    | Ditto Global  | Ditto Pers.   | Diff (Pers-Avg)")
+    logger.info("  -------------------|---------------|---------------|---------------|---------------|---------------|----------------")
     
     metrics_list = ['accuracy', 'precision', 'recall', 'f1_score', 'auroc']
     for m in metrics_list:
         val_cent = comparison['centralized'][metrics_list.index(m)] if 'centralized' in comparison else 0.0
         val_fed = comparison['fedavg'][metrics_list.index(m)]
         val_prox = comparison['fedprox'][metrics_list.index(m)]
-        val_diff = val_prox - val_fed
+        val_d_glob = comparison['ditto_global'][metrics_list.index(m)]
+        val_d_pers = comparison['ditto_personalized'][metrics_list.index(m)]
+        val_diff = val_d_pers - val_fed
         
         str_cent = f"{val_cent*100:.2f}%" if m != 'f1_score' and m != 'auroc' else f"{val_cent:.4f}"
         str_fed = f"{val_fed*100:.2f}%" if m != 'f1_score' and m != 'auroc' else f"{val_fed:.4f}"
         str_prox = f"{val_prox*100:.2f}%" if m != 'f1_score' and m != 'auroc' else f"{val_prox:.4f}"
+        str_d_glob = f"{val_d_glob*100:.2f}%" if m != 'f1_score' and m != 'auroc' else f"{val_d_glob:.4f}"
+        str_d_pers = f"{val_d_pers*100:.2f}%" if m != 'f1_score' and m != 'auroc' else f"{val_d_pers:.4f}"
         str_diff = f"{val_diff*100:+.2f}%" if m != 'f1_score' and m != 'auroc' else f"{val_diff:+.4f}"
         
-        logger.info(f"  {m.capitalize():18s} | {str_cent:15s} | {str_fed:15s} | {str_prox:15s} | {str_diff:23s}")
+        logger.info(f"  {m.capitalize():18s} | {str_cent:13s} | {str_fed:13s} | {str_prox:13s} | {str_d_glob:13s} | {str_d_pers:13s} | {str_diff:14s}")
         
     logger.info("=== Federated Testing Evaluation Completed Successfully ===")
 

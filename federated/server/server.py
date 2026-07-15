@@ -40,7 +40,9 @@ class FederatedServer:
             'global_val_acc': [],
             'global_val_auroc': [],
             'client_val_losses': [],  # Records local client performance
-            'client_val_accs': []
+            'client_val_accs': [],
+            'client_pers_losses': [], # Ditto client personalized losses
+            'client_pers_accs': []    # Ditto client personalized accuracies
         }
 
     def register_client(self, client):
@@ -138,13 +140,21 @@ class FederatedServer:
             
         return val_loss, val_acc, val_auroc
 
-    def run_round(self, round_idx: int, client_fraction: float, criterion: nn.Module, mu: float = 0.0) -> tuple:
+    def run_round(
+        self,
+        round_idx: int,
+        client_fraction: float,
+        criterion: nn.Module,
+        mu: float = 0.0,
+        run_ditto: bool = False,
+        lam: float = 0.1
+    ) -> tuple:
         """
         Executes a single communication round:
         1. Broadcasts global model to participants.
         2. Clients perform local epochs training (with FedProx proximal regularization if mu > 0).
-        3. Aggregates results.
-        4. Updates the global model parameters.
+        3. Clients perform local personalization (if run_ditto is True).
+        4. Aggregates global updates and updates server global model.
         """
         logger.info(f"--- Starting Communication Round {round_idx+1} ---")
         
@@ -156,6 +166,8 @@ class FederatedServer:
         local_updates = []
         client_val_losses = {}
         client_val_accs = {}
+        client_pers_losses = {}
+        client_pers_accs = {}
         
         # 1. Local Training on Clients
         global_state_dict = self.broadcast_global_model()
@@ -170,13 +182,26 @@ class FederatedServer:
                 ]}
             ).to(self.device)
             
-            # Execute local epochs with proximal constraint
+            # Execute local epochs for global model consensus update
             updated_params, num_samples, val_loss, val_acc = client.local_train(local_model, global_state_dict, mu)
             
             local_updates.append((updated_params, num_samples))
             client_val_losses[client.client_id] = val_loss
             client_val_accs[client.client_id] = val_acc
             logger.info(f"  ├── Client {client.client_id} finished training. Val Loss: {val_loss:.4f}, Val Acc: {val_acc*100:.2f}%")
+            
+            # Run local personalization if running Ditto
+            if run_ditto:
+                logger.info(f"Local personalization on client {client.client_id}...")
+                pers_model = self.global_model.__class__(
+                    **{k: getattr(self.global_model, k, v) for k, v in [
+                        ('hidden_dim', 64), ('num_layers', 2)
+                    ]}
+                ).to(self.device)
+                p_loss, p_acc = client.local_personalize(pers_model, global_state_dict, lam)
+                client_pers_losses[client.client_id] = p_loss
+                client_pers_accs[client.client_id] = p_acc
+                logger.info(f"  ├── Client {client.client_id} personalized update. Val Loss: {p_loss:.4f}, Val Acc: {p_acc*100:.2f}%")
             
         # 2. Server Parameter Aggregation
         logger.info("Aggregating parameters via FedAvg...")
@@ -186,19 +211,34 @@ class FederatedServer:
         self.update_global_model(aggregated_weights)
         logger.info(f"Global model successfully updated.")
         
-        return client_val_losses, client_val_accs
+        return client_val_losses, client_val_accs, client_pers_losses, client_pers_accs
 
-    def fit(self, rounds: int, client_fraction: float, val_loader: DataLoader, criterion: nn.Module, mu: float = 0.0) -> dict:
+    def fit(
+        self,
+        rounds: int,
+        client_fraction: float,
+        val_loader: DataLoader,
+        criterion: nn.Module,
+        mu: float = 0.0,
+        run_ditto: bool = False,
+        lam: float = 0.1
+    ) -> dict:
         """
         Orchestrates full federated training across multiple rounds.
         """
-        model_filename = "best_fedprox_model.pt" if mu > 0.0 else "best_global_model.pt"
+        if run_ditto:
+            model_filename = "best_ditto_global_model.pt"
+        else:
+            model_filename = "best_fedprox_model.pt" if mu > 0.0 else "best_global_model.pt"
+            
         best_model_path = os.path.join(self.checkpoint_dir, model_filename)
         logger.info(f"Best model path configured as: {best_model_path}")
         
         for r in range(rounds):
             # Run local training and aggregation round
-            client_losses, client_accs = self.run_round(r, client_fraction, criterion, mu)
+            client_losses, client_accs, client_p_losses, client_p_accs = self.run_round(
+                r, client_fraction, criterion, mu, run_ditto, lam
+            )
             
             # Evaluate updated global model on validation partition
             val_loss, val_acc, val_auroc = self.evaluate_global(val_loader, criterion)
@@ -214,6 +254,14 @@ class FederatedServer:
             self.history['global_val_auroc'].append(val_auroc)
             self.history['client_val_losses'].append(client_losses)
             self.history['client_val_accs'].append(client_accs)
+            
+            if run_ditto:
+                self.history['client_pers_losses'].append(client_p_losses)
+                self.history['client_pers_accs'].append(client_p_accs)
+                # Compute client-averaged personalization metrics
+                avg_p_loss = sum(client_p_losses.values()) / len(client_p_losses)
+                avg_p_acc = sum(client_p_accs.values()) / len(client_p_accs)
+                logger.info(f"  [Personalization Status] Avg Local Val Loss: {avg_p_loss:.4f} - Avg Local Val Acc: {avg_p_acc*100:.2f}%")
             
             # Save round checkpoint
             round_ckpt_path = os.path.join(self.checkpoint_dir, f"global_model_round_{r+1}.pt")

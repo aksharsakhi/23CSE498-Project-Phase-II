@@ -42,6 +42,9 @@ class FederatedClient:
         self.val_loader = DataLoader(self.val_dataset, batch_size=batch_size, shuffle=False)
         self.test_loader = DataLoader(self.test_dataset, batch_size=batch_size, shuffle=False)
         
+        # Persisted client-specific personalized parameters for Ditto
+        self.personalized_weights = None
+        
         # Calculate dynamic class weight from local targets to counter severe sepsis imbalance
         num_neg = (self.train_dataset.labels == 0).sum().item()
         num_pos = (self.train_dataset.labels == 1).sum().item()
@@ -112,3 +115,54 @@ class FederatedClient:
         local_parameters = {k: v.cpu() for k, v in model.state_dict().items()}
         
         return local_parameters, self.num_samples, val_loss, val_acc
+
+    def local_personalize(self, model: nn.Module, global_state_dict: dict, lam: float = 0.1) -> tuple:
+        """
+        Loads the persistent client-specific personalized parameters (v_k), optimizes them
+        locally regularized by global consensus weights (w^*) under Ditto, and returns validation metrics.
+        
+        Args:
+            model (nn.Module): Personalized model container.
+            global_state_dict (dict): Current global model parameters (w^*).
+            lam (float): Ditto regularization coefficient.
+            
+        Returns:
+            Tuple[float, float]: Local validation loss and accuracy for the personalized model.
+        """
+        # 1. Initialize local personalized parameters if not already present
+        if self.personalized_weights is None:
+            self.personalized_weights = {k: v.clone() for k, v in global_state_dict.items()}
+            
+        # 2. Load persistent personalized state
+        model.load_state_dict(self.personalized_weights)
+        
+        # 3. Setup optimizer for personalized parameters
+        optimizer = torch.optim.Adam(
+            model.parameters(),
+            lr=self.lr,
+            weight_decay=self.weight_decay
+        )
+        
+        # 4. Perform local personalization epochs regularized against global weights
+        self.trainer.train_ditto(
+            model=model,
+            train_loader=self.train_loader,
+            criterion=self.criterion,
+            optimizer=optimizer,
+            local_epochs=self.local_epochs,
+            client_id=self.client_id,
+            lam=lam,
+            global_state_dict=global_state_dict
+        )
+        
+        # 5. Evaluate personalized model locally on validation split
+        val_loss, val_acc = self.trainer.validate(
+            model=model,
+            val_loader=self.val_loader,
+            criterion=self.criterion
+        )
+        
+        # 6. Save persistent personalized weights locally
+        self.personalized_weights = {k: v.cpu().clone() for k, v in model.state_dict().items()}
+        
+        return val_loss, val_acc

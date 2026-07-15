@@ -34,6 +34,7 @@ federated:
   client_fraction: 1.0   # Fraction of registered clients participating per round
   num_clients: 3         # Total number of simulated hospital clients
   mu: 0.01               # Proximal regularization penalty coefficient for FedProx
+  lambda: 0.1            # Regularization penalty coefficient for Ditto personalization
 
 # Local training parameters
 local_training:

@@ -109,3 +109,59 @@ class LocalTrainer:
         val_acc = correct_predictions / total_samples
         
         return val_loss, val_acc
+
+    def train_ditto(
+        self,
+        model: nn.Module,
+        train_loader: DataLoader,
+        criterion: nn.Module,
+        optimizer: torch.optim.Optimizer,
+        local_epochs: int,
+        client_id: int,
+        lam: float,
+        global_state_dict: dict
+    ) -> float:
+        """
+        Trains the local personalized model (v_k) using the Ditto loss objective:
+        L = L_local + (lambda / 2) * || v_k - w^* ||^2
+        where w^* is the current frozen global consensus parameters.
+        """
+        model.train()
+        total_loss = 0.0
+        total_samples = 0
+        
+        for epoch in range(local_epochs):
+            running_loss = 0.0
+            epoch_samples = 0
+            
+            for features, targets in train_loader:
+                features = features.to(self.device)
+                targets = targets.to(self.device)
+                
+                optimizer.zero_grad()
+                logits = model(features)
+                base_loss = criterion(logits, targets)
+                
+                # Compute Ditto regularization penalty against global weights
+                reg_loss = 0.0
+                if lam > 0.0 and global_state_dict is not None:
+                    for name, param in model.named_parameters():
+                        g_param = global_state_dict[name].to(param.device)
+                        reg_loss += torch.sum((param - g_param) ** 2)
+                        
+                loss = base_loss + (lam / 2.0) * reg_loss
+                
+                loss.backward()
+                optimizer.step()
+                
+                running_loss += loss.item() * features.size(0)
+                epoch_samples += targets.size(0)
+                
+            epoch_loss = running_loss / epoch_samples
+            total_loss += epoch_loss
+            total_samples += 1
+            
+            logger.debug(f"Client {client_id} (Ditto) | Local Personalization Epoch {epoch+1}/{local_epochs} - Loss: {epoch_loss:.4f}")
+            
+        return total_loss / total_samples
+
