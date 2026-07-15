@@ -200,3 +200,129 @@ class FederatedEvaluator:
             json.dump(comparison, f, indent=4)
             
         return comparison
+
+    @staticmethod
+    def generate_three_way_comparison_plots(
+        y_true: np.ndarray,
+        y_probs_fedavg: np.ndarray,
+        y_probs_fedprox: np.ndarray,
+        centralized_metrics_path: str,
+        save_dir: str
+    ):
+        """
+        Generates overlay ROC Curves for Centralized Baseline vs. FedAvg vs. FedProx,
+        and plots the FedProx Confusion Matrix.
+        """
+        os.makedirs(save_dir, exist_ok=True)
+        
+        # 1. Overlay ROC Curves
+        fpr_fedavg, tpr_fedavg, _ = roc_curve(y_true, y_probs_fedavg)
+        auroc_fedavg = roc_auc_score(y_true, y_probs_fedavg)
+        
+        fpr_fedprox, tpr_fedprox, _ = roc_curve(y_true, y_probs_fedprox)
+        auroc_fedprox = roc_auc_score(y_true, y_probs_fedprox)
+        
+        plt.figure(figsize=(8, 7))
+        plt.plot(fpr_fedprox, tpr_fedprox, color='#3498db', linewidth=2.5, label=f'FedProx Global Model (AUROC = {auroc_fedprox:.4f})')
+        plt.plot(fpr_fedavg, tpr_fedavg, color='#e67e22', linewidth=2.0, linestyle='--', label=f'FedAvg Global Model (AUROC = {auroc_fedavg:.4f})')
+        
+        # Load Centralized Baseline AUROC
+        if os.path.exists(centralized_metrics_path):
+            try:
+                with open(centralized_metrics_path, 'r') as f:
+                    cent_m = json.load(f)
+                auroc_cent = cent_m['auroc']
+                plt.axhline(0, color='white', label=f"Centralized Baseline (AUROC = {auroc_cent:.4f})")
+            except Exception:
+                pass
+                
+        plt.plot([0, 1], [0, 1], color='#7f8c8d', linestyle=':', label='Random Guess')
+        plt.title('Comparative ROC Curves: Centralized vs. FedAvg vs. FedProx', fontsize=12, fontweight='bold')
+        plt.xlabel('False Positive Rate (FPR)')
+        plt.ylabel('True Positive Rate (TPR)')
+        plt.legend(loc='lower right')
+        plt.grid(True, linestyle=':', alpha=0.6)
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_dir, 'three_way_roc_curve.png'), dpi=300)
+        plt.close()
+        
+        # 2. FedProx Confusion Matrix Heatmap
+        cm_fedprox = confusion_matrix(y_true, (y_probs_fedprox >= 0.5).astype(float))
+        plt.figure(figsize=(6, 5))
+        sns.heatmap(
+            cm_fedprox,
+            annot=True,
+            fmt='d',
+            cmap='Blues',
+            cbar=False,
+            xticklabels=['Non-Sepsis (0)', 'Sepsis (1)'],
+            yticklabels=['Non-Sepsis (0)', 'Sepsis (1)'],
+            annot_kws={'size': 14, 'weight': 'bold'}
+        )
+        plt.title('FedProx Global Model Confusion Matrix', fontsize=12, fontweight='bold', pad=10)
+        plt.xlabel('Predicted Label', fontsize=11)
+        plt.ylabel('True Label', fontsize=11)
+        plt.tight_layout()
+        plt.savefig(os.path.join(save_dir, 'fedprox_confusion_matrix.png'), dpi=300)
+        plt.close()
+
+    @staticmethod
+    def save_three_way_comparison_report(
+        fedavg_metrics: dict,
+        fedprox_metrics: dict,
+        centralized_metrics_path: str,
+        save_path: str
+    ) -> dict:
+        """
+        Creates a structured three-way comparison table and saves it as JSON.
+        """
+        comparison = {
+            'metric': ['Accuracy', 'Precision', 'Recall', 'F1 Score', 'AUROC', 'TP', 'FP', 'TN', 'FN'],
+            'fedavg': [
+                fedavg_metrics['accuracy'],
+                fedavg_metrics['precision'],
+                fedavg_metrics['recall'],
+                fedavg_metrics['f1_score'],
+                fedavg_metrics['auroc'],
+                fedavg_metrics['confusion_matrix']['tp'],
+                fedavg_metrics['confusion_matrix']['fp'],
+                fedavg_metrics['confusion_matrix']['tn'],
+                fedavg_metrics['confusion_matrix']['fn']
+            ],
+            'fedprox': [
+                fedprox_metrics['accuracy'],
+                fedprox_metrics['precision'],
+                fedprox_metrics['recall'],
+                fedprox_metrics['f1_score'],
+                fedprox_metrics['auroc'],
+                fedprox_metrics['confusion_matrix']['tp'],
+                fedprox_metrics['confusion_matrix']['fp'],
+                fedprox_metrics['confusion_matrix']['tn'],
+                fedprox_metrics['confusion_matrix']['fn']
+            ]
+        }
+        
+        if os.path.exists(centralized_metrics_path):
+            try:
+                with open(centralized_metrics_path, 'r') as f:
+                    cent = json.load(f)
+                comparison['centralized'] = [
+                    cent['accuracy'],
+                    cent['precision'],
+                    cent['recall'],
+                    cent['f1_score'],
+                    cent['auroc'],
+                    cent['confusion_matrix']['tp'],
+                    cent['confusion_matrix']['fp'],
+                    cent['confusion_matrix']['tn'],
+                    cent['confusion_matrix']['fn']
+                ]
+            except Exception:
+                comparison['centralized'] = [None] * 9
+        else:
+            comparison['centralized'] = [None] * 9
+            
+        with open(save_path, 'w') as f:
+            json.dump(comparison, f, indent=4)
+            
+        return comparison

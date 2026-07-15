@@ -63,13 +63,14 @@ class FederatedClient:
             f"Local pos_weight: {pos_weight_value:.4f}"
         )
 
-    def local_train(self, model: nn.Module, global_state_dict: dict) -> tuple:
+    def local_train(self, model: nn.Module, global_state_dict: dict, mu: float = 0.0) -> tuple:
         """
-        Receives global model weights, performs local training, and returns updated weights.
+        Receives global model weights, performs local training (with FedProx if mu > 0), and returns updated weights.
         
         Args:
             model (nn.Module): Local model container.
             global_state_dict (dict): Current global model parameters.
+            mu (float): Proximal constraint coefficient for FedProx.
             
         Returns:
             Tuple[dict, int, float, float]:
@@ -95,7 +96,9 @@ class FederatedClient:
             criterion=self.criterion,
             optimizer=optimizer,
             local_epochs=self.local_epochs,
-            client_id=self.client_id
+            client_id=self.client_id,
+            mu=mu,
+            global_state_dict=global_state_dict
         )
         
         # 4. Evaluate updated model locally on validation set

@@ -33,6 +33,7 @@ federated:
   rounds: 10             # Number of federated communication rounds
   client_fraction: 1.0   # Fraction of registered clients participating per round
   num_clients: 3         # Total number of simulated hospital clients
+  mu: 0.01               # Proximal regularization penalty coefficient for FedProx
 
 # Local training parameters
 local_training:

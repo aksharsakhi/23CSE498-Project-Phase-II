@@ -138,11 +138,11 @@ class FederatedServer:
             
         return val_loss, val_acc, val_auroc
 
-    def run_round(self, round_idx: int, client_fraction: float, criterion: nn.Module) -> tuple:
+    def run_round(self, round_idx: int, client_fraction: float, criterion: nn.Module, mu: float = 0.0) -> tuple:
         """
         Executes a single communication round:
         1. Broadcasts global model to participants.
-        2. Clients perform local epochs training.
+        2. Clients perform local epochs training (with FedProx proximal regularization if mu > 0).
         3. Aggregates results.
         4. Updates the global model parameters.
         """
@@ -170,8 +170,8 @@ class FederatedServer:
                 ]}
             ).to(self.device)
             
-            # Execute local epochs
-            updated_params, num_samples, val_loss, val_acc = client.local_train(local_model, global_state_dict)
+            # Execute local epochs with proximal constraint
+            updated_params, num_samples, val_loss, val_acc = client.local_train(local_model, global_state_dict, mu)
             
             local_updates.append((updated_params, num_samples))
             client_val_losses[client.client_id] = val_loss
@@ -188,15 +188,17 @@ class FederatedServer:
         
         return client_val_losses, client_val_accs
 
-    def fit(self, rounds: int, client_fraction: float, val_loader: DataLoader, criterion: nn.Module) -> dict:
+    def fit(self, rounds: int, client_fraction: float, val_loader: DataLoader, criterion: nn.Module, mu: float = 0.0) -> dict:
         """
         Orchestrates full federated training across multiple rounds.
         """
-        best_model_path = os.path.join(self.checkpoint_dir, "best_global_model.pt")
+        model_filename = "best_fedprox_model.pt" if mu > 0.0 else "best_global_model.pt"
+        best_model_path = os.path.join(self.checkpoint_dir, model_filename)
+        logger.info(f"Best model path configured as: {best_model_path}")
         
         for r in range(rounds):
             # Run local training and aggregation round
-            client_losses, client_accs = self.run_round(r, client_fraction, criterion)
+            client_losses, client_accs = self.run_round(r, client_fraction, criterion, mu)
             
             # Evaluate updated global model on validation partition
             val_loss, val_acc, val_auroc = self.evaluate_global(val_loader, criterion)

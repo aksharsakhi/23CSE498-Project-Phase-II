@@ -22,10 +22,13 @@ class LocalTrainer:
         criterion: nn.Module,
         optimizer: torch.optim.Optimizer,
         local_epochs: int,
-        client_id: int
+        client_id: int,
+        mu: float = 0.0,
+        global_state_dict: dict = None
     ) -> float:
         """
         Trains the local model on the client's train data loader.
+        Supports FedProx proximal regularization.
         
         Returns:
             float: Average local training loss over local epochs.
@@ -45,6 +48,14 @@ class LocalTrainer:
                 optimizer.zero_grad()
                 logits = model(features)
                 loss = criterion(logits, targets)
+                
+                # Add proximal penalty for FedProx
+                if mu > 0.0 and global_state_dict is not None:
+                    proximal_term = 0.0
+                    for name, param in model.named_parameters():
+                        global_param = global_state_dict[name].to(param.device)
+                        proximal_term += torch.sum((param - global_param) ** 2)
+                    loss = loss + (mu / 2.0) * proximal_term
                 
                 loss.backward()
                 optimizer.step()
