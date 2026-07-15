@@ -162,8 +162,10 @@ This centralized baseline will serve as a comparison benchmark for our federated
 \item \textbf{FPDAF Deployment}: We will incorporate temporal self-attention layers, local personalized heads, and online CUSUM monitoring to dynamically detect and adapt to population drifts.
 \end{itemize}
 
-\section{Conclusion}
-This paper establishes the foundation for a Unified Explainable Federated Learning Framework. We preprocessed 40,327 clinical patient records, performed exploratory analyses, and evaluated a centralized baseline LSTM model that yields a solid test AUROC of 0.8058 and a sensitivity of 72.17\%. In subsequent phases, this model will be transitioned to simulated federated setups to optimize decentralized personalization and adapt to concept drifts.
+\section{Conclusion \& Project End Goal}
+This paper establishes the foundation for a Unified Explainable Federated Learning Framework. We preprocessed 40,327 clinical patient records, performed exploratory analyses, and evaluated a centralized baseline LSTM model that yields a solid test AUROC of 0.8058 and a sensitivity of 72.17\%. 
+
+The ultimate end goal of this research project is to develop and validate a production-ready clinical early warning framework (FPDAF) deployable across heterogeneous hospital networks. By maintaining absolute data decentralization (addressing the privacy gap), dynamically personalizing models to adapt to local hospital cohorts (addressing the accuracy gap), detecting concept drift in patient populations in real-time, and rendering deep learning decisions explainable via temporal attention maps and SHAP scores (addressing the clinical trust gap), this framework aims to serve as a reliable, privacy-compliant bedside assistant that reduces sepsis mortality rates in intensive care units.
 
 \begin{thebibliography}{00}
 \bibitem{b1} McMahan, B., Moore, E., Ramage, D., Hampson, S., \& y Arcas, B. A. (2017). Communication-efficient learning of deep networks from decentralized data. AISTATS.
