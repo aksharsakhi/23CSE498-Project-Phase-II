@@ -18,11 +18,22 @@ class InMemorySepsisDataset(Dataset):
     Lightweight PyTorch Dataset wrapper for in-memory patient window tensors
     partitioned across federated clients.
     """
-    def __init__(self, data_dict: dict):
-        self.features = data_dict['features'].float()
-        self.labels = data_dict['labels'].float()
-        self.patient_ids = data_dict['patient_ids']
-        self.hospital_ids = data_dict['hospital_ids']
+    def __init__(self, data_dict: dict, max_samples: int = None):
+        features = data_dict['features'].float()
+        labels = data_dict['labels'].float()
+        patient_ids = data_dict['patient_ids']
+        hospital_ids = data_dict['hospital_ids']
+        
+        if max_samples is not None and features.shape[0] > max_samples:
+            features = features[:max_samples]
+            labels = labels[:max_samples]
+            patient_ids = patient_ids[:max_samples]
+            hospital_ids = hospital_ids[:max_samples]
+            
+        self.features = features
+        self.labels = labels
+        self.patient_ids = patient_ids
+        self.hospital_ids = hospital_ids
         
     def __len__(self) -> int:
         return self.features.shape[0]
@@ -94,9 +105,9 @@ def main():
     # 7. Create and Register Clients
     clients_list = []
     for i in range(config['federated']['num_clients']):
-        client_train = InMemorySepsisDataset(train_splits[i])
-        client_val = InMemorySepsisDataset(val_splits[i])
-        client_test = InMemorySepsisDataset(test_splits[i])
+        client_train = InMemorySepsisDataset(train_splits[i], max_samples=500)
+        client_val = InMemorySepsisDataset(val_splits[i], max_samples=200)
+        client_test = InMemorySepsisDataset(test_splits[i], max_samples=200)
         
         client = FederatedClient(
             client_id=i,
@@ -113,7 +124,7 @@ def main():
         clients_list.append(client)
         
     # 8. Setup Global Combined Validation DataLoader & Loss function
-    val_dataset_full = InMemorySepsisDataset(global_val)
+    val_dataset_full = InMemorySepsisDataset(global_val, max_samples=200)
     val_loader = DataLoader(val_dataset_full, batch_size=config['local_training']['batch_size'], shuffle=False)
     
     # Calculate global validation loss positive weight balance

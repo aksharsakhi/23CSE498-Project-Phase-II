@@ -146,7 +146,7 @@ class FederatedClient:
         if freeze_backbone:
             logger.info(f"  [CSSP Active] Freezing LSTM feature extractor backbone on Client {self.client_id} for head-only personalization.")
             for name, param in model.named_parameters():
-                if "lstm" in name or "attention_query" in name:
+                if "lstm" in name or "attention" in name:
                     param.requires_grad = False
                 else:
                     param.requires_grad = True
