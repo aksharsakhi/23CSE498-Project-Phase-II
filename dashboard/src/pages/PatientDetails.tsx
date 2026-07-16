@@ -1,9 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { 
   Heart, 
   Activity, 
   Thermometer, 
-  Eye, 
   ArrowLeft, 
   ArrowRight,
   Stethoscope
@@ -17,7 +16,9 @@ import {
   Tooltip, 
   ResponsiveContainer 
 } from 'recharts';
-import { Patient, getPatientVitals } from '../services/mockDataService';
+import { useEffect } from 'react';
+import { fetchPatientVitals } from '../services/mockDataService';
+import type { Patient, VitalSignRecord } from '../services/mockDataService';
 
 interface PatientDetailsProps {
   patient: Patient;
@@ -25,8 +26,25 @@ interface PatientDetailsProps {
 }
 
 export const PatientDetails: React.FC<PatientDetailsProps> = ({ patient, setActiveTab }) => {
-  const vitals = getPatientVitals(patient.id);
+  const [vitals, setVitals] = useState<VitalSignRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeMetric, setActiveMetric] = useState<'all' | 'hr' | 'bp' | 'spo2'>('all');
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchPatientVitals(patient.id).then((data) => {
+      setVitals(data);
+      setIsLoading(false);
+    });
+  }, [patient.id]);
+
+  if (isLoading || vitals.length === 0) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="p-8 space-y-6 overflow-y-auto max-h-[calc(100vh-4rem)]">
