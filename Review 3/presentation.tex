@@ -100,39 +100,45 @@
 
 % --- PROPOSED FRAMEWORK: FPDAF WHAT/HOW/NOVELTY (3) ---
 \begin{frame}{Proposed Framework: FPDAF}
-    \begin{columns}[t]
-        \begin{column}{0.32\textwidth}
-            \begin{block}{WHAT is FPDAF?}
-                \scriptsize
-                \textbf{Federated Personalized Drift-Aware Attention Framework:}
-                \begin{itemize}
-                    \item A privacy-preserving Clinical Decision Support System (CDSS) for Sepsis early warning.
-                    \item Collaborative training across hospital ICU nodes without centralizing raw records (HIPAA/DPDPA compliant).
-                \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.34\textwidth}
-            \begin{block}{HOW does it work?}
+    \begin{block}{WHAT is FPDAF?}
+        \scriptsize
+        A privacy-preserving Clinical Decision Support System (CDSS) for Sepsis early warning. Enables collaborative, HIPAA-compliant training across decentralized hospital ICU nodes without centralizing raw records.
+    \end{block}
+    
+    \begin{block}{HOW does it work?}
+        \begin{columns}[t]
+            \begin{column}{0.48\textwidth}
                 \scriptsize
                 \begin{itemize}
                     \item \textbf{Sequence Modeling:} Extracts temporal clinical features using a shared Bidirectional LSTM.
                     \item \textbf{Ditto Personalization:} Fine-tunes localized classifier heads ($v_k$) to fit hospital demographics.
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.48\textwidth}
+                \scriptsize
+                \begin{itemize}
                     \item \textbf{Online CUSUM Trigger:} Audits prediction loss residuals locally to detect population drift.
                 \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.32\textwidth}
-            \begin{alertblock}{OUR NOVELTY}
+            \end{column}
+        \end{columns}
+    \end{block}
+    
+    \begin{alertblock}{OUR NOVELTY}
+        \begin{columns}[t]
+            \begin{column}{0.48\textwidth}
                 \scriptsize
                 \begin{itemize}
                     \item \textbf{Multi-Head Attention:} Integrates 4-head query-key self-attention to output explainable bedside timelines.
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.48\textwidth}
+                \scriptsize
+                \begin{itemize}
                     \item \textbf{CSSP Protocol:} Freezes backbones dynamically upon drift triggers, saving \textbf{38\% network bandwidth} and cutting node adaptation to \textbf{6 minutes}.
                 \end{itemize}
-            \end{alertblock}
-        \end{column}
-    \end{columns}
+            \end{column}
+        \end{columns}
+    \end{alertblock}
 \end{frame}
 
 % --- SYSTEM DESIGN & SPLIT WEIGHT FORMULAS (4) ---
