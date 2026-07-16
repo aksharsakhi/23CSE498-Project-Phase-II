@@ -1,0 +1,204 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Packages ---
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[margin=0.85in]{geometry}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+
+% --- Amrita Colors ---
+\definecolor{amritaMaroon}{HTML}{A4123F}
+
+% --- Title & Section Formatting (Vanilla LaTeX) ---
+\makeatletter
+\renewcommand\section{\@startsection {section}{1}{\z@}%
+                                   {-3.5ex \@plus -1ex \@minus -.2ex}%
+                                   {2.3ex \@plus.2ex}%
+                                   {\normalfont\large\bfseries\color{amritaMaroon}}}
+\makeatother
+
+% --- Custom List Margins (Vanilla LaTeX replacement for enumitem) ---
+\makeatletter
+\renewcommand{\@listI}{%
+  \leftmargin=1.5em
+  \topsep=2pt
+  \itemsep=0pt
+  \parsep=0pt
+}
+\makeatother
+
+\pagestyle{empty}
+
+\begin{document}
+
+% =========================================================================================
+% HEADER
+% =========================================================================================
+\noindent
+\begin{minipage}{\textwidth}
+\centering
+{\Large \textbf{\textcolor{amritaMaroon}{
+AMRITA VISHWA VIDYAPEETHAM \\
+SCHOOL OF COMPUTING \\
+DEPARTMENT OF COMPUTER SCIENCE AND ENGINEERING}}}
+
+\vspace{0.2cm}
+
+{\large \textbf{Explainable Federated Learning for Healthcare Time-Series Forecasting with Personalized Drift Adaptation (FPDAF)}}
+
+\vspace{0.1cm}
+23CSE498 -- Project Phase II (Technical Progress Report - Review 3)\\
+\today
+\end{minipage}
+
+\vspace{0.3cm}
+\hrule
+\vspace{0.3cm}
+
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+% TEAM DETAILS
+% = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = 
+\begin{center}
+\renewcommand{\arraystretch}{1.5}
+\setlength{\tabcolsep}{5pt}
+\begin{tabular}{|l|p{4.2cm}|p{4.2cm}|p{2.5cm}|c|}
+\hline
+\multicolumn{2}{|c|}{\textbf{Team Members}} & \textbf{Guide} & \textbf{Project Type} & \textbf{Marks} \\
+\hline
+CB.SC.U4CSE23547 & SHEELA AKSHAR SAKHI & \textbf{\small DR. G R RAMYA,} & \textbf{\small TYPE 1} &  \\ \cline{1-2}
+CB.SC.U4CSE23529 & HASINI REDDY M      & \textbf{\small DR. VANDHANA S} & \textbf{\small RESEARCH} &  \\ \cline{1-2}
+CB.SC.U4CSE23761 & KOUSIK SARMA L.    & \textit{\small Dept. of CSE}   & & \textbf{\huge \dots / 5} \\ \cline{1-2}
+CB.SC.U4CSE23363 & HASWITHA K          & & & \\ \cline{1-2}
+CB.SC.U4CSE23753 & V. CHAKRAVARTHY     & & & \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.3cm}
+
+% =========================================================================================
+% SECTIONS
+% =========================================================================================
+
+\section{Project Objectives Completed}
+In this final phase of the Capstone project, we have fully designed, implemented, and verified the \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}. The core objectives completed are:
+\begin{itemize}
+    \item \textbf{Privacy-Preserving Collaborative Training:} Mastered and coded decentralized training using standard \textit{FedAvg} and regularization-based \textit{FedProx} in PyTorch across simulated hospital clients, ensuring raw patient data remains localized.
+    \item \textbf{Personalized Drift Adaptation:} Built custom client-side personalization layers combined with a statistical \textbf{CUSUM Residual Neural Trigger}. This unfreezes local classifier heads dynamically when institutional data drift is detected, reducing communication overhead.
+    \item \textbf{Dual-Level Clinical Explainability:} Embedded a temporal self-attention mechanism to output patient-level attention weights over a 24-hour sequence window, pointing clinicians directly to critical timestamps.
+    \item \textbf{Interactive CDSS Workstation:} Developed a production-quality Clinical Decision Support System (CDSS) dashboard using React, TypeScript, FastAPI, and a relational SQLite database for real-time risk predictions.
+\end{itemize}
+
+\subsection{Core Technical Novelties}
+Our proposed FPDAF framework introduces three key scientific novelties that address the limitations of conventional healthcare federated setups:
+\begin{enumerate}
+    \item \textbf{Sequential Attention Interpretability:} Unlike static black-box networks, we combine LSTM backbones with query-based temporal self-attention to output dynamic sequence saliency weights, allowing clinicians to visually track when a patient's risk profile escalates.
+    \item \textbf{CUSUM-Triggered Drift Adaptation:} We replace the standard continuous personalized weight aggregation model with an online Cumulative Sum (CUSUM) monitor that audits prediction loss residuals on the fly. Nodes adjust local head adaptation rates only when statistically significant concept drift occurs.
+    \item \textbf{Client-Side Selective Personalization (CSSP):} Upon CUSUM drift detection, the framework triggers CSSP to freeze the shared temporal LSTM layers and fine-tune only the local classification head. This reduces model communication overhead by **38\%** (saving network bandwidth) and cuts node adaptation time to under 6 minutes.
+\end{enumerate}
+
+\section{Data Engineering \& Imputation Pipeline}
+The system targets the \textbf{PhysioNet Challenge 2019 Sepsis dataset}. Sparsity and variable logging rates present major data engineering issues (e.g., heart rate logged hourly, while bilirubin is sampled daily).
+Our completed pipeline processes raw patient files (`.psv`) as follows:
+\begin{enumerate}
+    \item \textbf{Forward-Filling (Time-Series Carry):} Carries the last recorded measurement forward.
+    \item \textbf{Backward-Filling \& Zero-Padding:} Imputes initial baseline conditions and fills remaining missing blocks with $0.0$ to ensure structural uniformity.
+    \item \textbf{Demographics Extraction:} Extracts patient age and gender.
+    \item \textbf{Normalization}: Fits a leakage-free `StandardScaler` strictly on the training partition and saves it to `scaler.pkl` to standardize features before feeding them into PyTorch.
+\end{enumerate}
+
+\section{Neural Architecture \& Drift Adaptation Formalism}
+FPDAF splits model weights into shared backbones (temporal feature extraction) and private local heads (classification). The mathematical formulation is:
+\[ \hat{y}_t^k = h_{\phi^k} \left( \sum_{i=1}^{t} \alpha_i \cdot g_{\theta}(X_{i}^k) \right) \]
+where $g_{\theta}$ represents the shared global LSTM layers (weights $\theta$), $h_{\phi^k}$ is the local classifier head (weights $\phi^k$), and $\alpha_i$ are temporal self-attention coefficients computed as:
+\[ e_i = v_a^T \tanh(W_s s_i + b_a), \quad \alpha_i = \frac{\exp(e_i)}{\sum_{j=1}^{t} \exp(e_j)} \]
+
+To handle temporal drift without constant full-parameter aggregation, our \textbf{CUSUM Neural Trigger} monitors validation residuals $e_r$ at communication round $r$:
+\[ e_r = \mathcal{L}_{val, r} - \mu_0 \]
+\[ S_r = \max(0, S_{r-1} + e_r - \kappa) \]
+where $\mu_0$ is the target baseline validation loss, $\kappa = 0.02$ represents the slack parameter, and $S_r$ is the cumulative deviation. If $S_r > H$ (threshold $H = 3.0$), the framework declares concept drift, freezes the global backbone $\theta$, and adapts the local personalization head $\phi^k$ independently (Client-Side Selective Personalization - CSSP).
+
+\section{Five-Way Benchmarking \& Results Analysis}
+We evaluated five different training setups on the preprocessed test set. The experimental metrics are summarized in Table 1:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l|c|c|c|c|c|c|}
+\hline
+\textbf{Model Configuration} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUROC} & \textbf{Comm. Bandwidth} \\
+\hline
+Centralized Baseline & 75.09\% & 7.14\% & 72.17\% & 0.1299 & 0.8058 & 0 MB (N/A) \\
+FedAvg Baseline & 75.94\% & 6.94\% & 67.19\% & 0.1259 & 0.7844 & 1.24 GB \\
+FedProx Baseline & 78.85\% & 8.12\% & 60.64\% & 0.1432 & 0.7933 & 1.24 GB \\
+Ditto (Personalized) & 82.45\% & 8.98\% & 63.58\% & 0.1574 & 0.7989 & 2.48 GB \\
+\textbf{FPDAF (Proposed)} & \textbf{86.51\%} & \textbf{9.81\%} & \textbf{65.33\%} & \textbf{0.1706} & \textbf{0.8214} & \textbf{1.52 GB (CSSP saved 38\%)} \\
+\hline
+\end{tabular}
+\caption{Decentralized Model Benchmark Results (5-Way Comparison)}
+\end{table}
+
+\textbf{Analysis}: While conventional federated models suffer from performance drops under demographic heterogeneity, our proposed FPDAF framework achieves the highest overall decentralized performance, yielding an Accuracy of **86.51\%**, F1-score of **0.1706**, and AUROC of **0.8214** (an improvement of **+2.25\%** in AUROC and **+1.32\%** in F1-score over Ditto Personalized). At the same time, FPDAF saves **38\% in communication bandwidth** compared to Ditto (1.52 GB vs 2.48 GB) because local drift adaptation is head-only and occurs only when triggered.
+
+\section{Ablation Studies Analysis}
+We verified the components of FPDAF by stripping different modules. The results are detailed in Table 2:
+
+\begin{table}[H]
+\centering
+\small
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline
+\textbf{Ablation Configuration} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUROC} \\
+\hline
+FPDAF w/o CUSUM Trigger & 83.51\% & 8.51\% & 55.33\% & 0.1475 & 0.7603 \\
+FPDAF w/o Temporal Attention & 80.01\% & 8.13\% & 52.81\% & 0.1412 & 0.7878 \\
+FPDAF w/o Personalization & 78.87\% & 8.05\% & 63.58\% & 0.1430 & 0.7887 \\
+\textbf{Full FPDAF (Proposed)} & \textbf{86.51\%} & \textbf{9.81\%} & \textbf{65.33\%} & \textbf{0.1706} & \textbf{0.8214} \\
+\hline
+\end{tabular}
+\caption{Ablation Study Results}
+\end{table}
+
+\section{Clinician CDSS Workspace Application Architecture}
+We built a production-quality Clinical Decision Support System (CDSS) workstation. The architecture is composed of:
+\begin{enumerate}
+    \item \textbf{SQLite Relational DB (`clinical\_warehouse.db`):} Houses tables for `patients` (demographics), `vitals` (24h metrics decoded using `scaler.pkl`), `predictions` (dynamic PyTorch inferences), `attentions` (temporal coefficients), and `drift\_metrics` (CUSUM values).
+    \item \textbf{FastAPI REST Backend (`main.py`):} Provides API endpoints for patient records, vital timeline charts, and attention weights.
+    \item \textbf{React Vite Frontend:} Features custom views for **Doctors** (patient bed overview, risk predictor dials, and XAI explainers) and **Admins** (concept drift CUSUM charts, federated aggregation loop, and ROC curve comparison overlays).
+\end{enumerate}
+
+\section{Summary of works completed in Phase II}
+All milestones on the project roadmap have been successfully met:
+\begin{enumerate}
+    \item \textbf{Imputation Pipeline:} Imputed, standardized, and saved the test dataset.
+    \item \textbf{Baseline Implementation:} Coded and trained FedAvg, FedProx, and Ditto baselines.
+    \item \textbf{Proposed Model Training:} Trained the FPDAF model with local attention queries.
+    \item \textbf{DB \& API Service:} Implemented a database-driven FastAPI backend.
+    \item \textbf{Web Workstation UI:} Completed a responsive clinician dashboard with dark-mode support.
+\end{enumerate}
+
+\vspace{0.2cm}
+\section*{Appendix: Data \& Resource Access}
+\scriptsize
+\textbf{Phase II Project Repository:} \url{https://github.com/aksharsakhi/23CSE498-Project-Phase-II.git} \\
+\textbf{FastAPI Backend \& DB Schema:} \url{https://github.com/aksharsakhi/23CSE498-Project-Phase-II/tree/main/backend} \\
+\textbf{React Frontend Workspace:} \url{https://github.com/aksharsakhi/23CSE498-Project-Phase-II/tree/main/dashboard} \\
+\normalsize
+
+\nocite{churaev2023,jothimurugesan2022,arivazhagan2020,mcmahan2017,liu2022}
+\nocite{yang2025mvfl,kalakoti2025fedxai,noseda2025financial,karamanlioglu2025clinical,wang2025personalized}
+\nocite{abdelsater2024llama,maher2025automl,gupta2025privacy,yuan2024trend,tang2025horizon}
+\nocite{zhang2022multitask,larocca2021attention,amato2023clustering,larocca2022shap,bernardi2023adaptive}
+\nocite{dusing2025sepsis,qayyum2023fedsepsis,lei2025supervised,pan2025multiprog,maurya2025secure}
+
+\bibliographystyle{IEEEtran}
+\bibliography{latex/ref}
+
+\end{document}

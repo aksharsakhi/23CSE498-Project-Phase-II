@@ -1,0 +1,9 @@
+/* Clinical CDSS layouts */
+#root {
+  width: 100vw;
+  max-width: 100%;
+  margin: 0;
+  text-align: left;
+  border: none;
+  min-height: 100vh;
+}
