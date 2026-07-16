@@ -106,3 +106,15 @@ We have successfully compiled and committed the academic deliverables for the Fi
 
 All files compile cleanly with zero package warnings, using the local system MacTeX engine (`/Library/TeX/texbin/pdflatex`).
 
+---
+
+## 🧠 7. Model Architecture Upgrade & Training Verification
+
+We have upgraded the proposed model architecture to incorporate advanced sequence learning techniques:
+1. **Bidirectional LSTM Backbone**: Replaced the unidirectional LSTM feature extractor with a bidirectional LSTM layers (`bidirectional=True`). The hidden states output processes time steps from both past-to-future and future-to-past, doubling the temporal feature representation capacity to `hidden_dim * 2`.
+2. **Multi-Head Temporal Self-Attention (MHA)**: Replaced the single-head linear query attention with a custom 4-head self-attention module (`MultiHeadTemporalAttention`). It maps outputs across key/query projections, averages attention scores, and returns a high-fidelity context vector alongside a consolidated average temporal weights map.
+3. **Optimized Classifier & Personalization Freezing**: The classification head is configured to map from `hidden_dim * 2` through intermediate linear projections. During concept drift episodes on client nodes, the Client-Side Selective Personalization (CSSP) protocol freezes both the LSTM and MHA backbone, adapting only the classifier head parameters locally.
+4. **Execution & Sync Verification**:
+   - The training script (`train_fpdaf.py`) was successfully executed, demonstrating correct training loops, loss evaluations, CUSUM drift detection thresholds, and checkpoint outputs.
+   - Sepsis prediction database targets were synchronized using `backend/init_db.py`, ensuring all bedside diagnostic alerts and attention weights query from the newly upgraded model weights.
+
