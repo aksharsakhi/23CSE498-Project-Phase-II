@@ -304,6 +304,35 @@
     \end{columns}
 \end{frame}
 
+% --- CLINICAL DASHBOARD INTERFACE (8) ---
+\begin{frame}{Interactive Clinician Dashboard UI}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Doctor's Bedside Diagnostic View}
+                \scriptsize
+                Provides live diagnostics and explanations directly at the patient's bedside:
+                \begin{itemize}
+                    \item \textbf{Timeline Telemetry:} Plots hourly ICU vital segments (HR, SBP, Temp, Resp, SpO$_2$) using Recharts.
+                    \item \textbf{Live Predictions Dials:} Computes and overlays risk probability scores for all federated configurations.
+                    \item \textbf{Attention Saliency Maps:} Attributes predictions to specific stay intervals (e.g. onset hours 16--22).
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Admin's Federated Telemetry View}
+                \scriptsize
+                Provides real-time machine learning monitoring:
+                \begin{itemize}
+                    \item \textbf{Drift Controls:} Plots CUSUM curves, tracking drift accumulation limits ($S_r > 3.0$) and CSSP backbone freezes.
+                    \item \textbf{Round Tracker:} Animates client-server parameter upload/download loops using Framer Motion.
+                    \item \textbf{Design System:} Tailwind CSS v4 class-based toggling supporting light/dark medical navy modes.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
 % --- SUMMARY & ROADMAP COMPLIANCE (8) ---
 \begin{frame}{Summary of Completed Phase II Works}
     \begin{itemize}
