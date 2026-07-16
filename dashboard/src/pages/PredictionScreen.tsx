@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldAlert, Award, Activity, Heart, ArrowRight, ShieldCheck } from 'lucide-react';
-import { Patient } from '../services/mockDataService';
+import { ShieldAlert, Activity, Heart, ArrowRight, ShieldCheck } from 'lucide-react';
+import type { Patient } from '../services/mockDataService';
 
 interface PredictionScreenProps {
   patient: Patient;

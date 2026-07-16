@@ -57,212 +57,137 @@ export interface ModelMetrics {
   color: string;
 }
 
-// Generate realistic mock ICU patients
-export const mockPatients: Patient[] = [
+const API_BASE_URL = "http://localhost:8000/api";
+
+// Fallback mock data in case backend is offline
+const fallbackPatients: Patient[] = [
   {
-    id: "PAT-2091",
+    id: "PAT-1000",
     age: 68,
     gender: "Male",
-    hospital: "Hospital A (Age < 60 Split)",
+    hospital: "Hospital A (Age < 60)",
     ward: "ICU Bed 12",
-    admittedAt: "2026-07-15 14:30",
+    admittedAt: "2026-07-15 12:00",
     status: "Critical",
     riskLevel: "High",
     scores: { centralized: 0.76, fedavg: 0.70, fedprox: 0.79, ditto: 0.84, fpdaf: 0.88 },
-    confidence: 94
+    confidence: 88
   },
   {
-    id: "PAT-4082",
+    id: "PAT-1001",
     age: 42,
     gender: "Female",
-    hospital: "Hospital B (Age >= 60 Split)",
+    hospital: "Hospital B (Age >= 60)",
     ward: "ICU Bed 04",
-    admittedAt: "2026-07-16 01:15",
+    admittedAt: "2026-07-15 12:00",
     status: "Stable",
     riskLevel: "Low",
     scores: { centralized: 0.12, fedavg: 0.15, fedprox: 0.10, ditto: 0.08, fpdaf: 0.05 },
-    confidence: 98
-  },
-  {
-    id: "PAT-1109",
-    age: 72,
-    gender: "Female",
-    hospital: "Hospital C (General Clinic)",
-    ward: "ICU Bed 08",
-    admittedAt: "2026-07-15 22:00",
-    status: "Critical",
-    riskLevel: "High",
-    scores: { centralized: 0.81, fedavg: 0.74, fedprox: 0.80, ditto: 0.85, fpdaf: 0.91 },
-    confidence: 96
-  },
-  {
-    id: "PAT-8821",
-    age: 55,
-    gender: "Male",
-    hospital: "Hospital A (Age < 60 Split)",
-    ward: "ICU Bed 19",
-    admittedAt: "2026-07-16 03:40",
-    status: "Stable",
-    riskLevel: "Medium",
-    scores: { centralized: 0.45, fedavg: 0.38, fedprox: 0.42, ditto: 0.51, fpdaf: 0.54 },
-    confidence: 89
-  },
-  {
-    id: "PAT-3345",
-    age: 63,
-    gender: "Male",
-    hospital: "Hospital B (Age >= 60 Split)",
-    ward: "ICU Bed 11",
-    admittedAt: "2026-07-15 11:20",
-    status: "Stable",
-    riskLevel: "Low",
-    scores: { centralized: 0.18, fedavg: 0.22, fedprox: 0.16, ditto: 0.14, fpdaf: 0.11 },
-    confidence: 97
-  },
-  {
-    id: "PAT-9912",
-    age: 79,
-    gender: "Female",
-    hospital: "Hospital C (General Clinic)",
-    ward: "ICU Bed 15",
-    admittedAt: "2026-07-15 08:00",
-    status: "Critical",
-    riskLevel: "High",
-    scores: { centralized: 0.85, fedavg: 0.77, fedprox: 0.83, ditto: 0.89, fpdaf: 0.94 },
     confidence: 95
   }
 ];
 
-// Generate 24h vitals log with deteriorating vital signs for sepsis patients
-export const getPatientVitals = (patientId: string): VitalSignRecord[] => {
-  const isHighRisk = patientId === "PAT-2091" || patientId === "PAT-1109" || patientId === "PAT-9912";
-  
-  const records: VitalSignRecord[] = [];
-  for (let h = 1; h <= 24; h++) {
-    let hr = 75 + Math.sin(h / 3) * 5 + Math.random() * 3;
-    let sbp = 120 + Math.cos(h / 4) * 8 + Math.random() * 4;
-    let temp = 37.0 + Math.sin(h / 6) * 0.3 + Math.random() * 0.1;
-    let resp = 16 + Math.sin(h / 3) * 2 + Math.random() * 1;
-    let spo2 = 98 - Math.random() * 1;
-    
-    // Simulate septic shock progression in late hours (hours 15-24)
-    if (isHighRisk && h > 15) {
-      const severity = (h - 15) / 9; // scales 0 to 1
-      hr += severity * 35; // Tachycardia (Heart Rate > 110)
-      sbp -= severity * 35; // Hypotension (Blood Pressure drops < 90)
-      temp += severity * 2.1; // High fever (Temp > 39.1)
-      resp += severity * 10; // Tachypnea (Respiration > 26)
-      spo2 -= severity * 6; // Hypoxia (Oxygen saturation drops < 92%)
-    }
-    
-    records.push({
-      hour: h,
-      heartRate: Math.round(hr),
-      bloodPressure: Math.round(sbp),
-      temperature: parseFloat(temp.toFixed(1)),
-      respiration: Math.round(resp),
-      spo2: Math.round(spo2)
-    });
+const fallbackVitals: VitalSignRecord[] = Array.from({ length: 24 }, (_, i) => ({
+  hour: i + 1,
+  heartRate: 80 + Math.floor(Math.sin(i / 2) * 10),
+  bloodPressure: 120 + Math.floor(Math.cos(i / 3) * 12),
+  temperature: 37.0 + parseFloat((Math.sin(i / 4) * 0.5).toFixed(1)),
+  respiration: 18 + Math.floor(Math.sin(i / 2) * 2),
+  spo2: 97 - Math.floor(Math.random() * 2)
+}));
+
+const fallbackAttention: AttentionData[] = Array.from({ length: 24 }, (_, i) => ({
+  hour: i + 1,
+  attentionScore: 0.02 + Math.random() * 0.01 + (i >= 16 && i <= 22 ? 0.08 : 0)
+}));
+
+// Real-time API service integrations
+export const fetchPatients = async (): Promise<Patient[]> => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/patients`);
+    if (!res.ok) throw new Error("Backend response error");
+    return await res.json();
+  } catch (err) {
+    console.warn("FastAPI backend offline, serving fallback clinical patient cohort:", err);
+    return fallbackPatients;
   }
-  return records;
 };
 
-// Generate temporal attention profile matching our FPDAF model outputs
-export const getAttentionTimeline = (patientId: string): AttentionData[] => {
-  const isHighRisk = patientId === "PAT-2091" || patientId === "PAT-1109" || patientId === "PAT-9912";
-  const data: AttentionData[] = [];
-  for (let h = 1; h <= 24; h++) {
-    let score = 0.02 + Math.random() * 0.01;
-    if (isHighRisk && h >= 16 && h <= 22) {
-      score += 0.08 + Math.sin((h - 16) / 2) * 0.04 + Math.random() * 0.02;
-    }
-    data.push({ hour: h, attentionScore: parseFloat(score.toFixed(4)) });
+export const fetchPatientVitals = async (patientId: string): Promise<VitalSignRecord[]> => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/patients/${patientId}/vitals`);
+    if (!res.ok) throw new Error("Backend response error");
+    return await res.json();
+  } catch (err) {
+    console.warn(`FastAPI backend offline, serving fallback vitals for ${patientId}:`, err);
+    return fallbackVitals;
   }
-  return data;
 };
 
-// Feature importance attribution matrix
+export const fetchPatientAttention = async (patientId: string): Promise<AttentionData[]> => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/patients/${patientId}/attention`);
+    if (!res.ok) throw new Error("Backend response error");
+    return await res.json();
+  } catch (err) {
+    console.warn(`FastAPI backend offline, serving fallback attention timeline for ${patientId}:`, err);
+    return fallbackAttention;
+  }
+};
+
+export const fetchDriftData = async (): Promise<DriftRecord[]> => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/drift`);
+    if (!res.ok) throw new Error("Backend response error");
+    return await res.json();
+  } catch (err) {
+    console.warn("FastAPI backend offline, serving fallback CUSUM drift scores:", err);
+    return [
+      { round: 1, client0: 0.75, client1: 0.80, client2: 0.77 },
+      { round: 2, client0: 1.51, client1: 1.53, client2: 1.51 },
+      { round: 3, client0: 2.26, client1: 2.43, client2: 2.44 },
+      { round: 4, client0: 3.19, client1: 3.54, client2: 3.51 }
+    ];
+  }
+};
+
+export const fetchModelComparison = async (): Promise<ModelMetrics[]> => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/comparison`);
+    if (!res.ok) throw new Error("Backend response error");
+    return await res.json();
+  } catch (err) {
+    console.warn("FastAPI backend offline, serving fallback comparative metrics:", err);
+    return [
+      { name: "Centralized Baseline", accuracy: 75.09, precision: 7.14, recall: 72.17, f1: 0.1300, auroc: 0.8058, commCost: "0 MB", trainTime: "1h 45m", driftAdaptTime: "N/A", color: "#64748b" },
+      { name: "FedAvg", accuracy: 75.94, precision: 6.94, recall: 67.19, f1: 0.1259, auroc: 0.7844, commCost: "1.24 GB", trainTime: "2h 10m", driftAdaptTime: "N/A", color: "#e67e22" },
+      { name: "FedProx", accuracy: 83.85, precision: 9.36, recall: 60.64, f1: 0.1622, auroc: 0.8033, commCost: "1.24 GB", trainTime: "2h 35m", driftAdaptTime: "N/A", color: "#3498db" },
+      { name: "Ditto (Personalized)", accuracy: 82.45, precision: 8.98, recall: 63.58, f1: 0.1574, auroc: 0.7989, commCost: "2.48 GB", trainTime: "4h 20m", driftAdaptTime: "25m", color: "#2ecc71" },
+      { name: "FPDAF (Proposed)", accuracy: 83.51, precision: 8.51, recall: 55.33, f1: 0.1475, auroc: 0.7603, commCost: "1.52 GB", trainTime: "3h 05m", driftAdaptTime: "6m", color: "#e74c3c" }
+    ];
+  }
+};
+
+export const fetchAblationData = async (): Promise<any> => {
+  try {
+    const res = await fetch(`${API_BASE_URL}/ablation`);
+    if (!res.ok) throw new Error("Backend response error");
+    return await res.json();
+  } catch (err) {
+    console.warn("FastAPI backend offline, serving fallback ablation stats:", err);
+    return {
+      "fpdaf_no_cusum": { accuracy: 79.59, precision: 7.74, recall: 63.35, f1_score: 0.1380, auroc: 0.7827 },
+      "fpdaf_no_attention": { accuracy: 86.01, precision: 9.63, recall: 52.81, f1_score: 0.1629, auroc: 0.7878 },
+      "fpdaf_no_personalization": { accuracy: 79.89, precision: 8.05, recall: 65.27, f1_score: 0.1433, auroc: 0.7887 },
+      "full_fpdaf": { accuracy: 83.51, precision: 8.51, recall: 55.33, f1_score: 0.1475, auroc: 0.7603 }
+    };
+  }
+};
+
+// Feature importance attribution matrix (static visual mapping)
 export const getFeatureImportance = (): FeatureImportance[] => [
   { name: "Heart Rate (HR)", importance: 35, color: "#ef4444" },
   { name: "Systolic Blood Pressure (SBP)", importance: 28, color: "#f97316" },
   { name: "Oxygen Saturation (SpO₂)", importance: 22, color: "#3b82f6" },
   { name: "Body Temperature (Temp)", importance: 15, color: "#10b981" }
-];
-
-// Running CUSUM log rounds from FPDAF train log outputs
-export const mockCusumData: DriftRecord[] = [
-  { round: 1, client0: 0.75, client1: 0.82, client2: 0.79 },
-  { round: 2, client0: 1.51, client1: 1.64, client2: 1.58 },
-  { round: 3, client0: 2.26, client1: 2.45, client2: 2.37 },
-  { round: 4, client0: 3.19, client1: 3.54, client2: 3.51 }, // DRIFT TRIGGER! Reset CUSUM
-  { round: 5, client0: 0.81, client1: 0.90, client2: 0.85 }, // Selective adaptation running
-  { round: 6, client0: 1.58, client1: 1.88, client2: 1.95 },
-  { round: 7, client0: 3.25, client1: 3.83, client2: 3.95 }, // DRIFT TRIGGER! Reset CUSUM
-  { round: 8, client0: 0.85, client1: 0.92, client2: 0.88 },
-  { round: 9, client0: 1.55, client1: 1.76, client2: 3.46 }, // Client 2 drift trigger
-  { round: 10, client0: 4.09, client1: 4.55, client2: 0.90 } // Client 0,1 drift triggers
-];
-
-// 5-way model comparison metrics from evaluate reports
-export const modelComparisonMetrics: ModelMetrics[] = [
-  {
-    name: "Centralized Baseline",
-    accuracy: 75.09,
-    precision: 7.14,
-    recall: 72.17,
-    f1: 0.1300,
-    auroc: 0.8058,
-    commCost: "0 MB (N/A)",
-    trainTime: "1h 45m",
-    driftAdaptTime: "N/A",
-    color: "#64748b"
-  },
-  {
-    name: "FedAvg",
-    accuracy: 75.94,
-    precision: 6.94,
-    recall: 67.19,
-    f1: 0.1259,
-    auroc: 0.7844,
-    commCost: "1.24 GB",
-    trainTime: "2h 10m",
-    driftAdaptTime: "N/A",
-    color: "#e67e22"
-  },
-  {
-    name: "FedProx",
-    accuracy: 83.85,
-    precision: 9.36,
-    recall: 60.64,
-    f1: 0.1622,
-    auroc: 0.8033,
-    commCost: "1.24 GB",
-    trainTime: "2h 35m",
-    driftAdaptTime: "N/A",
-    color: "#3498db"
-  },
-  {
-    name: "Ditto (Personalized)",
-    accuracy: 82.45,
-    precision: 8.98,
-    recall: 63.58,
-    f1: 0.1574,
-    auroc: 0.7989,
-    commCost: "2.48 GB",
-    trainTime: "4h 20m",
-    driftAdaptTime: "25m",
-    color: "#2ecc71"
-  },
-  {
-    name: "FPDAF (Proposed Framework)",
-    accuracy: 83.51,
-    precision: 8.51,
-    recall: 55.33,
-    f1: 0.1475,
-    auroc: 0.7603,
-    commCost: "1.52 GB (CSSP Saved 38%)",
-    trainTime: "3h 05m (CSSP Speedup)",
-    driftAdaptTime: "6m (Head-Only)",
-    color: "#e74c3c"
-  }
 ];

@@ -11,14 +11,26 @@ import { DriftMonitor } from './pages/DriftMonitor';
 import { FLMonitor } from './pages/FLMonitor';
 import { ModelComparison } from './pages/ModelComparison';
 import { ResearchInsights } from './pages/ResearchInsights';
-import { mockPatients, Patient } from './services/mockDataService';
+import { fetchPatients } from './services/mockDataService';
+import type { Patient } from './services/mockDataService';
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<{ role: 'Doctor' | 'Admin'; name: string } | null>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [selectedPatient, setSelectedPatient] = useState<Patient>(mockPatients[0]);
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+
+  // Load patients from API
+  useEffect(() => {
+    fetchPatients().then((data) => {
+      setPatients(data);
+      if (data.length > 0) {
+        setSelectedPatient(data[0]);
+      }
+    });
+  }, []);
 
   // Dark Mode side effects
   useEffect(() => {
@@ -68,6 +80,7 @@ function App() {
           
           {activeTab === 'patients' && (
             <PatientList 
+              patients={patients}
               onSelectPatient={setSelectedPatient} 
               setActiveTab={(tab) => {
                 // If user clicks predict, redirect properly
@@ -80,21 +93,21 @@ function App() {
             />
           )}
 
-          {activeTab === 'patient-details' && (
+          {activeTab === 'patient-details' && selectedPatient && (
             <PatientDetails 
               patient={selectedPatient} 
               setActiveTab={setActiveTab} 
             />
           )}
 
-          {activeTab === 'prediction' && (
+          {activeTab === 'prediction' && selectedPatient && (
             <PredictionScreen 
               patient={selectedPatient} 
               setActiveTab={setActiveTab} 
             />
           )}
 
-          {activeTab === 'xai' && (
+          {activeTab === 'xai' && selectedPatient && (
             <ExplainableAI 
               patient={selectedPatient} 
             />

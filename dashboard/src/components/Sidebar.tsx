@@ -8,7 +8,6 @@ import {
   Network, 
   BarChart3, 
   FileText, 
-  Settings, 
   LogOut 
 } from 'lucide-react';
 
