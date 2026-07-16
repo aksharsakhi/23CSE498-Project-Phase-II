@@ -10,13 +10,33 @@ import {
   Legend,
   ReferenceLine
 } from 'recharts';
-import { ShieldAlert, Award, LineChart as ChartIcon, Zap, ShieldCheck } from 'lucide-react';
-import { mockCusumData } from '../services/mockDataService';
+import { useState, useEffect } from 'react';
+import { ShieldAlert, LineChart as ChartIcon, Zap, ShieldCheck } from 'lucide-react';
+import { fetchDriftData } from '../services/mockDataService';
+import type { DriftRecord } from '../services/mockDataService';
 
 export const DriftMonitor: React.FC = () => {
-  // Current values at Round 10
-  const latestCusum = mockCusumData[mockCusumData.length - 1];
+  const [cusumData, setCusumData] = useState<DriftRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const threshold = 3.0;
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchDriftData().then((data) => {
+      setCusumData(data);
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading || cusumData.length === 0) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
+  const latestCusum = cusumData[cusumData.length - 1];
 
   const nodeStatus = [
     { name: 'Hospital A (Client 0)', value: latestCusum.client0, status: latestCusum.client0 > threshold ? 'Drift Alert' : 'Stable', color: latestCusum.client0 > threshold ? 'text-red-500 bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-900' : 'text-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 border-emerald-200 dark:border-emerald-900' },
@@ -77,7 +97,7 @@ export const DriftMonitor: React.FC = () => {
         </div>
         <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={mockCusumData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
+            <LineChart data={cusumData} margin={{ top: 10, right: 10, left: -25, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:hidden" />
               <CartesianGrid strokeDasharray="3 3" stroke="#334155" className="hidden dark:block" />
               <XAxis dataKey="round" stroke="#94a3b8" fontSize={11} name="Communication Round" />
