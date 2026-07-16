@@ -98,29 +98,39 @@
     \end{columns}
 \end{frame}
 
-% --- KEY FRAMEWORK NOVELTIES (3) ---
-\begin{frame}{Core Technical Novelty \& Key Contributions}
-    \begin{columns}
-        \begin{column}{0.56\textwidth}
-            \begin{block}{1. Multi-Head Attention Explainability}
-                \scriptsize Combines recurrent sequences with query-key self-attentions to compute dynamic temporal saliency maps for bedside ICU interpretability.
-            \end{block}
-            \begin{block}{2. Online CUSUM Drift Monitoring}
-                \scriptsize Monitors validation loss residuals locally ($S_r > 3.0$) to audit institutional shifts without constant server aggregations.
-            \end{block}
-            \begin{block}{3. Client-Side Selective Personalization (CSSP)}
-                \scriptsize Freezes global model backbones upon drift triggers to train local classifier heads, completely bypassing server weight uploads.
-            \end{block}
-        \end{column}
-        \begin{column}{0.44\textwidth}
-            \begin{block}{Core Scientific Contributions}
+% --- PROPOSED FRAMEWORK: FPDAF WHAT/HOW/NOVELTY (3) ---
+\begin{frame}{Proposed Framework: FPDAF}
+    \begin{columns}[t]
+        \begin{column}{0.32\textwidth}
+            \begin{block}{WHAT is FPDAF?}
                 \scriptsize
+                \textbf{Federated Personalized Drift-Aware Attention Framework:}
                 \begin{itemize}
-                    \item \textbf{Bandwidth Savings:} CSSP cuts local-to-server bandwidth overhead by \textbf{38\%} vs. Ditto.
-                    \item \textbf{Adaptation Speed:} Head-only fine-tuning runs in \textbf{6 minutes} (down from 25m).
-                    \item \textbf{Diagnostic Saliency:} Sepsis risk triggers are mapped hourly for clinical compliance.
+                    \item A privacy-preserving Clinical Decision Support System (CDSS) for Sepsis early warning.
+                    \item Collaborative training across hospital ICU nodes without centralizing raw records (HIPAA/DPDPA compliant).
                 \end{itemize}
             \end{block}
+        \end{column}
+        
+        \begin{column}{0.34\textwidth}
+            \begin{block}{HOW does it work?}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Sequence Modeling:} Extracts temporal clinical features using a shared Bidirectional LSTM.
+                    \item \textbf{Ditto Personalization:} Fine-tunes localized classifier heads ($v_k$) to fit hospital demographics.
+                    \item \textbf{Online CUSUM Trigger:} Audits prediction loss residuals locally to detect population drift.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.32\textwidth}
+            \begin{alertblock}{OUR NOVELTY}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Multi-Head Attention:} Integrates 4-head query-key self-attention to output explainable bedside timelines.
+                    \item \textbf{CSSP Protocol:} Freezes backbones dynamically upon drift triggers, saving \textbf{38\% network bandwidth} and cutting node adaptation to \textbf{6 minutes}.
+                \end{itemize}
+            \end{alertblock}
         \end{column}
     \end{columns}
 \end{frame}
