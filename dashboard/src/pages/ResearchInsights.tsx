@@ -1,0 +1,116 @@
+import React from 'react';
+import { 
+  FileDown, 
+  BookOpen, 
+  Brain, 
+  HelpCircle, 
+  TrendingUp, 
+  ShieldAlert 
+} from 'lucide-react';
+
+export const ResearchInsights: React.FC = () => {
+  return (
+    <div className="p-8 space-y-8 overflow-y-auto max-h-[calc(100vh-4rem)]">
+      {/* Title */}
+      <div className="flex justify-between items-center flex-wrap gap-4">
+        <div>
+          <h2 className="text-2xl font-extrabold text-slate-800 dark:text-white leading-tight">Research & Methodology</h2>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Proposed FPDAF framework architecture, bi-level Ditto optimizations, and validation reviews</p>
+        </div>
+        <a 
+          href="/FPDAF_Research_Paper.pdf" 
+          download="FPDAF_Research_Paper.pdf"
+          className="flex items-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 py-2.5 rounded-xl shadow-lg shadow-red-500/20 transition-all text-xs"
+        >
+          <FileDown className="h-4.5 w-4.5" /> Download Manuscript PDF
+        </a>
+      </div>
+
+      {/* Grid: Abstract & Problem Statement */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl shadow-sm space-y-4">
+          <h3 className="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-blue-500" /> Executive Research Summary
+          </h3>
+          <p className="text-xs text-slate-600 dark:text-slate-350 leading-relaxed font-medium">
+            Early detection of sepsis in intensive care units (ICUs) is critical to reducing inpatient mortality. 
+            However, clinical machine learning models encounter severe performance degradation when deployed across 
+            diverse hospital systems due to local demographic splits (e.g., age distributions) and clinical protocol 
+            variations—a phenomenon known as data heterogeneity (Non-IID). Sharing raw patient histories directly 
+            violates privacy rules (HIPAA).
+          </p>
+          <p className="text-xs text-slate-650 dark:text-slate-350 leading-relaxed font-medium">
+            To address these issues, we present the <strong>Federated Personalized Drift-Aware Attention Framework (FPDAF)</strong>. 
+            FPDAF leverages Ditto personalization to fit local classifiers while safeguarding central consensus. 
+            It integrates online Cumulative Sum (CUSUM) residual monitors to detect institutional demographic drifts in 
+            real-time and trigger selective client-side adaptations (CSSP), lowering communication cost by 38%.
+          </p>
+        </div>
+
+        <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl shadow-sm space-y-4">
+          <h3 className="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+            <Brain className="h-5 w-5 text-blue-500" /> Technical Novelty Pillars
+          </h3>
+          <div className="space-y-4">
+            <div className="flex gap-3">
+              <div className="h-7 w-7 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 text-xs font-bold">1</div>
+              <div>
+                <h5 className="font-bold text-xs text-slate-800 dark:text-white leading-tight">Temporal Self-Attention Heads</h5>
+                <p className="text-[10px] text-slate-450 mt-1 leading-normal">
+                  Aggregates hourly ICU sequence features into context representations, explaining warnings (e.g., hr 17-22 peak weights).
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="h-7 w-7 rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 flex items-center justify-center shrink-0 text-xs font-bold">2</div>
+              <div>
+                <h5 className="font-bold text-xs text-slate-800 dark:text-white leading-tight">CUSUM Residual Monitor</h5>
+                <p className="text-[10px] text-slate-450 mt-1 leading-normal">
+                  Calculates validation loss offsets over communication rounds to detect institutional concept drifts ($S_r &gt; 3.0$).
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <div className="h-7 w-7 rounded-lg bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0 text-xs font-bold">3</div>
+              <div>
+                <h5 className="font-bold text-xs text-slate-800 dark:text-white leading-tight">Client-Side Selective Personalization (CSSP)</h5>
+                <p className="text-[10px] text-slate-450 mt-1 leading-normal">
+                  Freezes the shared feature extractor to adapt classifier heads locally, lowering client communication costs.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mathematical Formulations */}
+      <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-6 rounded-2xl shadow-sm space-y-6">
+        <h3 className="font-bold text-slate-800 dark:text-white text-base flex items-center gap-2">
+          <HelpCircle className="h-5 w-5 text-blue-500" /> Core Framework Formulations
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs leading-relaxed font-semibold text-slate-500 dark:text-slate-400">
+          <div className="bg-slate-50 dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-850 space-y-3">
+            <h5 className="font-bold text-slate-850 dark:text-slate-200 text-xs">Bi-Level Optimization (Ditto)</h5>
+            <div className="bg-white dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700 font-mono text-center text-slate-800 dark:text-white my-2">
+              min h_k(v_k; w*) = L_local(v_k) + (λ/2) ||v_k - w*||^2
+            </div>
+            <p className="text-[10px] text-slate-450 leading-normal">
+              Allows each client node $k$ to minimize private loss on local personalized weights $v_k$, regularized against central consensus $w^*$ to maintain global knowledge.
+            </p>
+          </div>
+
+          <div className="bg-slate-50 dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-850 space-y-3">
+            <h5 className="font-bold text-slate-850 dark:text-slate-200 text-xs">CUSUM Residual Drift Scoring</h5>
+            <div className="bg-white dark:bg-slate-800 p-3 rounded-lg border dark:border-slate-700 font-mono text-center text-slate-800 dark:text-white my-2">
+              S_r = max(0, S_(r-1) + e_r - κ)
+            </div>
+            <p className="text-[10px] text-slate-450 leading-normal">
+              Accumulates validation error residuals $e_r = \mathcal{L}_{val, r} - \mu_0$ (slack $\kappa = 0.02$). If $S_r &gt; 3.0$, a local drift trigger freezes the feature backbone and updates classifier parameters.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
