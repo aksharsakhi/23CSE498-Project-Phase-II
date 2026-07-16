@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
-import { Search, Filter, ShieldAlert, Award, User, RefreshCw } from 'lucide-react';
-import { mockPatients, Patient } from '../services/mockDataService';
+import { useState } from 'react';
+import { Search, Filter, ShieldAlert, User, RefreshCw } from 'lucide-react';
+import type { Patient } from '../services/mockDataService';
 
 interface PatientListProps {
+  patients: Patient[];
   onSelectPatient: (patient: Patient) => void;
   setActiveTab: (tab: string) => void;
 }
 
-export const PatientList: React.FC<PatientListProps> = ({ onSelectPatient, setActiveTab }) => {
+export const PatientList: React.FC<PatientListProps> = ({ patients, onSelectPatient, setActiveTab }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [hospitalFilter, setHospitalFilter] = useState('All');
   const [riskFilter, setRiskFilter] = useState('All');
 
   // Filter patients based on user options
-  const filteredPatients = mockPatients.filter(patient => {
+  const filteredPatients = patients.filter(patient => {
     const matchesSearch = patient.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           patient.ward.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesHospital = hospitalFilter === 'All' || patient.hospital.includes(hospitalFilter);
