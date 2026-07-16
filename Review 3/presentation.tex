@@ -65,6 +65,47 @@
     }
 \end{frame}
 
+% --- PREVIOUS REVIEW COMMENTS & ACTION TAKEN (2) ---
+\begin{frame}{Previous Review Comments \& Action Taken}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Reviewer Comments (Review 2)}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Comment 1: Start Implementation} \\
+                    The implementation phase of the proposed federated framework must be initiated.
+                    
+                    \vspace{0.4cm}
+                    \item \textbf{Comment 2: Working Prototype \& Dashboard} \\
+                    Build a functional clinician dashboard and working prototype to demonstrate live clinical decision support.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.52\textwidth}
+            \begin{block}{Action Taken \& Implementation Status}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Implemented Federated Pipelines:}
+                    \begin{itemize}
+                        \scriptsize
+                        \item Built decentralized PyTorch algorithms (FedAvg, FedProx, Ditto).
+                        \item Implemented local CUSUM drift detection and Client-Side Selective Personalization.
+                    \end{itemize}
+                    \vspace{0.2cm}
+                    \item \textbf{Built Production-Grade CDSS Workstation:}
+                    \begin{itemize}
+                        \scriptsize
+                        \item \textbf{Data Warehouse}: Local SQLite clinical database.
+                        \item \textbf{Backend API}: Uvicorn/FastAPI server running PyTorch checkpoints.
+                        \item \textbf{Interactive UI}: Vite React medical dashboard mapping vitals charts, risk dials, and explainable attention timelines.
+                    \end{itemize}
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
 % --- CLINICAL CONTEXT & COMPLETED GOALS (2) ---
 \begin{frame}{Clinical Deterioration \& Phase II Completed Goals}
     \begin{columns}
