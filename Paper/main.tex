@@ -52,7 +52,7 @@ CB.SC.U4CSE23753}
 \maketitle
 
 \begin{abstract}
-Early sepsis detection in Intensive Care Units (ICUs) is vital for improving patient survival rates. While machine learning offers high-accuracy solutions using multivariate physiological time-series data, clinical adoption remains limited due to privacy concerns regarding patient health records, model generalization issues across different hospital systems (the accuracy gap), and a lack of clinical interpretability (the trust gap). This paper presents a Unified Explainable Federated Learning Framework for Multivariate Time-Series Forecasting with Personalized Drift Adaptation (FPDAF). Our framework enables collaborative training across decentralized clinical nodes using Federated Learning (FedAvg) without sharing raw records. Furthermore, it incorporates personalized local heads (FedPer) to adapt to hospital-specific demographics and integrates a Cumulative Sum (CUSUM) drift detection module to monitor demographic drifts. Finally, clinical explainability is achieved using visual multi-head attention weights and SHAP impact scores. We evaluate the preprocessing consistency and establish a centralized LSTM baseline model on the PhysioNet 2019 Sepsis dataset, demonstrating a robust test Area Under the ROC Curve (AUROC) of 0.8058 and a sensitivity (Recall) of 72.17\% as a baseline for future federated optimization.
+Early sepsis detection in Intensive Care Units (ICUs) is vital for improving patient survival rates. While machine learning offers high-accuracy solutions using multivariate physiological time-series data, clinical adoption remains limited due to patient privacy rules (the privacy gap), demographic shifts across clinical splits (the accuracy gap), and a lack of transparency (the trust gap). This paper presents a Federated Personalized Drift-Aware Attention Framework (FPDAF). FPDAF enables collaborative training across decentralized nodes using Federated Learning (FedAvg/FedProx) without sharing raw records. Furthermore, it incorporates personalized local heads (Ditto bi-level optimization) to adapt to hospital-specific demographics and integrates a Cumulative Sum (CUSUM) drift detection module to monitor demographic shifts in real-time. Finally, clinical explainability is achieved using visual temporal attention weights. We evaluate our framework on the PhysioNet 2019 Sepsis dataset across five configurations, demonstrating that FPDAF achieves comparable accuracy (83.51\%) to personalized Ditto while reducing network bandwidth by 38\% via Client-Side Selective Personalization (CSSP).
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -71,7 +71,13 @@ However, standard FL frameworks face three main challenges:
 \item \textbf{Black-box Nature}: Clinicians require explainable predictions to trust AI-generated sepsis alerts.
 \end{enumerate}
 
-To bridge these gaps, we present the Federated Personalized Drift-Aware Attention Framework (FPDAF). In this paper, we describe the data preparation workflow, perform Exploratory Data Analysis (EDA) on the PhysioNet 2019 challenge dataset, establish a centralized baseline LSTM model to benchmark future decentralized runs, and lay out our evaluation plan.
+To bridge these gaps, we present the Federated Personalized Drift-Aware Attention Framework (FPDAF). The core novelties and contributions of this work are:
+\begin{itemize}
+\item \textbf{Explainable Federated Architecture}: We integrate a temporal self-attention layer with a shared LSTM backbone to compute sequential saliency attributions, providing bedside transparency for clinicians.
+\item \textbf{Proactive CUSUM Drift Adaptation}: We deploy an online Cumulative Sum (CUSUM) residual monitor at each node. By tracking validation loss residuals, the system flags institutional concept drifts in real-time.
+\item \textbf{Client-Side Selective Personalization (CSSP)}: Upon detecting drift, CSSP freezes the shared LSTM layers, adapts the personalized classification head locally, and bypasses server upload. This reduces communication cost by 38\% and speeds up local adaptation.
+\item \textbf{Interactive CDSS Workstation}: We develop and deploy a database-driven decision support workstation linking React, FastAPI, and SQLite to display live alerts, vitals telemetry, and attention heatmaps.
+\end{itemize}
 
 \section{Literature Review}
 \subsection{Federated Learning in Healthcare}

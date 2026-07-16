@@ -66,13 +66,13 @@
 \end{frame}
 
 % --- CLINICAL CONTEXT & COMPLETED GOALS (2) ---
-\begin{frame}{Clinical Deterioration & Phase II Completed Goals}
+\begin{frame}{Clinical Deterioration \& Phase II Completed Goals}
     \begin{columns}
         \begin{column}{0.55\textwidth}
             \textbf{Clinical Context:}
             \begin{itemize}
                 \scriptsize
-                \item \textbf{High-Sparsity Time-Series:} Continuous ICU vital monitoring logs (HR, SBP, Temp, SpO₂) combined with sparse blood panel entries.
+                \item \textbf{High-Sparsity Time-Series:} Continuous ICU vital monitoring logs (HR, SBP, Temp, SpO$_2$) combined with sparse blood panel entries.
                 \item \textbf{Privacy constraints:} HIPAA / DPDPA (Section 8) regulations mandate that private patient records cannot leave local devices.
                 \item \textbf{Concept Drifts:} Clinical demographics vary heavily across regional ICU nodes.
             \end{itemize}
@@ -98,8 +98,33 @@
     \end{columns}
 \end{frame}
 
-% --- SYSTEM DESIGN & SPLIT WEIGHT FORMULAS (3) ---
-\begin{frame}{Unified System Design & Neural Formulations}
+% --- KEY FRAMEWORK NOVELTIES (3) ---
+\begin{frame}{Core Technical Novelty \& Key Contributions}
+    \begin{columns}
+        \begin{column}{0.58\textwidth}
+            \textbf{FPDAF Framework Design Novelties:}
+            \begin{itemize}
+                \scriptsize
+                \item \textbf{1. Explainable Federated Learning:} Combines recurrent LSTM representations with temporal self-attention. Computes sequence-level saliency weights online to provide explainable alerts for intensive care clinicians.
+                \item \textbf{2. CUSUM-Triggered Drift Monitor:} Employs a statistical Cumulative Sum (CUSUM) control monitor checking validation loss residuals ($S_r > 3.0$). Drift checks are local, avoiding continuous central aggregation.
+                \item \textbf{3. Client-Side Selective Personalization (CSSP):} Freezes the shared LSTM backbone parameters and adapts only local classifier heads ($v_k$). Bypasses global aggregation loops to save bandwidth and preserve privacy.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.42\textwidth}
+            \begin{block}{Scientific Contributions}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Bandwidth Savings:} CSSP saves \textbf{38\%} network bandwidth compared to continuous Ditto personalization.
+                    \item \textbf{Fast Adaptation:} Node adaptation time drops from 25 minutes to \textbf{6 minutes}.
+                    \item \textbf{Decentralized Explainability:} Clinicians get direct Bedside timeline interpretations.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SYSTEM DESIGN & SPLIT WEIGHT FORMULAS (4) ---
+\begin{frame}{Unified System Design \& Neural Formulations}
     \begin{columns}
         \begin{column}{0.5\textwidth}
             \centering
@@ -239,16 +264,16 @@
         \begin{column}{0.5\textwidth}
             \begin{block}{Startup Script}
                 \scriptsize
-                Coded a clean `run_app.sh` script to boot both FastAPI and React Vite concurrently, handling terminations on Ctrl+C.
+                Coded a clean `run\_app.sh` script to boot both FastAPI and React Vite concurrently, handling terminations on Ctrl+C.
             \end{block}
             \centering
-            \begin{tikzpicture}[node distance=1.2cm, every node/.style={fill=white, draw=slate-400, rounded corners=2pt, font=\tiny\bfseries, inner sep=4pt}]
-                \node (db) [fill=blue-50, draw=blue-600] {SQLite Database (`clinical\_warehouse.db`)};
-                \node (api) [below of=db, fill=green-50, draw=green-600] {FastAPI Backend (`main.py`)};
-                \node (ui) [below of=api, fill=orange-50, draw=orange-600] {Vite React Frontend};
+            \begin{tikzpicture}[node distance=1.2cm, every node/.style={fill=white, draw=gray, rounded corners=2pt, font=\tiny\bfseries, inner sep=4pt}]
+                \node (db) [fill=blue!10, draw=blue] {SQLite Database (`clinical\_warehouse.db`)};
+                \node (api) [below of=db, fill=green!10, draw=green!70!black] {FastAPI Backend (`main.py`)};
+                \node (ui) [below of=api, fill=orange!10, draw=orange] {Vite React Frontend};
                 
-                \draw[->, thick, draw=blue-500] (db) -- (api);
-                \draw[->, thick, draw=green-500] (api) -- (ui);
+                \draw[->, thick, draw=blue] (db) -- (api);
+                \draw[->, thick, draw=green!70!black] (api) -- (ui);
             \end{tikzpicture}
         \end{column}
     \end{columns}
