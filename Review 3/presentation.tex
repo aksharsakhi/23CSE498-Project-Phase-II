@@ -306,27 +306,82 @@
 
 % --- CLINICAL DASHBOARD INTERFACE (8) ---
 \begin{frame}{Interactive Clinician Dashboard UI}
-    \begin{columns}[t]
-        \begin{column}{0.5\textwidth}
-            \begin{block}{Doctor's Bedside Diagnostic View}
+    \begin{block}{Doctor's Bedside Diagnostic View (Live Patient Care)}
+        \begin{columns}[t]
+            \begin{column}{0.48\textwidth}
                 \scriptsize
-                Provides live diagnostics and explanations directly at the patient's bedside:
                 \begin{itemize}
                     \item \textbf{Timeline Telemetry:} Plots hourly ICU vital segments (HR, SBP, Temp, Resp, SpO$_2$) using Recharts.
-                    \item \textbf{Live Predictions Dials:} Computes and overlays risk probability scores for all federated configurations.
-                    \item \textbf{Attention Saliency Maps:} Attributes predictions to specific stay intervals (e.g. onset hours 16--22).
+                    \item \textbf{Live Predictions Dials:} Overlays risk probability scores for all federated baselines.
                 \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.5\textwidth}
-            \begin{block}{Admin's Federated Telemetry View}
+            \end{column}
+            \begin{column}{0.48\textwidth}
                 \scriptsize
-                Provides real-time machine learning monitoring:
+                \begin{itemize}
+                    \item \textbf{Attention Saliency Maps:} Attributes risk alerts to specific sequence hours (e.g. onset hours 16--22) for bedside interpretability.
+                \end{itemize}
+            \end{column}
+        \end{columns}
+    \end{block}
+    
+    \begin{block}{Admin's Federated Telemetry View (System Operations)}
+        \begin{columns}[t]
+            \begin{column}{0.48\textwidth}
+                \scriptsize
                 \begin{itemize}
                     \item \textbf{Drift Controls:} Plots CUSUM curves, tracking drift accumulation limits ($S_r > 3.0$) and CSSP backbone freezes.
                     \item \textbf{Round Tracker:} Animates client-server parameter upload/download loops using Framer Motion.
-                    \item \textbf{Design System:} Tailwind CSS v4 class-based toggling supporting light/dark medical navy modes.
+                \end{itemize}
+            \end{column}
+            \begin{column}{0.48\textwidth}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Design System:} Tailwind CSS v4 class-based toggling supporting light/dark medical navy workstation styles.
+                \end{itemize}
+            \end{column}
+        \end{columns}
+    \end{block}
+\end{frame}
+
+% --- CLINICIAN DASHBOARD: DOCTOR PORTAL (9) ---
+\begin{frame}{Clinician Dashboard Interface (Doctor Portal)}
+    \begin{columns}
+        \begin{column}{0.52\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{images/dashboard_doctor.png}
+            \vspace{0.1cm}
+            \scriptsize \textbf{Figure 2:} Doctor's Bedside Diagnostic Workspace.
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Doctor Portal Core Modules}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Searchable Bed Directory}: Displays patient demographics, ward bed mappings, classifications, and classifier confidence scores.
+                    \item \textbf{Hourly Vital Telemetry}: Renders 24-hour ICU vital timelines (HR, SBP, Temp, Resp, SpO$_2$) using clinical ranges.
+                    \item \textbf{XAI Saliency Charts}: Plots Multi-Head Attention weights to interpret Sepsis alerts.
+                    \item \textbf{Risk Predictor Dials}: Compares live model forecasts across FedAvg, FedProx, Ditto, and FPDAF models.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- CLINICIAN DASHBOARD: ADMIN PORTAL (10) ---
+\begin{frame}{Clinician Dashboard Interface (Admin Portal)}
+    \begin{columns}
+        \begin{column}{0.52\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{images/dashboard_admin.png}
+            \vspace{0.1cm}
+            \scriptsize \textbf{Figure 3:} Admin's Machine Learning Telemetry Workspace.
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Admin Portal Core Modules}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Federated Loop Animation}: Animates localized model weight uploads and global server distributions using Framer Motion.
+                    \item \textbf{CUSUM Drift Telemetry}: Tracks real-time concept drift curves ($S_r > 3.0$) and selective personalization triggers.
+                    \item \textbf{LaTeX Equations \& Ablations}: Details mathematical optimization equations and five-way benchmark metrics.
                 \end{itemize}
             \end{block}
         \end{column}
