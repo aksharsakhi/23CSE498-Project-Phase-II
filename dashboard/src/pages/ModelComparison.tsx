@@ -11,8 +11,10 @@ import {
   LineChart,
   Line
 } from 'recharts';
-import { Award, Zap, ShieldCheck, HelpCircle } from 'lucide-react';
-import { modelComparisonMetrics } from '../services/mockDataService';
+import { useState, useEffect } from 'react';
+import { Award, Zap } from 'lucide-react';
+import { fetchModelComparison } from '../services/mockDataService';
+import type { ModelMetrics } from '../services/mockDataService';
 
 // ROC data mapping
 const rocCurveData = [
@@ -30,6 +32,25 @@ const rocCurveData = [
 ];
 
 export const ModelComparison: React.FC = () => {
+  const [comparisonMetrics, setComparisonMetrics] = useState<ModelMetrics[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchModelComparison().then((data) => {
+      setComparisonMetrics(data);
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading || comparisonMetrics.length === 0) {
+    return (
+      <div className="p-8 flex items-center justify-center min-h-[400px]">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="p-8 space-y-8 overflow-y-auto max-h-[calc(100vh-4rem)]">
       {/* Header */}
@@ -40,8 +61,8 @@ export const ModelComparison: React.FC = () => {
 
       {/* Model Cards */}
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {modelComparisonMetrics.map((model, i) => {
-          const isProposed = model.name.includes('Proposed');
+        {comparisonMetrics.map((model, i) => {
+          const isProposed = model.name.includes('Proposed') || model.name.includes('FPDAF');
           return (
             <div 
               key={i}
@@ -117,7 +138,7 @@ export const ModelComparison: React.FC = () => {
           </div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={modelComparisonMetrics} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <BarChart data={comparisonMetrics} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:hidden" />
                 <CartesianGrid strokeDasharray="3 3" stroke="#334155" className="hidden dark:block" />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={9} tickFormatter={(name) => name.split(' ')[0]} />
@@ -152,8 +173,8 @@ export const ModelComparison: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200 dark:divide-slate-700 text-xs font-semibold">
-              {modelComparisonMetrics.map((model, i) => {
-                const isProposed = model.name.includes('Proposed');
+              {comparisonMetrics.map((model, i) => {
+                const isProposed = model.name.includes('Proposed') || model.name.includes('FPDAF');
                 return (
                   <tr key={i} className={isProposed ? 'bg-red-500/5 dark:bg-red-950/10' : ''}>
                     <td className="px-6 py-4 text-slate-800 dark:text-slate-200">{model.name}</td>
