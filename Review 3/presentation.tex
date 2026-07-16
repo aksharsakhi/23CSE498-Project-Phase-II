@@ -101,22 +101,24 @@
 % --- KEY FRAMEWORK NOVELTIES (3) ---
 \begin{frame}{Core Technical Novelty \& Key Contributions}
     \begin{columns}
-        \begin{column}{0.58\textwidth}
-            \textbf{FPDAF Framework Design Novelties:}
-            \begin{itemize}
-                \scriptsize
-                \item \textbf{1. Explainable Federated Learning:} Combines recurrent LSTM representations with temporal self-attention. Computes sequence-level saliency weights online to provide explainable alerts for intensive care clinicians.
-                \item \textbf{2. CUSUM-Triggered Drift Monitor:} Employs a statistical Cumulative Sum (CUSUM) control monitor checking validation loss residuals ($S_r > 3.0$). Drift checks are local, avoiding continuous central aggregation.
-                \item \textbf{3. Client-Side Selective Personalization (CSSP):} Freezes the shared LSTM backbone parameters and adapts only local classifier heads ($v_k$). Bypasses global aggregation loops to save bandwidth and preserve privacy.
-            \end{itemize}
+        \begin{column}{0.56\textwidth}
+            \begin{block}{1. Multi-Head Attention Explainability}
+                \scriptsize Combines recurrent sequences with query-key self-attentions to compute dynamic temporal saliency maps for bedside ICU interpretability.
+            \end{block}
+            \begin{block}{2. Online CUSUM Drift Monitoring}
+                \scriptsize Monitors validation loss residuals locally ($S_r > 3.0$) to audit institutional shifts without constant server aggregations.
+            \end{block}
+            \begin{block}{3. Client-Side Selective Personalization (CSSP)}
+                \scriptsize Freezes global model backbones upon drift triggers to train local classifier heads, completely bypassing server weight uploads.
+            \end{block}
         \end{column}
-        \begin{column}{0.42\textwidth}
-            \begin{block}{Scientific Contributions}
+        \begin{column}{0.44\textwidth}
+            \begin{block}{Core Scientific Contributions}
                 \scriptsize
                 \begin{itemize}
-                    \item \textbf{Bandwidth Savings:} CSSP saves \textbf{38\%} network bandwidth compared to continuous Ditto personalization.
-                    \item \textbf{Fast Adaptation:} Node adaptation time drops from 25 minutes to \textbf{6 minutes}.
-                    \item \textbf{Decentralized Explainability:} Clinicians get direct Bedside timeline interpretations.
+                    \item \textbf{Bandwidth Savings:} CSSP cuts local-to-server bandwidth overhead by \textbf{38\%} vs. Ditto.
+                    \item \textbf{Adaptation Speed:} Head-only fine-tuning runs in \textbf{6 minutes} (down from 25m).
+                    \item \textbf{Diagnostic Saliency:} Sepsis risk triggers are mapped hourly for clinical compliance.
                 \end{itemize}
             \end{block}
         \end{column}
@@ -126,33 +128,34 @@
 % --- SYSTEM DESIGN & SPLIT WEIGHT FORMULAS (4) ---
 \begin{frame}{Unified System Design \& Neural Formulations}
     \begin{columns}
-        \begin{column}{0.5\textwidth}
+        \begin{column}{0.48\textwidth}
             \centering
             \includegraphics[width=\textwidth]{images/ArcDigram.jpeg}
             \vspace{0.1cm}
             \scriptsize \textbf{Figure 1:} FPDAF Split-Weight Model Architecture.
         \end{column}
-        \begin{column}{0.5\textwidth}
-            \scriptsize
-            \textbf{Split-Weight Optimization Model:}
-            \[ \hat{y}_t^k = h_{\phi^k} \left( \sum_{i=1}^{t} \alpha_i \cdot g_{\theta}(X_{i}^k) \right) \]
-            \begin{itemize}
-                \item $g_{\theta}$: Shared global temporal LSTM backbone (weights $\theta$).
-                \item $h_{\phi^k}$: Local private classification head (weights $\phi^k$).
-                \item $\alpha_i$: Temporal self-attention context vector.
-            \end{itemize}
+        \begin{column}{0.52\textwidth}
+            \begin{block}{Decoupled bi-level Optimization Model}
+                \scriptsize
+                \[ \hat{y}_t^k = h_{\phi^k} \left( \sum_{i=1}^{t} \alpha_i \cdot g_{\theta}(X_{i}^k) \right) \]
+                \begin{itemize}
+                    \item $g_{\theta}$: Shared global LSTM backbone ($\theta$).
+                    \item $h_{\phi^k}$: Local private classifier head ($\phi^k$).
+                \end{itemize}
+            \end{block}
             
-            \vspace{0.1cm}
-            \textbf{Temporal Self-Attention Mechanism:}
-            \[ e_i = v_a^T \tanh(W_s s_i + b_a) \]
-            \[ \alpha_i = \frac{\exp(e_i)}{\sum_{j=1}^t \exp(e_j)} \]
-            Helps explain exactly which hours in the sequence contributed to critical alarms.
+            \begin{block}{Temporal Multi-Head Self-Attention}
+                \scriptsize
+                \[ e_i = v_a^T \tanh(W_s s_i + b_a) \]
+                \[ \alpha_i = \frac{\exp(e_i)}{\sum_{j=1}^t \exp(e_j)} \]
+                Attributes risk probabilities to specific ICU sequence hours.
+            \end{block}
         \end{column}
     \end{columns}
 \end{frame}
 
 % --- DRIFT & CUSUM NEURAL TRIGGER (4) ---
-\begin{frame}{proactive Drift Adaptation: CUSUM Neural Trigger}
+\begin{frame}{Proactive Drift Adaptation: CUSUM Neural Trigger}
     \begin{columns}
         \begin{column}{0.52\textwidth}
             \textbf{Concept Drift Challenge:}
