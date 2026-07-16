@@ -216,6 +216,42 @@ Raw Dataset (.psv) ──> Imputation (FFill/BFill) ──> Scaling (StandardSca
 
 ---
 
+## 🏥 Clinical ICU Decision Support System Dashboard (FPDAF Demo)
+
+To showcase the unified sepsis forecasting pipeline, we provide a modern Clinical Decision Support System (CDSS) Dashboard. It is split into a **FastAPI backend** (which runs live PyTorch model inference on test sequences, un-scales physiological metrics, and processes real-time CUSUM scores) and a **React+TypeScript frontend** (configured with Tailwind CSS v4, Recharts, and Framer Motion).
+
+### ⚙️ Installation & Running
+
+#### 1. Start the FastAPI Backend
+Ensure you are in the root directory:
+```bash
+uvicorn backend.main:app --reload --port 8000
+```
+*API docs will be available at [http://localhost:8000/docs](http://localhost:8000/docs).*
+
+#### 2. Start the React Frontend Dashboard
+Navigate to the `dashboard/` subdirectory:
+```bash
+cd dashboard
+npm install
+npm run dev
+```
+*The ICU CDSS application will be active at [http://localhost:5173](http://localhost:5173).*
+
+### 🖥️ Dashboard Page Highlights
+1. **Login Portal**: Interactive physician credentials verification.
+2. **ICU Dashboard**: Occupancy, alert statistics, and admissions charts.
+3. **Bedside Patient List**: Beds mapping, search, and prediction triggers.
+4. **Vitals details**: Multi-line medical monitor graphs (HR, SBP, Temp, Resp, SpO2).
+5. **Prediction dial**: FPDAF prediction engine with loader screens.
+6. **XAI Interpretability**: Temporal attention timelines and feature importance bars.
+7. **CUSUM Drift Monitor**: Control charts displaying triggers and CSSP adaptation statuses.
+8. **Federated FL Monitor**: Loop animations of parameter exchanges across hospitals.
+9. **Model Benchmarks**: 5-way comparative overlays and efficiency tables.
+10. **Research Insights**: Objective definitions, bi-level equations, and download links for the compiled manuscript PDF.
+
+---
+
 ## References
 * **PhysioNet Challenge 2019**: Early Prediction of Sepsis from Clinical Data (Computing in Cardiology Challenge).
 * **PyTorch Documentation**: Deep Learning framework implementations.
