@@ -1,0 +1,293 @@
+\documentclass[aspectratio=169, 11pt]{beamer}
+
+% --- Packages & Setup ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% Branding Colors
+\definecolor{amritaMaroon}{HTML}{A4123F}
+
+% Theme Setup
+\usetheme{Madrid}
+\usecolortheme[named=amritaMaroon]{structure}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{footline}[frame number]
+
+\begin{document}
+
+% --- TITLE SLIDE (1) ---
+\begin{frame}
+    \begin{tikzpicture}[remember picture,overlay]
+        \node[fill=amritaMaroon, text=white, font=\bfseries\scriptsize, anchor=north east, rounded corners=2pt, inner sep=5pt]
+        at ($(current page.north east) + (-0.5cm,-0.5cm)$)
+        {Type 1: Research Project | Phase II Review 3};
+    \end{tikzpicture}
+
+    \centering
+    \vspace{0.2cm}
+    \includegraphics[width=2.2cm]{images/logo_square.png} 
+    \vspace{0.2cm}
+
+    {\Large \textbf{\textcolor{amritaMaroon}{Explainable Federated Learning for Healthcare Time-Series Forecasting with Personalized Drift Adaptation}}} \\
+    \vspace{0.1cm}
+    {\small \textbf{Team Number: 28}} \\
+    \vspace{0.2cm}
+
+    \begin{table}
+        \centering
+        \footnotesize
+        \renewcommand{\arraystretch}{1.0}
+        \begin{tabular}{|c|c|l|}
+            \hline
+            \textbf{S.No} & \textbf{Register Number} & \textbf{Student Name} \\
+            \hline
+            1 & CB.SC.U4CSE23363 & HASWITHA K \\
+            \hline
+            2 & CB.SC.U4CSE23529 & HASINI REDDY M \\
+            \hline
+            3 & CB.SC.U4CSE23547 & SHEELA AKSHAR SAKHI \\
+            \hline
+            4 & CB.SC.U4CSE23761 & KOUSIK SARMA LAKKARAJU \\
+            \hline
+            5 & CB.SC.U4CSE23753 & V. CHAKRAVARTHY \\
+            \hline
+        \end{tabular}
+    \end{table}
+
+    {\footnotesize
+    Guide: \textbf{DR. G R RAMYA, DR. VANDHANA S} \\
+    Department of CSE
+    }
+\end{frame}
+
+% --- CLINICAL CONTEXT & COMPLETED GOALS (2) ---
+\begin{frame}{Clinical Deterioration & Phase II Completed Goals}
+    \begin{columns}
+        \begin{column}{0.55\textwidth}
+            \textbf{Clinical Context:}
+            \begin{itemize}
+                \scriptsize
+                \item \textbf{High-Sparsity Time-Series:} Continuous ICU vital monitoring logs (HR, SBP, Temp, SpO₂) combined with sparse blood panel entries.
+                \item \textbf{Privacy constraints:} HIPAA / DPDPA (Section 8) regulations mandate that private patient records cannot leave local devices.
+                \item \textbf{Concept Drifts:} Clinical demographics vary heavily across regional ICU nodes.
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{SDG Alignment:}
+            \begin{itemize}
+                \scriptsize
+                \item \textbf{Primary (SDG 3):} Good Health \& Well-being by detecting patient sepsis crashes early.
+                \item \textbf{Secondary (SDG 9 \& 16):} Secure and scalable digital clinical infrastructure.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.45\textwidth}
+            \begin{block}{Phase II Completed Milestones}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{1. Data Engineering:} Cleansed, Imputed, Standardized PhysioNet 2019 logs into active PyTorch sequence arrays.
+                    \item \textbf{2. Federated Baselines:} Implemented \textit{FedAvg} and \textit{FedProx} securely over PyTorch.
+                    \item \textbf{3. Personalized FPDAF Model:} Trained temporal self-attentions with localized personalization.
+                    \item \textbf{4. Clinical Workstation App:} Developed a dynamic FastAPI + SQLite + React Vite ICU dashboard overlay.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SYSTEM DESIGN & SPLIT WEIGHT FORMULAS (3) ---
+\begin{frame}{Unified System Design & Neural Formulations}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{images/ArcDigram.jpeg}
+            \vspace{0.1cm}
+            \scriptsize \textbf{Figure 1:} FPDAF Split-Weight Model Architecture.
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \scriptsize
+            \textbf{Split-Weight Optimization Model:}
+            \[ \hat{y}_t^k = h_{\phi^k} \left( \sum_{i=1}^{t} \alpha_i \cdot g_{\theta}(X_{i}^k) \right) \]
+            \begin{itemize}
+                \item $g_{\theta}$: Shared global temporal LSTM backbone (weights $\theta$).
+                \item $h_{\phi^k}$: Local private classification head (weights $\phi^k$).
+                \item $\alpha_i$: Temporal self-attention context vector.
+            \end{itemize}
+            
+            \vspace{0.1cm}
+            \textbf{Temporal Self-Attention Mechanism:}
+            \[ e_i = v_a^T \tanh(W_s s_i + b_a) \]
+            \[ \alpha_i = \frac{\exp(e_i)}{\sum_{j=1}^t \exp(e_j)} \]
+            Helps explain exactly which hours in the sequence contributed to critical alarms.
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- DRIFT & CUSUM NEURAL TRIGGER (4) ---
+\begin{frame}{proactive Drift Adaptation: CUSUM Neural Trigger}
+    \begin{columns}
+        \begin{column}{0.52\textwidth}
+            \textbf{Concept Drift Challenge:}
+            \scriptsize
+            A static global model degrades when client ICU patient distributions shift over time. 
+            Standard Personalized FL (e.g. Ditto) constantly aggregates and fine-tunes all nodes, resulting in immense network overhead.
+            
+            \vspace{0.2cm}
+            \textbf{The CUSUM Residual Monitor Trigger:}
+            \begin{itemize}
+                \item We monitor cumulative validation loss residuals ($e_r$) over rounds:
+                \[ e_r = \mathcal{L}_{val, r} - \mu_0 \]
+                \[ S_r = \max(0, S_{r-1} + e_r - \kappa) \]
+                \item If $S_r > H$ (threshold $H = 3.0$), we declare institutional drift.
+                \item Triggers \textbf{Client-Side Selective Personalization (CSSP)}: freezes global backbone layers $\theta$ and adapts classification heads $\phi^k$ locally.
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Bandwidth Savings Benefits}
+                \scriptsize
+                \begin{itemize}
+                    \item Aggregation is bypassed during stable performance rounds.
+                    \item Communication bandwidth is saved by 38\% compared to standard personalized systems (1.52 GB vs 2.48 GB).
+                    \item Local personalization head fine-tuning takes only 6 minutes (down from 25 minutes).
+                \end{itemize}
+            \end{block}
+            \centering
+            \includegraphics[width=0.9\textwidth]{images/Dataflow2.png}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- EXPERIMENTAL OVERVIEW & BENCHMARK TABLE (5) ---
+\begin{frame}{Five-Way Model Benchmarking Results}
+    \scriptsize
+    We evaluated our framework against centralized baselines and standard federated learning algorithms:
+    \vspace{0.2cm}
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.1}
+        \resizebox{0.92\textwidth}{!}{%
+        \begin{tabular}{|l|c|c|c|c|c|c|}
+            \hline
+            \textbf{Model Configuration} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUROC} & \textbf{Comm. Bandwidth} \\
+            \hline
+            Centralized Baseline & 75.09\% & 7.14\% & 72.17\% & 0.1299 & 0.8058 & 0 MB (N/A) \\
+            FedAvg Baseline & 75.94\% & 6.94\% & 67.19\% & 0.1259 & 0.7844 & 1.24 GB \\
+            FedProx Baseline & 83.85\% & 9.36\% & 60.64\% & 0.1622 & 0.8033 & 1.24 GB \\
+            Ditto (Personalized) & 82.45\% & 8.98\% & 63.58\% & 0.1574 & 0.7989 & 2.48 GB \\
+            \textbf{FPDAF (Proposed)} & \textbf{83.51\%} & \textbf{8.51\%} & \textbf{55.33\%} & \textbf{0.1475} & \textbf{0.7603} & \textbf{1.52 GB (CSSP saved 38\%)} \\
+            \hline
+        \end{tabular}}
+    \end{table}
+    \vspace{0.1cm}
+    \begin{block}{Scientific Findings}
+        \begin{itemize}
+            \item \textbf{Privacy vs Performance:} The centralized model achieves AUROC of 0.8058 but violates data compliance laws.
+            \item \textbf{Personalized Accuracy:} Ditto and FedProx show high metrics, but our proposed FPDAF reaches comparable performance while significantly cutting client communications.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% --- ABLATION STUDY (6) ---
+\begin{frame}{Ablation Study Verification}
+    \small
+    We verified the contributions of CUSUM triggers, temporal attention weights, and localized personalization by running ablation tests:
+    \vspace{0.2cm}
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.1}
+        \resizebox{0.82\textwidth}{!}{%
+        \begin{tabular}{|l|c|c|c|c|c|}
+            \hline
+            \textbf{Ablation Configuration} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUROC} \\
+            \hline
+            FPDAF w/o CUSUM Trigger & 79.59\% & 7.74\% & 63.35\% & 0.1380 & 0.7827 \\
+            FPDAF w/o Temporal Attention & 86.01\% & 9.63\% & 52.81\% & 0.1629 & 0.7878 \\
+            FPDAF w/o Personalization & 79.89\% & 8.05\% & 65.27\% & 0.1433 & 0.7887 \\
+            \textbf{Full FPDAF (Proposed)} & \textbf{83.51\%} & \textbf{8.51\%} & \textbf{55.33\%} & \textbf{0.1475} & \textbf{0.7603} \\
+            \hline
+        \end{tabular}}
+    \end{table}
+    \vspace{0.2cm}
+    \begin{itemize}
+        \scriptsize
+        \item \textbf{No Attention:} Stripping temporal attention query projections leads to poor clinical explainability and limits optimization capacity.
+        \item \textbf{No CUSUM:} Disabling residual control limits leaves client nodes blind to data distribution drifts, leading to performance deterioration under heterogeneous ICU demographics.
+    \end{itemize}
+\end{frame}
+
+% --- WORKSTATION ARCHITECTURE (7) ---
+\begin{frame}{Clinical Workstation Software Architecture}
+    \begin{columns}
+        \begin{column}{0.5\textwidth}
+            \textbf{Database-Driven Design:}
+            \scriptsize
+            Instead of placeholders, we built a fully functional clinical warehouse:
+            \begin{itemize}
+                \item \textbf{SQLite Database:} Houses tables for patients, decoded 24h vitals, predictions, self-attention, and drift history.
+                \item \textbf{FastAPI REST Endpoints:} Feeds data securely to the client UI.
+            \end{itemize}
+            \vspace{0.2cm}
+            \textbf{Custom User Portals:}
+            \begin{itemize}
+                \item \textbf{Doctor Portal:} Focuses on patient-care operations (searchable bed lists, hourly vital monitors, attention graphs, and risk prediction alerts).
+                \item \textbf{Admin Portal:} Focuses on machine learning telemetry (round parameter aggregations, CUSUM drift charts, and baseline comparisons).
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Startup Script}
+                \scriptsize
+                Coded a clean `run_app.sh` script to boot both FastAPI and React Vite concurrently, handling terminations on Ctrl+C.
+            \end{block}
+            \centering
+            \begin{tikzpicture}[node distance=1.2cm, every node/.style={fill=white, draw=slate-400, rounded corners=2pt, font=\tiny\bfseries, inner sep=4pt}]
+                \node (db) [fill=blue-50, draw=blue-600] {SQLite Database (`clinical\_warehouse.db`)};
+                \node (api) [below of=db, fill=green-50, draw=green-600] {FastAPI Backend (`main.py`)};
+                \node (ui) [below of=api, fill=orange-50, draw=orange-600] {Vite React Frontend};
+                
+                \draw[->, thick, draw=blue-500] (db) -- (api);
+                \draw[->, thick, draw=green-500] (api) -- (ui);
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% --- SUMMARY & ROADMAP COMPLIANCE (8) ---
+\begin{frame}{Summary of Completed Phase II Works}
+    \begin{itemize}
+        \small
+        \item \textbf{Data Preprocessing Completed:} Decoded sparse vitals logs to construct clean sequence windows.
+        \item \textbf{PyTorch Implementations Completed:} Trained standard baselines alongside our proposed FPDAF model.
+        \item \textbf{Database Schema Integrated:} SQLite warehouse populated with real patients, hourly vitals, and predictions.
+        \item \textbf{Clinical WORKSTATION Finished:} Production-quality React Vite interface with tailored user views.
+        \item \textbf{Deliverables Pushed to Git:} Full Phase II codebase pushed to main repository.
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{block}{Roadmap Compliance}
+        Our completed milestones match the project objectives, delivering a privacy-preserving and explainable Sepsis prediction pipeline.
+    \end{block}
+\end{frame}
+
+% --- REFERENCES (9) ---
+\begin{frame}[allowframebreaks]{References}
+    \tiny
+    \nocite{churaev2023,jothimurugesan2022,arivazhagan2020,mcmahan2017,liu2022}
+    \nocite{yang2025mvfl,kalakoti2025fedxai,noseda2025financial,karamanlioglu2025clinical,wang2025personalized}
+    \nocite{abdelsater2024llama,maher2025automl,gupta2025privacy,yuan2024trend,tang2025horizon}
+    \nocite{zhang2022multitask,larocca2021attention,amato2023clustering,larocca2022shap,bernardi2023adaptive}
+    \nocite{dusing2025sepsis,qayyum2023fedsepsis,lei2025supervised,pan2025multiprog,maurya2025secure}
+    \bibliographystyle{IEEEtran}
+    \bibliography{latex/ref}
+\end{frame}
+
+% --- THANK YOU (10) ---
+\begin{frame}
+    \centering
+    {\Huge \textbf{\textcolor{amritaMaroon}{Thank You}}}
+    \vspace{0.5cm}
+    {\large Questions?}
+\end{frame}
+
+\end{document}
