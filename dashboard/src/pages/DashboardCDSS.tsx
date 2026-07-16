@@ -5,8 +5,7 @@ import {
   AlertTriangle, 
   Heart, 
   Activity, 
-  TrendingUp, 
-  ArrowUpRight 
+  TrendingUp 
 } from 'lucide-react';
 import { 
   AreaChart, 

@@ -12,22 +12,23 @@ import {
 } from 'lucide-react';
 
 interface SidebarProps {
+  userRole: 'Doctor' | 'Admin';
   activeTab: string;
   setActiveTab: (tab: string) => void;
   onLogout: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLogout }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ userRole, activeTab, setActiveTab, onLogout }) => {
   const menuItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'patients', label: 'ICU Patient List', icon: Users },
-    { id: 'prediction', label: 'Sepsis Risk Predict', icon: Activity },
-    { id: 'xai', label: 'Explainable AI', icon: Eye },
-    { id: 'drift', label: 'CUSUM Drift Monitor', icon: LineChart },
-    { id: 'federated', label: 'Federated FL Monitor', icon: Network },
-    { id: 'comparison', label: 'Model Comparison', icon: BarChart3 },
-    { id: 'research', label: 'Research Insights', icon: FileText },
-  ];
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['Doctor', 'Admin'] },
+    { id: 'patients', label: 'ICU Patient List', icon: Users, roles: ['Doctor'] },
+    { id: 'prediction', label: 'Sepsis Risk Predict', icon: Activity, roles: ['Doctor'] },
+    { id: 'xai', label: 'Explainable AI', icon: Eye, roles: ['Doctor'] },
+    { id: 'drift', label: 'CUSUM Drift Monitor', icon: LineChart, roles: ['Admin'] },
+    { id: 'federated', label: 'Federated FL Monitor', icon: Network, roles: ['Admin'] },
+    { id: 'comparison', label: 'Model Comparison', icon: BarChart3, roles: ['Admin'] },
+    { id: 'research', label: 'Research Insights', icon: FileText, roles: ['Doctor', 'Admin'] },
+  ].filter(item => item.roles.includes(userRole));
 
   return (
     <aside className="w-64 bg-slate-900 text-slate-100 flex flex-col min-h-screen border-r border-slate-800">
@@ -69,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab, onLog
           className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium text-slate-400 hover:bg-red-950/20 hover:text-red-400 transition-colors"
         >
           <LogOut className="h-5 w-5" />
-          Doctor Sign Out
+          {userRole === 'Doctor' ? 'Clinician Sign Out' : 'Admin Sign Out'}
         </button>
       </div>
     </aside>
