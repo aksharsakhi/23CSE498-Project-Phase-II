@@ -20,6 +20,14 @@ if [ ! -f "$DB_FILE" ]; then
     python3 "$BASE_DIR/backend/init_db.py"
 fi
 
+# Check if port 8000 is occupied and terminate conflicting process to avoid bind failure
+PORT_8000_PID=$(lsof -t -i :8000)
+if [ ! -z "$PORT_8000_PID" ]; then
+    echo "⚠️ Port 8000 is occupied by process ID $PORT_8000_PID. Freeing port 8000..."
+    kill -9 $PORT_8000_PID
+    sleep 1
+fi
+
 # 1. Start FastAPI Backend in the background
 echo "🚀 1. Booting FastAPI Clinical Warehouse Server on port 8000..."
 python3 -m uvicorn backend.main:app --host 127.0.0.1 --port 8000 &
