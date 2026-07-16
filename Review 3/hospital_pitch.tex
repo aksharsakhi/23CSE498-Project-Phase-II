@@ -53,11 +53,33 @@
         A Pitch for Hospital Partnership, Data Collaboration, and Pilot ICU Deployment
     \end{block}
 
-    \vspace{0.4cm}
+    \vspace{0.6cm}
     {\scriptsize
-    Presented by: \textbf{FPDAF Clinical AI Research Team} \\
-    Department of Computer Science and Engineering, Amrita Vishwa Vidyapeetham
+    Presented by: \textbf{FPDAF Clinical AI Research Team}
     }
+\end{frame}
+
+% --- NEW SLIDE 2: WHAT IS SEPSIS ---
+\begin{frame}{Clinical Profile of ICU Sepsis}
+    \begin{block}{What Sepsis is}
+        \scriptsize
+        Sepsis is a life-threatening medical emergency caused by the body's extreme, systemic immune response to an infection, which ends up damaging its own tissues, blood vessels, and vital organs.
+    \end{block}
+    
+    \begin{block}{Why it is Dangerous}
+        \scriptsize
+        If not diagnosed immediately, it rapidly progresses to Septic Shock, leading to multi-organ failure, a sudden drop in blood pressure, and high mortality rates.
+    \end{block}
+    
+    \begin{block}{The Clinical Time-Window Challenge}
+        \scriptsize
+        Sepsis is notoriously difficult to detect early because its initial symptoms resemble general infections. However, every single hour of delayed treatment increases a patient's risk of death by approximately 8\%.
+    \end{block}
+    
+    \begin{alertblock}{Role of Our Project}
+        \scriptsize
+        By continuously analyzing ICU vital signals, our FPDAF framework acts as an early-warning radar system, alerting doctors hours before a patient clinically deteriorates, giving clinicians a vital head-start to administer antibiotics and fluids.
+    \end{alertblock}
 \end{frame}
 
 
@@ -87,32 +109,55 @@
 \end{frame}
 
 
-% --- SLIDE 3: THE PROPOSED SOLUTION ---
+% --- SLIDE 4: THE PROPOSED SOLUTION ---
 \begin{frame}{The Proposed Solution: FPDAF}
     \begin{block}{What is FPDAF?}
         \scriptsize
         The \textbf{Federated Personalized Drift-Aware Attention Framework} is a decentralized, secure clinical early-warning system. It trains sequential models collaboratively across multiple clinical centers without ever exchanging raw patient records.
     \end{block}
     
+    \begin{block}{1. Local Security (Zero Data Transfers)}
+        \scriptsize
+        All clinical tensors stay 100\% behind your local firewall. Only model weights are aggregated (fully HIPAA \& DPDPA compliant).
+    \end{block}
+    
+    \begin{block}{2. Adaptive Personalization (Ditto Optimization)}
+        \scriptsize
+        Unlike rigid central models, FPDAF uses Ditto optimization to adapt local classifier heads to fit your specific patient demographics.
+    \end{block}
+    
+    \begin{alertblock}{3. Explainable AI (Bedside Interpretability)}
+        \scriptsize
+        Multi-head temporal self-attentions map risk alerts back to specific patient vitals and ICU stay hours, explaining predictions to physicians.
+    \end{alertblock}
+\end{frame}
+
+% --- NEW SLIDE 5: MODEL INPUTS & OUTPUTS ---
+\begin{frame}{Clinical Model: Inputs \& Outputs}
     \begin{columns}[t]
-        \begin{column}{0.32\textwidth}
-            \begin{block}{1. Local Security}
-                \tiny
-                All clinical tensors stay 100\% behind your local firewall. Only model weights are aggregated.
+        \begin{column}{0.48\textwidth}
+            \begin{block}{[Input] 1. Our Input (24h Sliding Window)}
+                \scriptsize
+                The input is a rolling 24-hour sequence window of multivariate physiological data for an ICU patient, consisting of:
+                \begin{itemize}
+                    \scriptsize
+                    \item \textbf{Continuous Vital Signs:} Heart Rate (HR), Systolic Blood Pressure (SBP), Body Temperature, Oxygen Saturation (SpO$_2$), and Respiration Rate.
+                    \item \textbf{Sparse Laboratory Measurements:} Hourly blood work values (like WBC, Platelets, Creatinine, and Lactate levels).
+                    \item \textbf{Static Demographics:} General patient parameters (Age, Gender, and Ward location).
+                \end{itemize}
             \end{block}
         \end{column}
         
-        \begin{column}{0.34\textwidth}
-            \begin{block}{2. Adaptive Personalization}
-                \tiny
-                Unlike rigid central models, FPDAF uses Ditto optimization to adapt local classifier heads to fit your specific patient demographics.
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.32\textwidth}
-            \begin{block}{3. Explainable AI}
-                \tiny
-                Multi-head temporal self-attentions map risk alerts back to specific patient vitals and ICU stay hours.
+        \begin{column}{0.52\textwidth}
+            \begin{block}{[Output] 2. Our Output / Prediction}
+                \scriptsize
+                The model processes this 24-hour sequence and outputs three specific results:
+                \begin{itemize}
+                    \scriptsize
+                    \item \textbf{Sepsis Risk Probability Score:} A real-time probability percentage (from 0\% to 100\%) indicating the sepsis likelihood.
+                    \item \textbf{Bedside Alarm Alert (Stable vs. Critical):} A binary clinical notification flag triggered if the risk probability score crosses the safety threshold.
+                    \item \textbf{Temporal Attention Heatmap (XAI):} A timeline overlay showing the exact attention weights computed for each hour, telling the clinician exactly which specific hours/trends (e.g., drop in SpO$_2$ at hour 15, spike in HR at hour 19) caused the high risk.
+                \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
@@ -169,38 +214,37 @@
 \end{frame}
 
 
-% --- SLIDE 6: WHAT WE NEED FROM YOU ---
+% --- SLIDE 8: WHAT WE NEED FROM YOU ---
 \begin{frame}{What We Need: Collaborative Partnership Proposal}
     \begin{alertblock}{We are seeking progressive healthcare institutions to partner in a pilot study:}
         \scriptsize
         We do not require budget allocations. We are proposing a technical collaboration consisting of three items:
     \end{alertblock}
     
-    \begin{columns}[t]
-        \begin{column}{0.32\textwidth}
-            \begin{block}{1. Clinical Guidance}
-                \tiny
-                \textbf{Physician Feedback:} \\
-                Access to ICU physicians to review the bedside UI, validate alert thresholds, and provide clinical input on explainability mappings.
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.34\textwidth}
-            \begin{block}{2. Local Docker Client}
-                \tiny
-                \textbf{IT Infrastructure:} \\
-                Permission to host a secure, dockerized local model client inside your data center. The server aggregates only weight tensors (low compute).
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.32\textwidth}
-            \begin{block}{3. Retrospective Validation}
-                \tiny
-                \textbf{Historical Data:} \\
-                Access to anonymized, retrospective historical ICU vital logs to fine-tune and evaluate the localized model head.
-            \end{block}
-        \end{column}
-    \end{columns}
+    \begin{block}{1. Clinical Guidance (Physician Feedback)}
+        \scriptsize
+        Access to ICU physicians to review the bedside UI, validate alert thresholds, and provide clinical input on explainability mappings.
+    \end{block}
+    
+    \begin{block}{2. Local Docker Client (IT Infrastructure)}
+        \scriptsize
+        Permission to host a secure, dockerized local model client inside your data center. The server aggregates only weight tensors (low compute).
+    \end{block}
+\end{frame}
+
+% --- SLIDE 9: WHAT WE NEED: DATA SPECIFICATION ---
+\begin{frame}{What We Need: Required De-Identified Data}
+    \begin{block}{3. Retrospective Validation (Required ICU Telemetry \& Clinical Records)}
+        \scriptsize
+        To tune the local personalized classifier head to your patient demographics and run retrospective validation trials, we require access to historical, de-identified ICU patient records containing:
+        \begin{itemize}
+            \scriptsize
+            \item \textbf{Hourly Vital Signs:} Heart Rate (HR), Systolic/Diastolic/Mean Blood Pressure, Respiration Rate, Body Temperature, and Oxygen Saturation (SpO$_2$).
+            \item \textbf{Laboratory Measurements:} Routine blood panels (White Blood Cell count, Platelets, Creatinine, Bilirubin, Blood Urea Nitrogen, Glucose, and Lactate levels).
+            \item \textbf{Clinical Outcome Labels:} Time of Sepsis onset (defined by Sepsis-3 clinical criteria) or ICD-10 diagnostic discharge codes.
+            \item \textbf{De-Identification Standards (Strict Zero PII):} All records must be pre-stripped of patient names, medical record numbers, phone numbers, exact zip codes, and specific timestamps to maintain 100\% HIPAA and DPDPA compliance.
+        \end{itemize}
+    \end{block}
 \end{frame}
 
 
@@ -239,10 +283,9 @@
     \begin{block}{Primary Contacts}
         \centering
         \scriptsize
-        CB.SC.U4CSE23547 | SHEELA AKSHAR SAKHI (Team Lead) | aksharsakhi@gmail.com \\
+        SHEELA AKSHAR SAKHI (Team Lead) | aksharsakhi@gmail.com \\
         \vspace{0.1cm}
-        Project Guides: Dr. G R Ramya \& Dr. Vandhana S \\
-        Amrita School of Computing, Coimbatore Campus
+        Clinical AI Engineering Team | Research Partners
     \end{block}
     
     \vspace{0.4cm}
