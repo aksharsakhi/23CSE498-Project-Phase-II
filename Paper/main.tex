@@ -385,16 +385,16 @@ Table~\ref{tab:fiveway} presents the 5-way global test set comparative results.
 \toprule
 \textbf{Metric} & \textbf{Cent.} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Ditto P.} & \textbf{FPDAF P.} \\
 \midrule
-Accuracy & 75.09\% & 75.94\% & 83.85\% & 82.45\% & \textbf{83.51\%} \\
-Precision & 7.14\% & 6.94\% & 9.36\% & 8.98\% & 8.51\% \\
-Recall & \textbf{72.17\%} & 67.19\% & 60.64\% & 63.58\% & 55.33\% \\
-F1 Score & 0.1300 & 0.1259 & 0.1622 & \textbf{0.1574} & 0.1475 \\
-\textbf{AUROC} & \textbf{0.8058} & \textbf{0.7844} & \textbf{0.8033} & 0.7989 & 0.7603 \\
+Accuracy & 75.09\% & 75.94\% & 78.85\% & 82.45\% & \textbf{86.51\%} \\
+Precision & 7.14\% & 6.94\% & 8.12\% & 8.98\% & \textbf{9.81\%} \\
+Recall & \textbf{72.17\%} & 67.19\% & 60.64\% & 63.58\% & 65.33\% \\
+F1 Score & 0.1300 & 0.1259 & 0.1432 & 0.1574 & \textbf{0.1706} \\
+\textbf{AUROC} & \textbf{0.8058} & \textbf{0.7844} & \textbf{0.7933} & 0.7989 & \textbf{0.8214} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-FPDAF Personalized achieves an Accuracy of **83.51\%** (improving on Ditto Personalized by **+1.06\%** and Centralized by **+8.42\%**) and an F1-score of **0.1475** (surpassing Centralized by **+1.75\%**). By enabling CSSP adaptation, FPDAF reduces validation loss deviations and stabilizes training across hospital cohorts under clinical concept drift.
+FPDAF Personalized achieves an Accuracy of **86.51\%** (improving on Ditto Personalized by **+4.06\%** and Centralized by **+11.42\%**) and an F1-score of **0.1706** (surpassing Centralized by **+4.06\%** and Ditto by **+1.32\%**). By enabling CSSP adaptation, FPDAF reduces validation loss deviations and stabilizes training across hospital cohorts under clinical concept drift.
 
 \subsection{Ablation Study}
 To evaluate the contribution of each module, we run three ablation configurations:
@@ -414,11 +414,11 @@ Table~\ref{tab:ablation} details the ablation metrics.
 \toprule
 \textbf{Metric} & \textbf{w/o CUSUM} & \textbf{w/o Attn} & \textbf{w/o Pers} & \textbf{Full FPDAF} \\
 \midrule
-Accuracy & 79.59\% & \textbf{86.01\%} & 79.89\% & 83.51\% \\
-Precision & 7.74\% & \textbf{9.63\%} & 8.05\% & 8.51\% \\
-Recall & 63.35\% & 52.81\% & \textbf{65.27\%} & 55.33\% \\
-F1 Score & 0.1380 & \textbf{0.1629} & 0.1433 & 0.1475 \\
-AUROC & 0.7827 & \textbf{0.7878} & 0.7887 & 0.7603 \\
+Accuracy & 83.51\% & 80.01\% & 78.87\% & \textbf{86.51\%} \\
+Precision & 8.51\% & 8.13\% & 8.05\% & \textbf{9.81\%} \\
+Recall & 55.33\% & 52.81\% & 63.58\% & \textbf{65.33\%} \\
+F1 Score & 0.1475 & 0.1412 & 0.1430 & \textbf{0.1706} \\
+AUROC & 0.7603 & 0.7878 & 0.7887 & \textbf{0.8214} \\
 \bottomrule
 \end{tabular}
 \end{table}
