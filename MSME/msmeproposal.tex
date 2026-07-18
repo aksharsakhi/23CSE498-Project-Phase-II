@@ -59,7 +59,7 @@
     We propose to develop and implement \textbf{FPDAF (Federated Personalized Drift Alerting Framework)}, an intelligent, secure Clinical Decision Support System (CDSS) designed to detect sepsis early in intensive care units (ICUs) while preserving patient data privacy through federated learning.\\
     We aim to install local Edge-AI compute nodes at clinical bedside stations to monitor patient vital streams in real-time, providing early clinical alerts while keeping sensitive patient records entirely within the hospital boundaries.\\[0.2cm]
     \textbf{TRL Verification \& Validation Status (TRL 4/5):} The proposed framework's core algorithms are under active development and testing, validated using simulated hospital networks on historical EHR ICU data. The backend analytics engine and the clinician dashboard prototype are being prepared for shadow pilot runs. A functional workstation demo has been archived for verification on GitHub.\\[0.2cm]
-    \textbf{Clinical Mentorship \& Review:} We are in active communication and collaboration with clinical experts and intensive care doctors to guide the protocol design, clinical review, and non-interventional validation. We have drafted a formal \textbf{Letter of Intent (LoI)} for shadow pilot testing, which is currently under review by partnering regional ICU networks.
+    \textbf{Clinical Mentorship \& Review:} We are in active communication and collaboration with clinical experts and intensive care doctors to guide the protocol design, clinical review, and non-interventional validation of the proposed system.
 }
 \vspace{0.4cm}
 
@@ -135,42 +135,6 @@ We propose the following point-wise clinical and technical objectives for the pr
 \textbf{Methodology Description:}\\
 The proposed Federated Personalized Drift Alerting Framework (FPDAF) processes local patient vital arrays through a shared Bidirectional Long Short-Term Memory (BiLSTM) neural feature extractor and self-attention query layers. To handle clinical variations across different hospitals, local CUSUM (Cumulative Sum) monitors track data distribution changes to flag concept drifts in real-time. When drift is identified, the Client-Side Selective Personalization (CSSP) protocol is triggered to retrain the local classifier head on local EHR ICU data while keeping the global feature representations secure. This hybrid edge-server architecture enables collaborative model learning without compromising hospital data privacy.
 
-\vspace{0.4cm}
-\begin{minipage}{\textwidth}
-\textbf{Bedside Clinician Workstation \& Telemetry Dashboard:}
-\begin{center}
-    \includegraphics[width=0.72\textwidth]{images/dashboarddoctor.png}
-\end{center}
-\vspace{0.1cm}
-The proposed workstation displays live patient telemetry alongside a Temporal Self-Attention Heatmap, showing doctors exactly which clinical parameters (such as respiratory rate or heart rate variations) triggered the alert. This provides immediate explainability for the clinical decision-making process.
-\end{minipage}
-
-\vspace{0.4cm}
-\textbf{Proposed Performance Evidence (MIMIC-IV Federated Simulation)}
-\vspace{0.2cm}
-
-\noindent
-\fcolorbox{blueBorder}{white}{
-\parbox{\dimexpr\textwidth-2\fboxsep-2\fboxrule\relax}{
-\centering
-\setlength{\tabcolsep}{2pt}
-\renewcommand{\arraystretch}{1.2}
-\begin{tabular}{l c c c c c c c}
-\rowcolor{blueBorder}
-\textbf{\textcolor{white}{Model Architecture}} & \textbf{\textcolor{white}{Acc.}} & \textbf{\textcolor{white}{AUROC}} & \textbf{\textcolor{white}{Sens.}} & \textbf{\textcolor{white}{Prec.}} & \textbf{\textcolor{white}{Spec.}} & \textbf{\textcolor{white}{AUPRC}} & \textbf{\textcolor{white}{MCC}} \\
-\hline
-Centralized LSTM & 75.1\% & 0.806 & 72.2\% & 7.1\% & 75.1\% & 0.134 & 0.121 \\
-Standard FedAvg & 75.9\% & 0.784 & 67.2\% & 6.9\% & 76.2\% & 0.125 & 0.119 \\
-Ditto (Personalized) & 82.5\% & 0.799 & 63.6\% & 9.0\% & 82.9\% & 0.158 & 0.149 \\
-\hline
-\rowcolor{greenBg}
-\textbf{FPDAF (Ours)} & \textbf{86.5\%} & \textbf{0.821} & \textbf{65.3\%} & \textbf{9.8\%} & \textbf{84.6\%} & \textbf{0.178} & \textbf{0.210} \\
-\hline
-\end{tabular}
-}
-}
-\vspace{0.2cm}
-\textit{Clinical Evaluation Methodology:} The system is proposed to run as a non-interventional pilot in parallel with standard monitors. Accuracy is evaluated on the Matthews Correlation Coefficient (MCC) and AUPRC to account for ICU dataset class imbalances, verified with 95\% confidence intervals ($\pm$0.015).
 
 \vspace{0.6cm}
 

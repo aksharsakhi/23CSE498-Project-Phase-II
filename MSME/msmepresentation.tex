@@ -219,32 +219,6 @@
     \end{block}
 \end{frame}
 
-% --- SLIDE 6: PROTOTYPE SHOWCASE ---
-\begin{frame}{Bedside Workstation Interface (Prototype Showcase)}
-    \begin{columns}
-        \begin{column}{0.48\textwidth}
-            \centering
-            \begin{tikzpicture}
-                \node[draw=neonCyan!45, fill=cardBg, rounded corners=3pt, inner sep=2pt] {
-                    \includegraphics[width=0.96\textwidth]{images/dashboarddoctor.png}
-                };
-            \end{tikzpicture}
-            \vspace{0.1cm}
-            \scriptsize \textcolor{neonCyan}{\textbf{Figure 1:}} Clinician Bedside Portal showing live vital timelines, risk indicators (78\%), and explainability attention curves.
-        \end{column}
-        
-        \begin{column}{0.48\textwidth}
-            \centering
-            \begin{tikzpicture}
-                \node[draw=neonTeal!45, fill=cardBg, rounded corners=3pt, inner sep=2pt] {
-                    \includegraphics[width=0.96\textwidth]{images/dashboardadmin.png}
-                };
-            \end{tikzpicture}
-            \vspace{0.1cm}
-            \scriptsize \textcolor{neonTeal}{\textbf{Figure 2:}} Admin Telemetry Portal showing validation curves, concept drift triggers, and local aggregation cycles.
-        \end{column}
-    \end{columns}
-\end{frame}
 
 % --- SLIDE 7: PROTOTYPE READINESS & VALIDATION STATUS (TRL 4/5) ---
 \begin{frame}{Prototype Readiness \& Validation Status (TRL 4/5)}
@@ -266,7 +240,7 @@
                 \scriptsize
                 We have active pathways for hospital deployment:
                 \begin{itemize}
-                    \item \textbf{Formal Letter of Intent:} A drafted Letter of Intent (LoI) for pilot testing is currently under clinical review by partnering regional ICU networks.
+                    \item \textbf{Clinical Collaboration:} Ongoing engagement with ICU specialists to refine predictive alert thresholds and clinical workflow.
                     \item \textbf{Clinical Mentorship:} We are in active communication and review with senior ICU clinicians to oversee pilot testing protocols.
                 \end{itemize}
             \end{block}
@@ -274,39 +248,6 @@
     \end{columns}
 \end{frame}
 
-% --- SLIDE 8: PERFORMANCE EVIDENCE ---
-\begin{frame}{Performance Evidence (MIMIC-IV Federated Simulation)}
-    \begin{columns}[c]
-        \begin{column}{0.62\textwidth}
-            \scriptsize
-            \setlength{\tabcolsep}{2.5pt}
-            \renewcommand{\arraystretch}{1.2}
-            \begin{tabular}{l c c c c c c c}
-            \hline
-            \rowcolor{lightCyanBg}
-            \textbf{\textcolor{neonCyan}{Model Architecture}} & \textbf{\textcolor{neonCyan}{Acc.}} & \textbf{\textcolor{neonCyan}{AUROC}} & \textbf{\textcolor{neonCyan}{Sens.}} & \textbf{\textcolor{neonCyan}{Prec.}} & \textbf{\textcolor{neonCyan}{Spec.}} & \textbf{\textcolor{neonCyan}{AUPRC}} & \textbf{\textcolor{neonCyan}{MCC}} \\
-            \hline
-            Centralized LSTM & 75.1\% & 0.806 & 72.2\% & 7.1\% & 75.1\% & 0.134 & 0.121 \\
-            Standard FedAvg & 75.9\% & 0.784 & 67.2\% & 6.9\% & 76.2\% & 0.125 & 0.119 \\
-            Ditto (Personalized) & 82.5\% & 0.799 & 63.6\% & 9.0\% & 82.9\% & 0.158 & 0.149 \\
-            \rowcolor{neonTeal!15}
-            \textbf{\textcolor{textColor}{FPDAF (Ours)}} & \textbf{86.5\%} & \textbf{0.821} & \textbf{65.3\%} & \textbf{9.8\%} & \textbf{84.6\%} & \textbf{0.178} & \textbf{0.210} \\
-            \hline
-            \end{tabular}
-        \end{column}
-        
-        \begin{column}{0.34\textwidth}
-            \begin{block}{\textcolor{neonCyan}{Quantitative Strengths}}
-                \scriptsize
-                Our framework significantly outperforms cloud-only and standard FL approaches:
-                \begin{itemize}
-                    \item \textbf{86.5\% Accuracy:} High sensitivity (65.3\%) while minimizing false alerts.
-                    \item \textbf{0.210 MCC:} Highest Matthews Correlation Coefficient on heavily imbalanced ICU datasets.
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
 
 % --- SLIDE 9: COMPETITIVE MATRIX ---
 \begin{frame}{Competitive Matrix: Comparison of Key Capabilities}
