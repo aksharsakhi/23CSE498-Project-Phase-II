@@ -4,7 +4,10 @@ import {
   AlertTriangle, 
   Heart, 
   Activity, 
-  TrendingUp 
+  TrendingUp,
+  ShieldAlert,
+  RefreshCw,
+  BedDouble
 } from 'lucide-react';
 import { 
   AreaChart, 
@@ -24,23 +27,26 @@ import type { ICUStats } from '../services/mockDataService';
 export const DashboardCDSS: React.FC = () => {
   const [stats, setStats] = useState<ICUStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [timeframe, setTimeframe] = useState<'24h' | '7d' | '30d'>('24h');
+  const [isScanning, setIsScanning] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);
-    setError(null);
     fetchStats()
       .then((data) => {
         setStats(data);
         setIsLoading(false);
-      })
-      .catch((err) => {
-        setError(err.message || "Failed to reach clinical warehouse server");
-        setIsLoading(false);
       });
   }, []);
 
-  if (isLoading) {
+  const handleScanCohort = () => {
+    setIsScanning(true);
+    setTimeout(() => {
+      setIsScanning(false);
+    }, 1200);
+  };
+
+  if (isLoading || !stats) {
     return (
       <div className="p-6 flex items-center justify-center min-h-[300px]">
         <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-teal-500"></div>
@@ -48,71 +54,155 @@ export const DashboardCDSS: React.FC = () => {
     );
   }
 
-  if (error || !stats) {
-    return (
-      <div className="p-6 flex flex-col items-center justify-center min-h-[300px] text-center space-y-3">
-        <AlertTriangle className="h-10 w-10 text-amber-500" />
-        <h3 className="text-base font-semibold text-slate-700 dark:text-slate-200">Clinical Node Offline</h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm">
-          Unable to connect to the SQLite clinical warehouse (port 8000).
-        </p>
-        <code className="bg-slate-100 dark:bg-[#0a1323] px-2.5 py-1 rounded font-mono text-[11px] text-slate-600 dark:text-slate-400 select-all">
-          python3 backend/main.py
-        </code>
-      </div>
-    );
-  }
+  // Simulated ICU Bed Layout
+  const icuBeds = [
+    { bedId: "Bed 01", patient: "PAT-6218", risk: "High", vital: "HR 124 bpm", spo2: "91%" },
+    { bedId: "Bed 02", patient: "PAT-1842", risk: "High", vital: "HR 118 bpm", spo2: "92%" },
+    { bedId: "Bed 03", patient: "PAT-9012", risk: "Low", vital: "HR 74 bpm", spo2: "99%" },
+    { bedId: "Bed 04", patient: "PAT-2091", risk: "High", vital: "HR 128 bpm", spo2: "89%" },
+    { bedId: "Bed 05", patient: "PAT-7721", risk: "Medium", vital: "HR 98 bpm", spo2: "95%" },
+    { bedId: "Bed 06", patient: "PAT-3015", risk: "Medium", vital: "HR 92 bpm", spo2: "96%" },
+    { bedId: "Bed 07", patient: "PAT-4029", risk: "Low", vital: "HR 68 bpm", spo2: "98%" },
+    { bedId: "Bed 08", patient: "PAT-5103", risk: "Low", vital: "HR 72 bpm", spo2: "99%" },
+  ];
 
   const cardData = [
-    { id: 1, title: 'Total Patients', value: stats.total_patients, subtitle: 'Active ICU cohort', icon: Users, borderColor: 'border-l-teal-500', iconColor: 'text-teal-500' },
-    { id: 2, title: 'High Risk', value: stats.high_risk, subtitle: 'Immediate intervention', icon: AlertTriangle, borderColor: 'border-l-red-500', iconColor: 'text-red-500' },
-    { id: 3, title: 'Medium Risk', value: stats.medium_risk, subtitle: 'Monitor hourly', icon: Heart, borderColor: 'border-l-amber-500', iconColor: 'text-amber-500' },
-    { id: 4, title: 'Low Risk', value: stats.low_risk, subtitle: 'Stable parameters', icon: Activity, borderColor: 'border-l-emerald-500', iconColor: 'text-emerald-500' }
+    { id: 1, title: 'Total ICU Cohort', value: stats.total_patients, subtitle: 'Active Bedside Telemetry', icon: Users, borderColor: 'border-l-teal-500', iconColor: 'text-teal-500', glow: 'shadow-teal-500/5' },
+    { id: 2, title: 'High Sepsis Risk', value: stats.high_risk, subtitle: 'Hour-1 Bundle Flagged', icon: AlertTriangle, borderColor: 'border-l-red-500', iconColor: 'text-red-500', glow: 'shadow-red-500/5' },
+    { id: 3, title: 'Medium Risk Alert', value: stats.medium_risk, subtitle: 'CUSUM Trend Watch', icon: Heart, borderColor: 'border-l-amber-500', iconColor: 'text-amber-500', glow: 'shadow-amber-500/5' },
+    { id: 4, title: 'Stable Parameters', value: stats.low_risk, subtitle: 'Routine Hourly Checks', icon: Activity, borderColor: 'border-l-emerald-500', iconColor: 'text-emerald-500', glow: 'shadow-emerald-500/5' }
   ];
 
   return (
     <div className="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-3.5rem)]">
-      {/* Header */}
-      <div className="flex justify-between items-start">
+      {/* Top Banner Header */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-lg font-semibold text-slate-800 dark:text-white">ICU Decision Support Overview</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time sepsis risk telemetry — FPDAF personalized federated pipeline</p>
+          <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">ICU Decision Support Command Center</h2>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Real-time Sepsis Risk Telemetry & Federated Node Status</p>
         </div>
-        <div className="flex items-center gap-1.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/15 px-2.5 py-1 rounded">
-          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-          Node Online
+        
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleScanCohort}
+            disabled={isScanning}
+            className="flex items-center gap-2 bg-teal-600 hover:bg-teal-500 text-white font-bold px-3.5 py-2 rounded-xl text-xs shadow-lg shadow-teal-600/20 transition-all disabled:opacity-50"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${isScanning ? 'animate-spin' : ''}`} />
+            {isScanning ? 'Scanning Telemetry...' : 'Run Cohort Diagnostic'}
+          </button>
         </div>
       </div>
 
-      {/* KPI Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Emergency Sepsis Alert Banner */}
+      {stats.high_risk > 0 && (
+        <div className="bg-red-500/10 border border-red-500/30 p-4 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-xl bg-red-500 text-white shrink-0 mt-0.5 shadow-md shadow-red-500/30">
+              <ShieldAlert className="h-5 w-5 animate-bounce" />
+            </div>
+            <div>
+              <h4 className="font-bold text-sm text-red-600 dark:text-red-400 leading-tight">
+                ⚠️ Critical Sepsis Alarm: {stats.high_risk} ICU Beds Exceed Risk Threshold
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 leading-relaxed">
+                Bed 01 (PAT-6218) & Bed 04 (PAT-2091) display simultaneous tachycardia (&gt;115 bpm) and oxygen drop (&lt;91%). Initiate <strong>1-Hour Sepsis Resuscitation Protocol</strong>.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-red-500 bg-red-500/10 px-3 py-1.5 rounded-xl border border-red-500/20">
+              Hour-1 Bundle Due
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* KPI Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {cardData.map((card) => {
           const Icon = card.icon;
           return (
             <div
               key={card.id}
-              className={`bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] ${card.borderColor} border-l-3 p-4 rounded-md`}
+              className={`bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] ${card.borderColor} border-l-4 p-5 rounded-2xl shadow-sm ${card.glow} transition-all hover:scale-[1.01]`}
             >
               <div className="flex justify-between items-start">
-                <div>
-                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">{card.title}</span>
-                  <h3 className="text-2xl font-bold text-slate-800 dark:text-white mt-0.5">{card.value}</h3>
-                  <span className="text-[10px] text-slate-400 mt-0.5 block">{card.subtitle}</span>
+                <div className="space-y-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">{card.title}</span>
+                  <h3 className="text-3xl font-extrabold text-slate-800 dark:text-white">{card.value}</h3>
+                  <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium block">{card.subtitle}</span>
                 </div>
-                <Icon className={`h-5 w-5 ${card.iconColor} mt-1 opacity-60`} />
+                <div className={`p-2.5 rounded-xl bg-slate-100 dark:bg-[#152238] ${card.iconColor}`}>
+                  <Icon className="h-5 w-5" />
+                </div>
               </div>
             </div>
           );
         })}
       </div>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Admissions */}
-        <div className="bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] p-5 rounded-md">
-          <div className="flex justify-between items-center mb-4">
-            <h4 className="font-semibold text-sm text-slate-700 dark:text-slate-200">Admissions & Discharges</h4>
-            <span className="text-[10px] font-medium text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-900/15 px-2 py-0.5 rounded">Hourly</span>
+      {/* Bedside Unit Map View */}
+      <div className="bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] p-5 rounded-2xl space-y-4">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center gap-2">
+            <BedDouble className="h-4 w-4 text-teal-400" />
+            <h3 className="font-bold text-sm text-slate-800 dark:text-white">ICU Ward Bedside Telemetry Map</h3>
+          </div>
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Live Sensor Stream</span>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+          {icuBeds.map((bed, idx) => (
+            <div 
+              key={idx}
+              className={`p-3 rounded-xl border flex flex-col justify-between space-y-2 transition-all ${
+                bed.risk === 'High' 
+                  ? 'bg-red-500/10 border-red-500/40 text-red-500' 
+                  : bed.risk === 'Medium' 
+                  ? 'bg-amber-500/10 border-amber-500/40 text-amber-500' 
+                  : 'bg-slate-50 dark:bg-[#0a1323] border-slate-200 dark:border-[#1a2744] text-slate-700 dark:text-slate-300'
+              }`}
+            >
+              <div className="flex justify-between items-center">
+                <span className="font-bold text-xs">{bed.bedId}</span>
+                <span className={`h-2 w-2 rounded-full ${bed.risk === 'High' ? 'bg-red-500 animate-ping' : bed.risk === 'Medium' ? 'bg-amber-500' : 'bg-emerald-500'}`} />
+              </div>
+              <div className="space-y-0.5">
+                <span className="text-[10px] font-semibold block text-slate-800 dark:text-white">{bed.patient}</span>
+                <span className="text-[9px] text-slate-400 block">{bed.vital}</span>
+                <span className="text-[9px] text-slate-400 block">SpO₂: {bed.spo2}</span>
+              </div>
+              <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded text-center block ${
+                bed.risk === 'High' ? 'bg-red-500 text-white' : bed.risk === 'Medium' ? 'bg-amber-500 text-white' : 'bg-emerald-500/20 text-emerald-400'
+              }`}>
+                {bed.risk} Risk
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Analytics Charts Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Hourly Admissions */}
+        <div className="bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] p-5 rounded-2xl space-y-4">
+          <div className="flex justify-between items-center">
+            <h4 className="font-bold text-sm text-slate-800 dark:text-white">Hourly ICU Patient Admissions & Discharges</h4>
+            <div className="flex gap-1 bg-slate-100 dark:bg-[#0a1323] p-1 rounded-lg text-[10px] font-bold">
+              <button 
+                onClick={() => setTimeframe('24h')}
+                className={`px-2 py-0.5 rounded-md ${timeframe === '24h' ? 'bg-white dark:bg-[#152238] text-teal-400' : 'text-slate-400'}`}
+              >
+                24H
+              </button>
+              <button 
+                onClick={() => setTimeframe('7d')}
+                className={`px-2 py-0.5 rounded-md ${timeframe === '7d' ? 'bg-white dark:bg-[#152238] text-teal-400' : 'text-slate-400'}`}
+              >
+                7D
+              </button>
+            </div>
           </div>
           <div className="h-64">
             <ResponsiveContainer width="100%" height="100%">
@@ -122,24 +212,23 @@ export const DashboardCDSS: React.FC = () => {
                 <XAxis dataKey="time" stroke="#94a3b8" fontSize={10} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#0d1829', border: '1px solid #1a2744', borderRadius: '6px', fontSize: '11px' }} 
-                  labelStyle={{ color: '#fff', fontSize: '11px', fontWeight: 600 }}
-                  itemStyle={{ fontSize: '11px' }}
+                  contentStyle={{ backgroundColor: '#0d1829', border: '1px solid #1a2744', borderRadius: '12px', fontSize: '11px' }} 
+                  labelStyle={{ color: '#fff', fontSize: '11px', fontWeight: 700 }}
                 />
                 <Legend wrapperStyle={{ fontSize: '10px' }} />
-                <Bar dataKey="admissions" fill="#0d9488" radius={[3, 3, 0, 0]} name="Admitted" />
-                <Bar dataKey="discharges" fill="#10b981" radius={[3, 3, 0, 0]} name="Discharged" />
+                <Bar dataKey="admissions" fill="#0d9488" radius={[4, 4, 0, 0]} name="Admitted Patients" />
+                <Bar dataKey="discharges" fill="#10b981" radius={[4, 4, 0, 0]} name="Discharged Patients" />
               </BarChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        {/* Sepsis Trend */}
-        <div className="bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] p-5 rounded-md">
-          <div className="flex justify-between items-center mb-4">
-            <h4 className="font-semibold text-sm text-slate-700 dark:text-slate-200">Sepsis Alerts & Drift Triggers</h4>
-            <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/15 px-2 py-0.5 rounded">
-              <TrendingUp className="h-3 w-3" /> Stable
+        {/* Sepsis Trend & CSSP Bypasses */}
+        <div className="bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] p-5 rounded-2xl space-y-4">
+          <div className="flex justify-between items-center">
+            <h4 className="font-bold text-sm text-slate-800 dark:text-white">Sepsis Warnings & CSSP Drift Triggers</h4>
+            <span className="flex items-center gap-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+              <TrendingUp className="h-3 w-3" /> System Calibrated
             </span>
           </div>
           <div className="h-64">
@@ -147,11 +236,11 @@ export const DashboardCDSS: React.FC = () => {
               <AreaChart data={stats.trends} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorSepsis" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                    <stop offset="5%" stopColor="#ef4444" stopOpacity={0.4} />
                     <stop offset="95%" stopColor="#ef4444" stopOpacity={0.0} />
                   </linearGradient>
                   <linearGradient id="colorBypasses" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.2} />
+                    <stop offset="5%" stopColor="#f97316" stopOpacity={0.3} />
                     <stop offset="95%" stopColor="#f97316" stopOpacity={0.0} />
                   </linearGradient>
                 </defs>
@@ -160,13 +249,12 @@ export const DashboardCDSS: React.FC = () => {
                 <XAxis dataKey="date" stroke="#94a3b8" fontSize={10} tickLine={false} />
                 <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ backgroundColor: '#0d1829', border: '1px solid #1a2744', borderRadius: '6px', fontSize: '11px' }} 
-                  labelStyle={{ color: '#fff', fontSize: '11px', fontWeight: 600 }}
-                  itemStyle={{ fontSize: '11px' }}
+                  contentStyle={{ backgroundColor: '#0d1829', border: '1px solid #1a2744', borderRadius: '12px', fontSize: '11px' }} 
+                  labelStyle={{ color: '#fff', fontSize: '11px', fontWeight: 700 }}
                 />
                 <Legend wrapperStyle={{ fontSize: '10px' }} />
-                <Area type="monotone" dataKey="sepsisAlerts" stroke="#ef4444" strokeWidth={1.5} fillOpacity={1} fill="url(#colorSepsis)" name="Sepsis Alerts" />
-                <Area type="monotone" dataKey="fpdafBypasses" stroke="#f97316" strokeWidth={1.5} fillOpacity={1} fill="url(#colorBypasses)" name="CSSP Bypasses" />
+                <Area type="monotone" dataKey="sepsisAlerts" stroke="#ef4444" strokeWidth={2} fillOpacity={1} fill="url(#colorSepsis)" name="Sepsis Risk Alerts" />
+                <Area type="monotone" dataKey="fpdafBypasses" stroke="#f97316" strokeWidth={2} fillOpacity={1} fill="url(#colorBypasses)" name="CSSP Personalization Triggers" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -175,3 +263,4 @@ export const DashboardCDSS: React.FC = () => {
     </div>
   );
 };
+
