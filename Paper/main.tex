@@ -8,7 +8,8 @@
 \usepackage{textcomp}
 \usepackage{xcolor}
 \usepackage{booktabs}
-\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -353,9 +354,34 @@ yielding a weighted context vector $c = \sum_{t=1}^{24} \alpha_t h_t$.
 \end{enumerate}
 
 \subsection{Adaptive Divergence-Weighted CUSUM (AD-CUSUM) Concept Drift Monitoring}
-To detect statistical shifts in client-specific ICU population distributions, FPDAF introduces a novel \textbf{Adaptive Divergence-Weighted Cumulative Sum (AD-CUSUM)} online drift monitor. Unlike univariate loss CUSUM, AD-CUSUM incorporates prediction entropy divergence and gradient variance weighting into a unified recurrence update:
+To detect statistical shifts in client-specific ICU population distributions, we developed a novel algorithm: \textbf{Adaptive Divergence-Weighted Cumulative Sum (AD-CUSUM)}. Unlike classical univariate loss CUSUM, AD-CUSUM incorporates prediction entropy divergence and gradient variance weighting into a unified online recurrence update developed specifically in this project:
 $$S_r = \max\left(0, S_{r-1} + w_{\text{grad}}^{(r)} \cdot \left(\mathcal{L}_{val, r} + \beta \cdot D_{\text{JSD}}^{(r)} - \kappa_r\right)\right)$$
-where $D_{\text{JSD}}^{(r)} = \text{JSD}\left(P^{(r)} \parallel P^{(r-1)}\right)$ computes Jensen-Shannon Divergence of output prediction probabilities across rounds, $w_{\text{grad}}^{(r)} = 1 + \tanh(\gamma \cdot \text{Var}(\nabla_\theta \mathcal{L}))$ scales residual progression by classifier head gradient variance to suppress stochastic mini-batch noise, and $\kappa_r = \mu_{\text{loss}} + \alpha \sigma_{\text{loss}}$ auto-calibrates dynamic slack. When $S_r > h$ (threshold $h = 3.0$), concept drift is flagged and $S_r$ resets to 0.
+where $D_{\text{JSD}}^{(r)} = \text{JSD}\left(P^{(r)} \parallel P^{(r-1)}\right)$ computes Jensen-Shannon Divergence of output prediction probabilities across rounds, $w_{\text{grad}}^{(r)} = 1 + \tanh(\gamma \cdot \text{Var}(\nabla_\theta \mathcal{L}))$ scales residual progression by classifier head gradient variance to suppress stochastic mini-batch noise, and $\kappa_r = \mu_{\text{loss}} + \alpha \sigma_{\text{loss}}$ auto-calibrates dynamic slack. The complete algorithmic procedure developed in this work is formalized in Algorithm~\ref{alg:ad_cusum}.
+
+\begin{algorithm}[htbp]
+\caption{Proposed AD-CUSUM Drift Detection Algorithm (Developed in this Project)}
+\label{alg:ad_cusum}
+\begin{algorithmic}[1]
+\REQUIRE Validation loss $\mathcal{L}_{\text{val}, r}$, predictions $P^{(r)}$, baseline $\mu_0$, threshold $H = 3.0$, parameters $\beta, \gamma, \alpha$.
+\ENSURE Drift alert flag $\text{drift\_flag} \in \{\text{True}, \text{False}\}$, updated score $S_r$.
+\STATE Compute Dynamic Slack: $\kappa_r \leftarrow \max(0.01, \mu_{\text{loss}} + \alpha \cdot \sigma_{\text{loss}} - \mu_0)$
+\IF{$P^{(r-1)}$ is not Null}
+    \STATE $D_{\text{JSD}}^{(r)} \leftarrow \text{JSD}\left(P^{(r)} \parallel P^{(r-1)}\right)$
+\ELSE
+    \STATE $D_{\text{JSD}}^{(r)} \leftarrow 0.0$
+\ENDIF
+\STATE Compute Gradient Variance Weight: $w_{\text{grad}}^{(r)} \leftarrow 1.0 + \tanh\left(\gamma \cdot \text{Var}(\nabla_\theta \mathcal{L})\right)$
+\STATE Calculate Increment: $\Delta S_r \leftarrow w_{\text{grad}}^{(r)} \cdot \left((\mathcal{L}_{\text{val}, r} - \mu_0) + \beta \cdot D_{\text{JSD}}^{(r)} - \kappa_r\right)$
+\STATE Update Score: $S_r \leftarrow \max(0, S_{r-1} + \Delta S_r)$
+\IF{$S_r > H$}
+    \STATE $\text{drift\_flag} \leftarrow \text{True}$ \COMMENT{Trigger Client-Side Selective Personalization (CSSP)}
+    \STATE $S_r \leftarrow 0.0$ \COMMENT{Reset running drift score}
+\ELSE
+    \STATE $\text{drift\_flag} \leftarrow \text{False}$
+\ENDIF
+\RETURN $\text{drift\_flag}, S_r$
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Client-Side Selective Personalization (CSSP)}
 Upon triggering concept drift, the client initiates the CSSP protocol. In the subsequent communication round:

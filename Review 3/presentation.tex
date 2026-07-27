@@ -313,6 +313,25 @@
     \end{columns}
 \end{frame}
 
+% --- NEW SLIDE: DEVELOPED AD-CUSUM ALGORITHM PSEUDOCODE ---
+\begin{frame}{Our Developed Algorithm: AD-CUSUM Pseudocode}
+    \begin{block}{AD-CUSUM (Adaptive Divergence-Weighted CUSUM) Algorithmic Procedure}
+        \scriptsize
+        \begin{enumerate}
+            \item \textbf{Input:} Client validation loss $\mathcal{L}_{val, r}$, output probabilities $P^{(r)}$, baseline loss $\mu_0$, threshold $H = 3.0$.
+            \item \textbf{Dynamic Slack Calculation:} Auto-calibrate slack threshold:
+            \[ \kappa_r \leftarrow \max(0.01, \mu_{loss} + \alpha \cdot \sigma_{loss} - \mu_0) \]
+            \item \textbf{Entropy Divergence ($D_{\text{JSD}}$):} Measure prediction distribution shift:
+            \[ D_{\text{JSD}}^{(r)} \leftarrow \text{JSD}\left(P^{(r)} \parallel P^{(r-1)}\right) \]
+            \item \textbf{Gradient Variance Weight ($w_{\text{grad}}$):} Scale progression by head gradient variance:
+            \[ w_{\text{grad}}^{(r)} \leftarrow 1.0 + \tanh\left(\gamma \cdot \text{Var}(\nabla_\theta \mathcal{L})\right) \]
+            \item \textbf{Recurrence Accumulation:} Update online score:
+            \[ S_r \leftarrow \max\left(0, S_{r-1} + w_{\text{grad}}^{(r)} \cdot \left((\mathcal{L}_{val, r} - \mu_0) + \beta D_{\text{JSD}}^{(r)} - \kappa_r\right)\right) \]
+            \item \textbf{Drift Trigger Rule:} If $S_r > H$, flag concept drift ($\text{drift\_flag} \leftarrow \text{True}$), reset $S_r \leftarrow 0.0$, and execute Client-Side Selective Personalization (CSSP).
+        \end{enumerate}
+    \end{block}
+\end{frame}
+
 % --- EXPERIMENTAL OVERVIEW & BENCHMARK TABLE (5) ---
 \begin{frame}{Five-Way Model Benchmarking Results}
     \scriptsize
