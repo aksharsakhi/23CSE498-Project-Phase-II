@@ -52,49 +52,76 @@ CB.SC.U4CSE23753}
 \maketitle
 
 \begin{abstract}
-Early detection of clinical sepsis in Intensive Care Units (ICUs) is essential for preventing septic shock and organ failure. While deep learning models offer high predictive precision over multivariate time-series data, their clinical adoption is restricted by strict data privacy laws (the privacy gap), institutional patient demographic heterogeneity (the accuracy gap), online temporal concept drift, and a lack of model transparency (the trust gap). To overcome these challenges, this paper presents a novel \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}. FPDAF enables collaborative model training across decentralized hospital nodes without sharing raw electronic health records. The framework introduces two original algorithmic inventions developed in this research: (1) \textbf{Adaptive Divergence-Weighted Cumulative Sum (AD-CUSUM)}, which tracks validation entropy divergence and gradient variance to detect population drift in real-time without false triggers from mini-batch noise, and (2) \textbf{Dynamic Dual-Phase Saliency \& Entropy-Regularized Personalization (DDP-ERP)}, which combines 2D temporal-vital cross-attention with KL-divergence and contrastive loss regularization. Upon drift detection, Client-Side Selective Personalization (CSSP) freezes the shared LSTM backbone parameters and fine-tunes local classification heads, reducing network communication cost by 38\% while cutting local adaptation latency to under 6 minutes. Rigorous 6-way benchmark evaluation on the PhysioNet 2019 Sepsis cohort (40,327 patients across 3 hospital splits) demonstrates that Enhanced FPDAF-v2 achieves a test set Accuracy of \textbf{96.42\%} (surpassing our $>95\%$ target) and an AUROC of \textbf{0.9418}, outperforming standard FedAvg, FedProx, and Ditto frameworks while maintaining complete patient privacy and bedside temporal explainability.
+Early detection of clinical sepsis in Intensive Care Units (ICUs) is vital for preventing septic shock, multi-organ failure, and patient death. While deep learning models achieve high predictive accuracy over multivariate physiological time-series data, their widespread clinical adoption remains constrained by strict medical data privacy regulations (the privacy gap), institutional demographic heterogeneity across hospital sites (the accuracy gap), online temporal concept drift, and a lack of model transparency (the trust gap). To overcome these challenges, this paper presents the \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}. FPDAF enables privacy-preserving collaborative model training across decentralized hospital nodes without transmitting raw electronic medical records. The framework introduces two original algorithmic inventions developed in this research: (1) \textbf{Adaptive Divergence-Weighted Cumulative Sum (AD-CUSUM)}, which monitors validation entropy divergence and classifier gradient variance to detect institutional concept drift in real-time without false triggers from mini-batch stochastic noise, and (2) \textbf{Dynamic Dual-Phase Saliency \& Entropy-Regularized Personalization (DDP-ERP)}, which combines 2D temporal-vital cross-attention with KL-divergence and contrastive loss regularization. Upon drift alert, Client-Side Selective Personalization (CSSP) freezes the shared Bidirectional LSTM backbone parameters and fine-tunes local classification heads privately, reducing network communication cost by 38\% while cutting local adaptation latency to under 6 minutes. Rigorous 6-way benchmark evaluation on the PhysioNet 2019 Sepsis cohort (40,327 patients across 3 hospital splits) demonstrates that Enhanced FPDAF-v2 achieves a test set Accuracy of \textbf{96.42\%} (surpassing our $>95\%$ target) and an AUROC of \textbf{0.9418}, outperforming standard FedAvg, FedProx, and Ditto frameworks while maintaining complete patient privacy and bedside temporal explainability.
 \end{abstract}
 
 \begin{IEEEkeywords}
-Federated Learning, Sepsis Prediction, Concept Drift Detection, Adaptive CUSUM, Dual-Phase Cross Attention, Explainable AI, Clinical Decision Support.
+Federated Learning, Sepsis Prediction, Concept Drift Detection, Adaptive CUSUM, Dual-Phase Cross Attention, Explainable AI, Clinical Decision Support Systems.
 \end{IEEEkeywords}
 
 \section{Introduction}
-Sepsis is a life-threatening medical emergency caused by a dysregulated systemic host immune response to infection, resulting in tissue trauma, severe microvascular dysfunction, acute organ failure, and rapid death \cite{dusing2025sepsis}. If unmanaged, it rapidly escalates to Septic Shock, characterized by refractory hypotension, cellular metabolic collapse, and mortality rates exceeding 50\%. Early diagnosis remains notoriously challenging because initial clinical symptoms (tachycardia, fever, mild tachypnea) closely mimic general non-infectious Systemic Inflammatory Response Syndrome (SIRS). However, the clinical treatment window is extremely narrow: every single hour of delayed antibiotic or fluid administration increases patient mortality risk by approximately $8\%$.
+\subsection{Clinical Emergency \& Sepsis Pathophysiology}
+Sepsis is a life-threatening organ dysfunction caused by a dysregulated host immune response to infection \cite{dusing2025sepsis}. If left unmanaged, sepsis escalates to Septic Shock, characterized by cellular metabolic collapse, severe hypotension, refractory microvascular permeability, and mortality rates exceeding $50\%$. Early diagnosis remains notoriously challenging because initial clinical indicators—such as mild tachycardia, low-grade fever, and tachypnea—closely mimic general non-infectious Systemic Inflammatory Response Syndrome (SIRS). However, the clinical treatment window is extremely narrow: every single hour of delayed antibiotic or fluid resuscitation increases patient mortality risk by approximately $8\%$.
 
-In developing nations like India, sepsis represents a devastating public health crisis. India records an estimated 11.0 to 11.3 million sepsis cases annually, resulting in 2.9 to 3.0 million deaths—accounting for nearly $30\%$ of total national mortality \cite{kalakoti2025fedxai}. Within Indian intensive care units, severe sepsis mortality ranges between $34\%$ and $50\%+$, exacerbated by high rates of Antimicrobial Resistance (AMR). Therefore, developing automated, continuous early-warning systems capable of alerting clinical staff hours prior to clinical deterioration is paramount.
+\subsection{Sepsis Public Health Burden in India}
+In developing nations such as India, sepsis represents an overwhelming public health crisis. India records an estimated 11.0 to 11.3 million sepsis cases annually, resulting in 2.9 to 3.0 million deaths—accounting for nearly $30\%$ of all national deaths \cite{kalakoti2025fedxai}. Within Indian intensive care units, severe sepsis mortality ranges between $34\%$ and $50\%+$, exacerbated by high rates of Antimicrobial Resistance (AMR). Therefore, implementing an automated, continuous early-warning system capable of alerting clinical staff hours prior to overt clinical deterioration is paramount to saving patient lives.
 
-While deep neural networks trained on multivariate physiological time-series (e.g., heart rate, mean arterial pressure, temperature, white blood cell counts) achieve high predictive capacity, centralizing sensitive patient health records into single cloud servers violates strict healthcare data privacy regulations, such as HIPAA and India's Digital Personal Data Protection Act (DPDPA). Federated Learning (FL) provides a decentralized alternative, allowing hospital nodes to collaboratively optimize a shared neural model by exchanging weight updates rather than raw electronic medical records.
+\subsection{The Privacy, Accuracy, and Trust Gaps}
+Although deep neural networks trained on multivariate physiological time-series (e.g., Heart Rate, Mean Arterial Pressure, Temperature, White Blood Cell count) achieve high predictive capacity, centralizing sensitive patient health records into single cloud servers violates strict healthcare data privacy regulations, such as HIPAA and India's Digital Personal Data Protection Act (DPDPA). Federated Learning (FL) provides a decentralized alternative, allowing hospital nodes to collaboratively optimize a shared neural model by exchanging weight updates rather than raw electronic medical records.
 
 However, standard FL frameworks face three major hurdles in real-world critical care environments:
 \begin{enumerate}
-\item \textbf{Institutional \& Demographic Data Heterogeneity (Non-IID Data)}: Patient age distributions, admission criteria, and vital measurement frequencies vary significantly across regional hospitals, causing standard global models (e.g., FedAvg) to suffer performance drops.
+\item \textbf{Data Heterogeneity (Non-IID Data)}: Patient age distributions, admission criteria, and vital measurement frequencies vary significantly across regional hospitals, causing standard global models (e.g., FedAvg) to suffer performance drops.
 \item \textbf{Temporal Concept Drift}: Clinical practice guidelines, seasonal infections, and patient demographics change dynamically over time, rendering static neural networks obsolete.
 \item \textbf{The Clinical Trust \& Transparency Gap}: Physicians cannot rely on "black-box" model outputs without temporal explanations indicating which historical hours and vital signals triggered the alert.
 \end{enumerate}
 
+\subsection{Core Contributions \& Project Inventions}
 To bridge all three gaps, we propose the **Federated Personalized Drift-Aware Attention Framework (FPDAF)**. The key contributions of this paper are:
 \begin{itemize}
-\item \textbf{Formulation of AD-CUSUM Algorithm}: We invent an Adaptive Divergence-Weighted CUSUM drift detection algorithm that integrates Jensen-Shannon prediction entropy divergence ($D_{\text{JSD}}$) and gradient variance weighting ($w_{\text{grad}}$) to detect institutional concept drift without mini-batch noise false alarms.
-\item \textbf{Formulation of DDP-ERP Personalization Algorithm}: We design a Dynamic Dual-Phase Cross-Attention and Entropy-Regularized Soft-Personalization loss ($\mathcal{L}_{\text{DDP-ERP}}$), boosting personalized model accuracy to **96.42\%** and AUROC to **0.9418**.
-\item \textbf{Client-Side Selective Personalization (CSSP)}: We implement a zero-upload local parameter freezing protocol upon drift alert, saving **38\% in communication bandwidth** (1.52 GB vs. 2.48 GB).
+\item \textbf{Formulation of AD-CUSUM Drift Algorithm}: We invent an Adaptive Divergence-Weighted CUSUM drift detection algorithm that integrates Jensen-Shannon prediction entropy divergence ($D_{\text{JSD}}$) and gradient variance weighting ($w_{\text{grad}}$) to detect institutional concept drift without false triggers from mini-batch noise.
+\item \textbf{Formulation of DDP-ERP Personalization Algorithm}: We design a Dynamic Dual-Phase Cross-Attention and Entropy-Regularized Soft-Personalization loss ($\mathcal{L}_{\text{DDP-ERP}}$), boosting personalized model accuracy to \textbf{96.42\%} and AUROC to \textbf{0.9418}.
+\item \textbf{Client-Side Selective Personalization (CSSP)}: We implement a zero-upload local parameter freezing protocol upon drift alert, saving \textbf{38\% in communication bandwidth} (1.52 GB vs. 2.48 GB).
 \item \textbf{Comprehensive 6-Way Benchmarking}: We execute extensive empirical comparisons across Centralized, FedAvg, FedProx, Ditto, FPDAF v1, and FPDAF-v2 models over 40,327 ICU stays.
 \item \textbf{Full-Stack Bedside CDSS Deployment}: We build and deploy a production-grade Clinical Decision Support System workstation linking FastAPI, SQLite, and React Vite UI with interactive 24-hour XAI timeline scrubbers and SSC Hour-1 bundle checklists.
 \end{itemize}
 
 \section{Related Work}
-\subsection{Federated Learning in Healthcare Systems}
-Federated Averaging (FedAvg) \cite{mcmahan2017} introduced iterative local stochastic gradient descent followed by central parameter averaging. To address Non-IID statistical data heterogeneity, FedProx \cite{li2020fedprox} added a quadratic proximal regularization penalty to keep local updates close to global parameters. Personalized federated learning frameworks, such as Ditto \cite{li2021ditto} and FedPer \cite{arivazhagan2020}, uncouple global feature extraction from local classification heads using bi-level optimization. Recent extensions explore vertical federated learning for multi-institutional data \cite{yang2025mvfl} and privacy-preserving microaggregation techniques \cite{gupta2025privacy, maurya2025secure}.
+\subsection{Federated Learning Paradigms in Healthcare}
+Federated Averaging (FedAvg) \cite{mcmahan2017} introduced local stochastic gradient descent followed by central parameter averaging. To address Non-IID statistical data heterogeneity, FedProx \cite{li2020fedprox} added a quadratic proximal regularization penalty to keep local updates close to global parameters. Personalized federated learning frameworks, such as Ditto \cite{li2021ditto} and FedPer \cite{arivazhagan2020}, uncouple global feature extraction from local classification heads using bi-level optimization. Recent extensions explore vertical federated learning for multi-institutional data \cite{yang2025mvfl} and privacy-preserving microaggregation techniques \cite{gupta2025privacy, maurya2025secure}.
 
-\subsection{Concept Drift Detection \& Time-Series Forecasting}
+\subsection{Concept Drift Detection in Clinical Time-Series}
 Statistical process control algorithms, such as Cumulative Sum (CUSUM) and Page-Hinkley tests, monitor residual error progressions to detect distributional shifts \cite{jothimurugesan2022}. However, classical CUSUM charts fail in high-variance deep learning setups due to mini-batch loss fluctuations. In time-series forecasting, attention mechanisms project query-key-value representations to capture long-range temporal dependencies \cite{larocca2021attention, tang2025horizon}. Combining attention with local drift triggers enables dynamic online model adaptation.
 
-\subsection{Explainable AI (XAI) in Critical Care}
+\subsection{Explainable AI (XAI) for Critical Care Triage}
 Clinical adoption requires explainable predictions. Feature attribution tools like SHAP and LIME provide post-hoc local explanations \cite{larocca2022shap, kalakoti2025fedxai}. In sequential deep learning, self-attention mechanisms offer inherent temporal transparency by highlighting specific look-back hours that contribute to high-risk predictions \cite{lei2025supervised}. Sepsis early warning systems deployed across decentralized hospital networks must balance predictive accuracy with instant bedside interpretability \cite{qayyum2023fedsepsis, maher2025automl}.
 
 \section{Methodology \& Data Preprocessing}
-\subsection{PhysioNet 2019 Cohort Processing}
-We evaluate our framework on the PhysioNet Computing in Cardiology Challenge 2019 dataset, comprising 40,327 ICU patient records with 40 hourly physiological signals (e.g., Heart Rate, Mean Arterial Pressure, Temperature, Respiratory Rate, Oxygen Saturation, WBC count) and hourly binary `SepsisLabel` annotations.
+\subsection{PhysioNet 2019 Cohort \& Feature Schema}
+We evaluate our framework on the PhysioNet Computing in Cardiology Challenge 2019 dataset, comprising 40,327 ICU patient records with 40 hourly physiological signals (e.g., Heart Rate, Mean Arterial Pressure, Temperature, Respiratory Rate, Oxygen Saturation, WBC count) and hourly binary `SepsisLabel` annotations. Table~\ref{tab:vitals_schema} details the primary physiological vital signs and clinical laboratory features monitored.
+
+\begin{table}[htbp]
+\caption{Physiological Vital Signs \& Laboratory Schema}
+\label{tab:vitals_schema}
+\centering
+\begin{tabular}{lll}
+\toprule
+\textbf{Category} & \textbf{Clinical Parameter} & \textbf{Measurement Unit} \\
+\midrule
+Vital Signs & Heart Rate (HR) & Beats / min (bpm) \\
+Vital Signs & Systolic Blood Pressure (SBP) & mmHg \\
+Vital Signs & Mean Arterial Pressure (MAP) & mmHg \\
+Vital Signs & Body Temperature & $^\circ$C \\
+Vital Signs & Oxygen Saturation ($\text{SpO}_2$) & \% \\
+Vital Signs & Respiration Rate (Resp) & Breaths / min \\
+Laboratory & White Blood Cell Count (WBC) & $10^3/\mu\text{L}$ \\
+Laboratory & Platelets & $10^3/\mu\text{L}$ \\
+Laboratory & Lactate & mmol/L \\
+Laboratory & Blood Glucose & mg/dL \\
+Demographic & Age \& Gender & Years / Binary \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \subsection{Leakage-Free Preprocessing Pipeline}
 To ensure clinical rigor and prevent data leakage, we establish a three-stage PyTorch data engineering pipeline:
@@ -108,22 +135,17 @@ and applied to validation and testing partitions.
 
 Figures~\ref{fig:preprocessing_comparison} and \ref{fig:preprocessing_padding} visually validate the preprocessing transformations and zero pre-padding routines.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\includegraphics[width=0.92\linewidth]{images/preprocessing_comparison.png}
-\caption{Vital sign time-series before and after patient-level imputation and leakage-free z-score normalization.}
+\includegraphics[width=0.48\textwidth]{images/preprocessing_comparison.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{images/preprocessing_padding.png}
+\caption{(Left) Vital sign time-series before and after patient-level imputation and leakage-free z-score normalization. (Right) Zero pre-padding validation on a short-stay ICU patient window ($T < 24$h) to form uniform 24-hour sequence matrices.}
 \label{fig:preprocessing_comparison}
-\end{figure}
+\end{figure*}
 
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.92\linewidth]{images/preprocessing_padding.png}
-\caption{Zero pre-padding validation on a short-stay ICU patient window ($T < 24$h) to form uniform 24-hour sequence matrices.}
-\label{fig:preprocessing_padding}
-\end{figure}
-
-\section{Centralized Baseline Architecture}
-We first train a Centralized LSTM model on the combined dataset as a reference baseline. The network architecture consists of a 2-layer Bidirectional LSTM backbone (hidden dimension = 64, dropout = 0.3) followed by a dense classification layer.
+\section{Centralized Baseline BiLSTM Model}
+We first train a Centralized Bidirectional LSTM model on the combined dataset as a reference benchmark. The network architecture consists of a 2-layer BiLSTM backbone (hidden dimension = 64, dropout = 0.3) followed by a dense classification layer.
 
 \subsection{Weighted Loss Formulation}
 Given the severe class imbalance in ICU sepsis occurrence ($\sim 2.5\%$ positive window ratio), standard Binary Cross-Entropy (BCE) loss biases models toward false negative predictions. We implement a dynamic positive class weight:
@@ -131,7 +153,7 @@ $$\mathcal{L}_{\text{BCE}} = -\left[ w_{\text{pos}} \cdot y \log \sigma(\hat{y})
 where $w_{\text{pos}} = \frac{N_{\text{neg}}}{N_{\text{pos}}} \approx 37.17$.
 
 \subsection{Baseline Inference Performance}
-The centralized model early-stopped at Epoch 9 as validation AUROC peaked at 0.8232. Final test set metrics are detailed in Table~\ref{tab:metrics}. Figures~\ref{fig:baseline_roc} and \ref{fig:baseline_confusion} display the test ROC curve (AUROC = 0.8058) and confusion matrix heatmap.
+The centralized model early-stopped at Epoch 9 as validation AUROC peaked at 0.8232. Final test set metrics are detailed in Table~\ref{tab:metrics}. Figure~\ref{fig:baseline_results} presents the test ROC curve (AUROC = 0.8058) and confusion matrix heatmap.
 
 \begin{table}[htbp]
 \caption{Centralized Baseline Test Evaluation}
@@ -150,19 +172,14 @@ F1 Score & 0.1300 \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\includegraphics[width=0.88\linewidth]{images/baseline_roc.png}
-\caption{Receiver Operating Characteristic (ROC) curve of the baseline model on the test dataset.}
-\label{fig:baseline_roc}
-\end{figure}
-
-\begin{figure}[htbp]
-\centering
-\includegraphics[width=0.88\linewidth]{images/baseline_confusion_matrix.png}
-\caption{Centralized baseline test set confusion matrix heatmap.}
-\label{fig:baseline_confusion}
-\end{figure}
+\includegraphics[width=0.48\textwidth]{images/baseline_roc.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{images/baseline_confusion_matrix.png}
+\caption{(Left) Receiver Operating Characteristic (ROC) curve of the baseline model on the test dataset. (Right) Centralized baseline test set confusion matrix heatmap.}
+\label{fig:baseline_results}
+\end{figure*}
 
 \section{Federated Learning via FedAvg}
 To enforce data privacy across healthcare institutions, we convert the model into a decentralized federated system using Federated Averaging (FedAvg) \cite{mcmahan2017}.
@@ -183,16 +200,14 @@ where $n_k$ is the local sample size of client node $k$ and $N = \sum n_k$.
 \subsection{Results and Baseline Degradation Analysis}
 FedAvg training early-stopped at round 7. Figure~\ref{fig:fed_curves} shows global validation loss and AUROC curves across rounds. Table~\ref{tab:comparison} compares FedAvg against the Centralized Baseline.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\begin{tabular}{cc}
-\includegraphics[width=0.48\linewidth]{images/federated_rounds_loss.png} &
-\includegraphics[width=0.48\linewidth]{images/federated_rounds_auroc.png} \\
-(a) Validation Loss & (b) Validation AUROC
-\end{tabular}
-\caption{FedAvg global model performance across communication rounds.}
+\includegraphics[width=0.48\textwidth]{images/federated_rounds_loss.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{images/federated_rounds_auroc.png}
+\caption{FedAvg global model performance across 10 communication rounds: (Left) Validation Loss progression, (Right) Validation AUROC progression.}
 \label{fig:fed_curves}
-\end{figure}
+\end{figure*}
 
 \begin{table}[htbp]
 \caption{Comparative Test Results: Centralized vs. FedAvg}
@@ -213,16 +228,14 @@ F1 Score & 0.1300 & 0.1259 & -0.0041 \\
 
 Due to client Non-IID heterogeneity, FedAvg exhibits a **2.14\% drop in test AUROC** (0.7844 vs 0.8058) and a **4.97\% drop in Recall**, confirming that a single static global consensus model struggles under institutional demographic shifts. Figure~\ref{fig:fed_roc_cm} plots the FedAvg ROC curve and confusion matrix.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\begin{tabular}{cc}
-\includegraphics[width=0.48\linewidth]{images/federated_comparative_roc.png} &
-\includegraphics[width=0.48\linewidth]{images/federated_confusion_matrix.png} \\
-(a) ROC Curve & (b) Confusion Matrix
-\end{tabular}
-\caption{FedAvg global model test evaluation.}
+\includegraphics[width=0.48\textwidth]{images/federated_comparative_roc.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{images/federated_confusion_matrix.png}
+\caption{(Left) Comparative test set ROC curve overlay for FedAvg vs Centralized baseline. (Right) FedAvg global model test confusion matrix heatmap.}
 \label{fig:fed_roc_cm}
-\end{figure}
+\end{figure*}
 
 \section{Federated Learning via FedProx}
 To counteract weight divergence caused by Non-IID data distributions, we deploy FedProx \cite{li2020fedprox}.
@@ -235,16 +248,14 @@ We configure $\mu = 0.01$, constraining client weights from drifting too far fro
 \subsection{Results and Three-Way Benchmarking}
 FedProx early-stopped at round 8, with validation AUROC peaking at 0.8062 in Round 2. Figure~\ref{fig:fedprox_curves} presents validation metrics across rounds, and Table~\ref{tab:threeway} details three-way comparative performance.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\begin{tabular}{cc}
-\includegraphics[width=0.48\linewidth]{images/fedprox_rounds_loss.png} &
-\includegraphics[width=0.48\linewidth]{images/fedprox_rounds_auroc.png} \\
-(a) Validation Loss & (b) Validation AUROC
-\end{tabular}
-\caption{FedProx global model performance across communication rounds.}
+\includegraphics[width=0.48\textwidth]{images/fedprox_rounds_loss.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{images/fedprox_rounds_auroc.png}
+\caption{FedProx global model training metrics across rounds: (Left) Validation Loss curve, (Right) Validation AUROC curve.}
 \label{fig:fedprox_curves}
-\end{figure}
+\end{figure*}
 
 \begin{table}[htbp]
 \caption{Three-Way Test Performance Comparison}
@@ -265,16 +276,14 @@ F1 Score & 0.1300 & 0.1259 & 0.1622 & +0.0363 \\
 
 FedProx improves test AUROC to **0.8033** (+1.89\% over FedAvg) and increases F1-score to **0.1622** (+3.63\% over FedAvg). Figure~\ref{fig:fedprox_roc_cm} displays the three-way ROC curve and FedProx confusion matrix.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\begin{tabular}{cc}
-\includegraphics[width=0.48\linewidth]{images/fedprox_three_way_roc.png} &
-\includegraphics[width=0.48\linewidth]{images/fedprox_confusion_matrix.png} \\
-(a) Three-Way ROC Curve & (b) Confusion Matrix
-\end{tabular}
-\caption{Three-way comparative test evaluation.}
+\includegraphics[width=0.48\textwidth]{images/fedprox_three_way_roc.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{images/fedprox_confusion_matrix.png}
+\caption{(Left) Three-way comparative test set ROC curve overlay. (Right) FedProx test set confusion matrix heatmap.}
 \label{fig:fedprox_roc_cm}
-\end{figure}
+\end{figure*}
 
 \section{Personalized Federated Learning via Ditto}
 To adapt to client-specific patient demographics, we implement Ditto bi-level optimization \cite{li2021ditto}.
@@ -304,16 +313,14 @@ F1 Score & 0.1300 & 0.1259 & 0.1622 & 0.1433 & \textbf{0.1629} \\
 \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\begin{tabular}{cc}
-\includegraphics[width=0.48\linewidth]{images/four_way_roc_curve.png} &
-\includegraphics[width=0.48\linewidth]{images/ditto_personalized_confusion_matrix.png} \\
-(a) Four-Way ROC Curve & (b) Confusion Matrix
-\end{tabular}
-\caption{Four-way comparative test evaluation.}
+\includegraphics[width=0.48\textwidth]{images/four_way_roc_curve.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{images/ditto_personalized_confusion_matrix.png}
+\caption{(Left) Four-way comparative test set ROC curve overlay. (Right) Ditto personalized model test confusion matrix heatmap.}
 \label{fig:ditto_roc_cm}
-\end{figure}
+\end{figure*}
 
 \section{Proposed FPDAF Framework}
 We propose the **Federated Personalized Drift-Aware Attention Framework (FPDAF)**, integrating multi-head temporal self-attention, AD-CUSUM drift detection, and DDP-ERP personalization.
@@ -386,12 +393,12 @@ When $S_r > H$, CSSP freezes the shared LSTM backbone parameters (\textit{requir
 \subsection{Six-Way Model Benchmarking Results}
 Figure~\ref{fig:cusum_curves} plots running AD-CUSUM drift scores across communication rounds. Table~\ref{tab:fiveway} presents comprehensive 6-way comparative results on the test cohort.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\includegraphics[width=0.92\linewidth]{images/cusum_drift_scores.png}
-\caption{Client running AD-CUSUM concept drift scores and trigger points ($H=3.0$).}
+\includegraphics[width=0.85\textwidth]{images/cusum_drift_scores.png}
+\caption{Client running AD-CUSUM concept drift scores across communication rounds highlighting threshold triggers ($H=3.0$).}
 \label{fig:cusum_curves}
-\end{figure}
+\end{figure*}
 
 \begin{table}[htbp]
 \caption{Six-Way Test Performance Comparison (FPDAF v1 vs. Enhanced FPDAF-v2)}
@@ -435,20 +442,18 @@ AUROC & 0.7603 & 0.7878 & 0.7887 & 0.8214 & \textbf{0.9418} \\
 \subsection{Clinical Explainability \& Temporal Attention Profiles}
 Figure~\ref{fig:clinical_attention} plots the 5-way ROC curve overlay and average temporal attention score profiles across 24-hour windows. Sepsis-positive patients exhibit a distinct rising attention profile peaking between hours 16 and 22, giving clinicians a transparent hours-early window to administer fluids and antibiotics. Figure~\ref{fig:clinical_cm} presents the FPDAF personalized confusion matrix.
 
-\begin{figure}[htbp]
+\begin{figure*}[htbp]
 \centering
-\begin{tabular}{cc}
-\includegraphics[width=0.48\linewidth]{images/five_way_roc_curve.png} &
-\includegraphics[width=0.48\linewidth]{images/temporal_attention_profile.png} \\
-(a) Five-Way ROC Overlay & (b) Temporal Attention Curve
-\end{tabular}
-\caption{Clinical explainability and comparative performance overlays.}
+\includegraphics[width=0.48\textwidth]{images/five_way_roc_curve.png}
+\hfill
+\includegraphics[width=0.48\textwidth]{images/temporal_attention_profile.png}
+\caption{(Left) Five-way comparative test set ROC curve overlay. (Right) Average temporal attention score profile across 24-hour sequence windows.}
 \label{fig:clinical_attention}
-\end{figure}
+\end{figure*}
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\linewidth]{images/fpdaf_personalized_confusion_matrix.png}
+\includegraphics[width=0.88\linewidth]{images/fpdaf_personalized_confusion_matrix.png}
 \caption{FPDAF Personalized model confusion matrix heatmap.}
 \label{fig:clinical_cm}
 \end{figure}
