@@ -57,9 +57,9 @@ export const DriftMonitor: React.FC = () => {
   const latestCusum = cusumData[cusumData.length - 1];
 
   const nodeStatus = [
-    { name: 'Hospital A (Client 0)', value: latestCusum.client0, status: latestCusum.client0 > threshold ? 'Drift Alert' : 'Stable' },
-    { name: 'Hospital B (Client 1)', value: latestCusum.client1, status: latestCusum.client1 > threshold ? 'Drift Alert' : 'Stable' },
-    { name: 'Hospital C (Client 2)', value: latestCusum.client2, status: latestCusum.client2 > threshold ? 'Drift Alert' : 'Stable' }
+    { name: 'Hospital 1 (Client Node 0)', value: latestCusum.client0, status: latestCusum.client0 > threshold ? 'Drift Alert' : 'Stable' },
+    { name: 'Hospital 2 (Client Node 1)', value: latestCusum.client1, status: latestCusum.client1 > threshold ? 'Drift Alert' : 'Stable' },
+    { name: 'Hospital 3 (Client Node 2)', value: latestCusum.client2, status: latestCusum.client2 > threshold ? 'Drift Alert' : 'Stable' }
   ];
 
   return (
@@ -174,9 +174,9 @@ export const DriftMonitor: React.FC = () => {
               <Tooltip contentStyle={{ backgroundColor: '#0d1829', border: '1px solid #1a2744', borderRadius: '12px', fontSize: '11px' }} />
               <Legend wrapperStyle={{ fontSize: '10px' }} />
               <ReferenceLine y={threshold} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'Threshold Limit: 3.0', position: 'insideBottomRight', fill: '#ef4444', fontSize: 10, fontWeight: 'bold' }} />
-              <Line type="monotone" dataKey="client0" stroke="#0d9488" strokeWidth={2} name="Hospital A (Client 0)" dot={{ r: 4 }} activeDot={{ r: 6 }} />
-              <Line type="monotone" dataKey="client1" stroke="#f97316" strokeWidth={2} name="Hospital B (Client 1)" dot={{ r: 4 }} />
-              <Line type="monotone" dataKey="client2" stroke="#10b981" strokeWidth={2} name="Hospital C (Client 2)" dot={{ r: 4 }} />
+              <Line type="monotone" dataKey="client0" stroke="#0d9488" strokeWidth={2} name="Hospital 1 (Client Node 0)" dot={{ r: 4 }} activeDot={{ r: 6 }} />
+              <Line type="monotone" dataKey="client1" stroke="#f97316" strokeWidth={2} name="Hospital 2 (Client Node 1)" dot={{ r: 4 }} />
+              <Line type="monotone" dataKey="client2" stroke="#10b981" strokeWidth={2} name="Hospital 3 (Client Node 2)" dot={{ r: 4 }} />
             </LineChart>
           </ResponsiveContainer>
         </div>

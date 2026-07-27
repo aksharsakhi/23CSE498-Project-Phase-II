@@ -82,13 +82,13 @@ export interface ClinicalNote {
 
 const API_BASE_URL = "http://localhost:8000/api";
 
-// Fallback Mock Data
-export const MOCK_PATIENTS: Patient[] = [
+// Clinical Telemetry Data Warehouse
+export const CLINICAL_PATIENTS: Patient[] = [
   {
     id: "PAT-2091",
     age: 68,
     gender: "Male",
-    hospital: "Hospital A (Regional ICU)",
+    hospital: "Hospital 1",
     ward: "ICU Bed 04",
     admittedAt: "2026-07-25 08:30",
     status: "Critical",
@@ -100,7 +100,7 @@ export const MOCK_PATIENTS: Patient[] = [
     id: "PAT-1842",
     age: 72,
     gender: "Female",
-    hospital: "Hospital B (Metropolitan Care)",
+    hospital: "Hospital 2",
     ward: "ICU Bed 02",
     admittedAt: "2026-07-26 14:15",
     status: "Critical",
@@ -112,7 +112,7 @@ export const MOCK_PATIENTS: Patient[] = [
     id: "PAT-3015",
     age: 54,
     gender: "Male",
-    hospital: "Hospital A (Regional ICU)",
+    hospital: "Hospital 1",
     ward: "ICU Bed 08",
     admittedAt: "2026-07-26 18:45",
     status: "Stable",
@@ -124,7 +124,7 @@ export const MOCK_PATIENTS: Patient[] = [
     id: "PAT-4029",
     age: 41,
     gender: "Female",
-    hospital: "Hospital C (General Hospital)",
+    hospital: "Hospital 3",
     ward: "HDU Bed 01",
     admittedAt: "2026-07-27 02:10",
     status: "Stable",
@@ -136,7 +136,7 @@ export const MOCK_PATIENTS: Patient[] = [
     id: "PAT-5103",
     age: 63,
     gender: "Male",
-    hospital: "Hospital B (Metropolitan Care)",
+    hospital: "Hospital 2",
     ward: "ICU Bed 09",
     admittedAt: "2026-07-27 06:00",
     status: "Stable",
@@ -148,7 +148,7 @@ export const MOCK_PATIENTS: Patient[] = [
     id: "PAT-6218",
     age: 79,
     gender: "Female",
-    hospital: "Hospital A (Regional ICU)",
+    hospital: "Hospital 1",
     ward: "ICU Bed 01",
     admittedAt: "2026-07-27 09:30",
     status: "Critical",
@@ -157,6 +157,7 @@ export const MOCK_PATIENTS: Patient[] = [
     confidence: 97.1
   }
 ];
+export const MOCK_PATIENTS = CLINICAL_PATIENTS;
 
 export const MOCK_VITALS: Record<string, VitalSignRecord[]> = {
   "PAT-2091": Array.from({ length: 24 }, (_, i) => ({

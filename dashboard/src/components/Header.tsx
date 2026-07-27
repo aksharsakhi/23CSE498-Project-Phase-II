@@ -26,7 +26,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   const notifications = [
     { id: 1, message: "Sepsis Warning: PAT-2091 crossed 89% risk threshold", type: 'critical' as const, tab: 'prediction' },
-    { id: 2, message: "Drift Alarm: Hospital A (Client 0) CUSUM score > 3.0", type: 'warning' as const, tab: 'drift' },
+    { id: 2, message: "Drift Alarm: Hospital 1 (Client Node 0) AD-CUSUM score > 3.0", type: 'warning' as const, tab: 'drift' },
     { id: 3, message: "FedAvg Aggregation Round 10 completed successfully", type: 'success' as const, tab: 'federated' }
   ];
 

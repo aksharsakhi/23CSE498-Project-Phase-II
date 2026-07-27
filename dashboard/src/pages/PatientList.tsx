@@ -85,9 +85,9 @@ export const PatientList: React.FC<PatientListProps> = ({ patients, onSelectPati
             className="bg-slate-50 dark:bg-[#0a1323] border border-slate-200 dark:border-[#1a2744] text-slate-700 dark:text-slate-200 text-xs font-semibold px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="All">All Hospital Nodes</option>
-            <option value="Hospital A">Hospital A (Regional ICU)</option>
-            <option value="Hospital B">Hospital B (Metropolitan)</option>
-            <option value="Hospital C">Hospital C (General)</option>
+            <option value="Hospital 1">Hospital 1</option>
+            <option value="Hospital 2">Hospital 2</option>
+            <option value="Hospital 3">Hospital 3</option>
           </select>
 
           <select

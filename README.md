@@ -117,7 +117,7 @@ By exploiting time-series clinical signals, the framework addresses three main c
 ## Dataset
 * **Source**: [PhysioNet Computing in Cardiology Challenge 2019](https://physionet.org/content/challenge-2019/)
 * **Hospitals**: 2 Hospital Systems (`training_setA` and `training_setB`)
-* **Patients**: 40,327 total (20,336 Hospital A, 19,991 Hospital B)
+* **Patients**: 40,327 total across Hospital 1, Hospital 2, and Hospital 3.
 * **Format**: Pipe-separated values (`.psv`) recorded hourly containing 40 clinical variables + `SepsisLabel` target.
 * **Storage**: Local dataset files are placed in `datasets/raw/` and excluded from Git tracking. See [DATASET_SETUP.md](DATASET_SETUP.md) for details.
 
