@@ -13,9 +13,9 @@ export const FLMonitor: React.FC = () => {
 
   // Simulated node stats
   const nodes = [
-    { name: 'Hospital A (Client 0)', data: '92,613 samples', status: 'Active (Consensus)', lag: '42ms' },
-    { name: 'Hospital B (Client 1)', data: '151,916 samples', status: 'Active (Consensus)', lag: '38ms' },
-    { name: 'Hospital C (Client 2)', data: '233,140 samples', status: 'CSSP Selective Head Adapt', lag: 'N/A (Bypassed)' }
+    { name: 'Hospital 1 (Client Node 0)', data: '92,613 samples', status: 'Active (Consensus)', lag: '42ms' },
+    { name: 'Hospital 2 (Client Node 1)', data: '151,916 samples', status: 'Active (Consensus)', lag: '38ms' },
+    { name: 'Hospital 3 (Client Node 2)', data: '233,140 samples', status: 'CSSP Selective Head Adapt', lag: 'N/A (Bypassed)' }
   ];
 
   return (

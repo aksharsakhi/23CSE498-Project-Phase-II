@@ -162,7 +162,7 @@ def init_database():
         gender_val = unscaled_first[35]
         gender = "Male" if gender_val > 0.5 else "Female"
         
-        hospital = "Hospital A (Age < 60)" if idx % 3 == 0 else "Hospital B (Age >= 60)" if idx % 3 == 1 else "Hospital C (General)"
+        hospital = "Hospital 1" if idx % 3 == 0 else "Hospital 2" if idx % 3 == 1 else "Hospital 3"
         ward = f"ICU Bed {idx % 20 + 1:02d}"
         label = int(y_test[idx].item())
         
