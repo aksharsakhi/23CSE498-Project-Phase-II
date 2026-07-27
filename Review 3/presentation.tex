@@ -106,6 +106,35 @@
     \end{columns}
 \end{frame}
 
+% --- NEW UPFRONT SLIDE: SUMMARY OF CORE NOVELTIES ---
+\begin{frame}{Core Project Inventions \& Research Novelties}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{1. AD-CUSUM Drift Algorithm (New Invention)}
+                \scriptsize
+                \textbf{Adaptive Divergence-Weighted CUSUM}: Combines loss residuals, Jensen-Shannon entropy divergence ($D_{\text{JSD}}$), and gradient variance weighting ($w_{\text{grad}}$) to detect population drift without mini-batch noise false alarms.
+            \end{alertblock}
+            
+            \begin{alertblock}{2. DDP-ERP Personalization Algorithm (New Invention)}
+                \scriptsize
+                \textbf{Dynamic Dual-Phase \& Entropy Regularization}: Integrates 2D temporal-vital cross-attention ($\alpha_t \otimes \beta_v$) with KL-Divergence soft-personalization, boosting test accuracy to \textbf{96.42\%} (>95\% target) and \textbf{0.9418 AUROC}.
+            \end{alertblock}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{alertblock}{3. Client-Side Selective Personalization (CSSP)}
+                \scriptsize
+                Freezes backbone weights during drift adaptation rounds, saving \textbf{38\% in communication bandwidth} (1.52 GB vs 2.48 GB) and cutting adaptation time to \textbf{6 minutes}.
+            \end{alertblock}
+            
+            \begin{alertblock}{4. Production Clinical CDSS Workstation}
+                \scriptsize
+                Full-stack bedside decision support system linking React/Vite, FastAPI REST server, and SQLite database with 24-hour sequence hour scrubbers and SSC Hour-1 bundle checklists.
+            \end{alertblock}
+        \end{column}
+    \end{columns}
+\end{frame}
+
 % --- CLINICAL CONTEXT & COMPLETED GOALS (2) ---
 \begin{frame}{Clinical Deterioration \& Phase II Completed Goals}
     \begin{columns}
