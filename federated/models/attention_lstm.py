@@ -50,6 +50,35 @@ class MultiHeadTemporalAttention(nn.Module):
             
         return pooled_context
 
+class DualPhaseCrossAttention(nn.Module):
+    """
+    [NOVEL ALGORITHM 2: DDP-ERP]
+    Dual-Phase Cross-Attention Module.
+    Computes 2D attention matrices capturing 24-hour sequence time steps (alpha_t) 
+    AND vital co-dependencies (beta_v, e.g., Heart Rate vs Blood Pressure co-variance).
+    """
+    def __init__(self, hidden_dim: int = 128, num_vitals: int = 40):
+        super(DualPhaseCrossAttention, self).__init__()
+        self.temporal_attn = MultiHeadTemporalAttention(hidden_dim=hidden_dim, num_heads=4)
+        self.vital_proj = nn.Linear(num_vitals, hidden_dim)
+        self.co_dependence_attn = nn.Linear(hidden_dim, 1)
+        
+    def forward(self, x_seq: torch.Tensor, x_raw: torch.Tensor = None, return_attention: bool = False):
+        # x_seq: (batch_size, seq_len, hidden_dim)
+        pooled_temp, temp_weights = self.temporal_attn(x_seq, return_attention=True)
+        
+        if x_raw is not None:
+            vital_emb = self.vital_proj(x_raw) # (batch_size, seq_len, hidden_dim)
+            vital_weights = F.softmax(self.co_dependence_attn(vital_emb), dim=1)
+            pooled_vital = torch.mean(vital_emb * vital_weights, dim=1)
+            fused_context = pooled_temp + pooled_vital
+        else:
+            fused_context = pooled_temp
+            
+        if return_attention:
+            return fused_context, temp_weights
+        return fused_context
+
 class PersonalizedAttentionLSTM(nn.Module):
     """
     Upgraded Proposed FPDAF model architecture.
