@@ -371,17 +371,17 @@
             \begin{block}{3-Hospital Architecture Nodes}
                 \scriptsize
                 \begin{itemize}
-                    \item \textbf{Hospital 1 (Node 0, Age $<$ 60):} 92,613 training samples, 3.24\% sepsis positive rate.
-                    \item \textbf{Hospital 2 (Node 1, Age $\ge$ 60):} 151,916 training samples, 3.09\% sepsis positive rate.
-                    \item \textbf{Hospital 3 (Node 2, Regional Node):} 233,140 training samples, 2.07\% sepsis positive rate.
+                    \item \textbf{Hospital 1 (Client Node 0):} 92,613 training samples, 3.24\% sepsis positive rate.
+                    \item \textbf{Hospital 2 (Client Node 1):} 151,916 training samples, 3.09\% sepsis positive rate.
+                    \item \textbf{Hospital 3 (Client Node 2):} 233,140 training samples, 2.07\% sepsis positive rate.
                 \end{itemize}
             \end{block}
             \centering
             \begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
                 \node (server) [fill=amritaMaroon!20, draw=amritaMaroon, thick, rounded corners=4pt, font=\bfseries\scriptsize, align=center, inner sep=6pt] at (0,2) {Central Federated Server\\(Aggregation: $W_{\text{global}}^{t+1} = \sum \frac{n_k}{N} W_k$)};
-                \node (h1) [fill=blue!15, draw=blue, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (-2.5,-0.8) {Hospital 1\\(Age $<$ 60)\\Local SGD $E=2$};
-                \node (h2) [fill=green!15, draw=green!60!black, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (0,-0.8) {Hospital 2\\(Age $\ge$ 60)\\Local SGD $E=2$};
-                \node (h3) [fill=orange!15, draw=orange!80!black, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (2.5,-0.8) {Hospital 3\\(Regional ICU)\\Local SGD $E=2$};
+                \node (h1) [fill=blue!15, draw=blue, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (-2.5,-0.8) {Hospital 1\\(Client Node 0)\\Local SGD $E=2$};
+                \node (h2) [fill=green!15, draw=green!60!black, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (0,-0.8) {Hospital 2\\(Client Node 1)\\Local SGD $E=2$};
+                \node (h3) [fill=orange!15, draw=orange!80!black, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (2.5,-0.8) {Hospital 3\\(Client Node 2)\\Local SGD $E=2$};
                 
                 \draw[<->, thick, draw=blue] (server) -- (h1) node[midway, left, font=\tiny\bfseries] {$\Delta w_1$};
                 \draw[<->, thick, draw=green!60!black] (server) -- (h2) node[midway, fill=white, font=\tiny\bfseries] {$\Delta w_2$};
