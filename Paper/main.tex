@@ -9,45 +9,20 @@
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage{subcaption}
+\usepackage[caption=false,font=footnotesize]{subfig}
 \usepackage{hyperref}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 \begin{document}
 
-\title{A Unified Privacy-Preserving and Explainable Federated Learning Framework for ICU Sepsis Prediction with Adaptive Drift Adaptation\\
-}
+\title{A Unified Privacy-Preserving and Explainable Federated Learning Framework for ICU Sepsis Prediction with Adaptive Drift Adaptation}
 
-\author{\IEEEauthorblockN{1\textsuperscript{st} Sheela Akshar Sakhi}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
-\textit{Amrita School of Computing, Coimbatore}\\
-Amrita Vishwa Vidyapeetham, India \\
-CB.SC.U4CSE23547}
-\and
-\IEEEauthorblockN{2\textsuperscript{nd} Hasini Reddy M}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
-\textit{Amrita School of Computing, Coimbatore}\\
-Amrita Vishwa Vidyapeetham, India \\
-CB.SC.U4CSE23529}
-\and
-\IEEEauthorblockN{3\textsuperscript{rd} Kousik Sarma Lakkaraju}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
-\textit{Amrita School of Computing, Coimbatore}\\
-Amrita Vishwa Vidyapeetham, India \\
-CB.SC.U4CSE23761}
-\and
-\IEEEauthorblockN{4\textsuperscript{th} Haswitha K}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
-\textit{Amrita School of Computing, Coimbatore}\\
-Amrita Vishwa Vidyapeetham, India \\
-CB.SC.U4CSE23363}
-\and
-\IEEEauthorblockN{5\textsuperscript{th} V. Chakravarthy}
-\IEEEauthorblockA{\textit{Dept. of Computer Science and Engineering} \\
-\textit{Amrita School of Computing, Coimbatore}\\
-Amrita Vishwa Vidyapeetham, India \\
-CB.SC.U4CSE23753}
+\author{
+\IEEEauthorblockN{Sheela Akshar Sakhi, Hasini Reddy M, Kousik Sarma Lakkaraju, Haswitha K, and V. Chakravarthy}
+\IEEEauthorblockA{\textit{Department of Computer Science and Engineering, Amrita School of Computing, Coimbatore} \\
+\textit{Amrita Vishwa Vidyapeetham, India} \\
+\{cb.sc.u4cse23547, cb.sc.u4cse23529, cb.sc.u4cse23761, cb.sc.u4cse23363, cb.sc.u4cse23753\}@cb.amrita.edu}
 }
 
 \maketitle
@@ -78,7 +53,7 @@ However, standard FL frameworks face three major hurdles in real-world critical 
 \end{enumerate}
 
 \subsection{Core Contributions \& Project Inventions}
-To bridge all three gaps, we propose the **Federated Personalized Drift-Aware Attention Framework (FPDAF)**. The key contributions of this paper are:
+To bridge all three gaps, we propose the \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}. The key contributions of this paper are:
 \begin{itemize}
 \item \textbf{Formulation of AD-CUSUM Drift Algorithm}: We invent an Adaptive Divergence-Weighted CUSUM drift detection algorithm that integrates Jensen-Shannon prediction entropy divergence ($D_{\text{JSD}}$) and gradient variance weighting ($w_{\text{grad}}$) to detect institutional concept drift without false triggers from mini-batch noise.
 \item \textbf{Formulation of DDP-ERP Personalization Algorithm}: We design a Dynamic Dual-Phase Cross-Attention and Entropy-Regularized Soft-Personalization loss ($\mathcal{L}_{\text{DDP-ERP}}$), boosting personalized model accuracy to \textbf{96.42\%} and AUROC to \textbf{0.9418}.
@@ -106,6 +81,7 @@ We evaluate our framework on the PhysioNet Computing in Cardiology Challenge 201
 \label{tab:vitals_schema}
 \centering
 \small
+\setlength{\tabcolsep}{6pt}
 \begin{tabular}{llll}
 \toprule
 \textbf{Category} & \textbf{Clinical Parameter} & \textbf{Measurement Unit} & \textbf{Normal Clinical Range} \\
@@ -139,17 +115,9 @@ Figure~\ref{fig:preprocessing_fig} presents the vital sign imputation and zero p
 
 \begin{figure*}[t]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/preprocessing_comparison.png}
-\caption{Imputation \& Z-Score Normalization}
-\end{subfigure}
+\subfloat[Imputation \& Z-Score Normalization]{\includegraphics[width=0.48\textwidth]{images/preprocessing_comparison.png}\label{fig:preproc_comp}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/preprocessing_padding.png}
-\caption{Zero Pre-Padding Validation ($T < 24$h)}
-\end{subfigure}
+\subfloat[Zero Pre-Padding Validation ($T < 24$h)]{\includegraphics[width=0.48\textwidth]{images/preprocessing_padding.png}\label{fig:preproc_pad}}
 \caption{Data preprocessing engineering pipeline validation.}
 \label{fig:preprocessing_fig}
 \end{figure*}
@@ -169,6 +137,8 @@ The centralized model early-stopped at Epoch 9 as validation AUROC peaked at 0.8
 \caption{Centralized Baseline Test Evaluation}
 \label{tab:metrics}
 \centering
+\small
+\setlength{\tabcolsep}{8pt}
 \begin{tabular}{lc}
 \toprule
 \textbf{Metric} & \textbf{Centralized Baseline} \\
@@ -184,17 +154,9 @@ F1 Score & 0.1300 \\
 
 \begin{figure*}[t]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/baseline_roc.png}
-\caption{Centralized Test ROC Curve}
-\end{subfigure}
+\subfloat[Centralized Test ROC Curve]{\includegraphics[width=0.48\textwidth]{images/baseline_roc.png}\label{fig:base_roc}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/baseline_confusion_matrix.png}
-\caption{Test Confusion Matrix Heatmap}
-\end{subfigure}
+\subfloat[Test Confusion Matrix Heatmap]{\includegraphics[width=0.48\textwidth]{images/baseline_confusion_matrix.png}\label{fig:base_cm}}
 \caption{Centralized Baseline BiLSTM test evaluation.}
 \label{fig:baseline_fig}
 \end{figure*}
@@ -220,17 +182,9 @@ FedAvg training early-stopped at round 7. Figure~\ref{fig:fed_curves} shows glob
 
 \begin{figure*}[t]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/federated_rounds_loss.png}
-\caption{Validation Loss Across Rounds}
-\end{subfigure}
+\subfloat[Validation Loss Across Rounds]{\includegraphics[width=0.48\textwidth]{images/federated_rounds_loss.png}\label{fig:fed_loss}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/federated_rounds_auroc.png}
-\caption{Validation AUROC Across Rounds}
-\end{subfigure}
+\subfloat[Validation AUROC Across Rounds]{\includegraphics[width=0.48\textwidth]{images/federated_rounds_auroc.png}\label{fig:fed_auroc}}
 \caption{FedAvg global model performance across 10 communication rounds.}
 \label{fig:fed_curves}
 \end{figure*}
@@ -239,6 +193,8 @@ FedAvg training early-stopped at round 7. Figure~\ref{fig:fed_curves} shows glob
 \caption{Comparative Test Results: Centralized vs. FedAvg}
 \label{tab:comparison}
 \centering
+\small
+\setlength{\tabcolsep}{5pt}
 \begin{tabular}{lccc}
 \toprule
 \textbf{Metric} & \textbf{Centralized} & \textbf{FedAvg} & \textbf{Difference} \\
@@ -252,21 +208,13 @@ F1 Score & 0.1300 & 0.1259 & -0.0041 \\
 \end{tabular}
 \end{table}
 
-Due to client Non-IID heterogeneity, FedAvg exhibits a **2.14\% drop in test AUROC** (0.7844 vs 0.8058) and a **4.97\% drop in Recall**, confirming that a single static global consensus model struggles under institutional demographic shifts. Figure~\ref{fig:fed_roc_cm} plots the FedAvg ROC curve and confusion matrix.
+Due to client Non-IID heterogeneity, FedAvg exhibits a \textbf{2.14\% drop in test AUROC} (0.7844 vs 0.8058) and a \textbf{4.97\% drop in Recall}, confirming that a single static global consensus model struggles under institutional demographic shifts. Figure~\ref{fig:fed_roc_cm} plots the FedAvg ROC curve and confusion matrix.
 
 \begin{figure*}[t]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/federated_comparative_roc.png}
-\caption{FedAvg Test ROC Overlay}
-\end{subfigure}
+\subfloat[FedAvg Test ROC Overlay]{\includegraphics[width=0.48\textwidth]{images/federated_comparative_roc.png}\label{fig:fed_roc}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/federated_confusion_matrix.png}
-\caption{FedAvg Confusion Matrix}
-\end{subfigure}
+\subfloat[FedAvg Confusion Matrix]{\includegraphics[width=0.48\textwidth]{images/federated_confusion_matrix.png}\label{fig:fed_cm}}
 \caption{FedAvg global model test evaluation.}
 \label{fig:fed_roc_cm}
 \end{figure*}
@@ -284,17 +232,9 @@ FedProx early-stopped at round 8, with validation AUROC peaking at 0.8062 in Rou
 
 \begin{figure*}[t]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/fedprox_rounds_loss.png}
-\caption{FedProx Validation Loss}
-\end{subfigure}
+\subfloat[FedProx Validation Loss]{\includegraphics[width=0.48\textwidth]{images/fedprox_rounds_loss.png}\label{fig:prox_loss}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/fedprox_rounds_auroc.png}
-\caption{FedProx Validation AUROC}
-\end{subfigure}
+\subfloat[FedProx Validation AUROC]{\includegraphics[width=0.48\textwidth]{images/fedprox_rounds_auroc.png}\label{fig:prox_auroc}}
 \caption{FedProx global model training metrics across rounds.}
 \label{fig:fedprox_curves}
 \end{figure*}
@@ -303,6 +243,8 @@ FedProx early-stopped at round 8, with validation AUROC peaking at 0.8062 in Rou
 \caption{Three-Way Test Performance Comparison}
 \label{tab:threeway}
 \centering
+\small
+\setlength{\tabcolsep}{3pt}
 \begin{tabular}{lcccc}
 \toprule
 \textbf{Metric} & \textbf{Centralized} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Diff (Prox-Avg)} \\
@@ -316,21 +258,13 @@ F1 Score & 0.1300 & 0.1259 & 0.1622 & +0.0363 \\
 \end{tabular}
 \end{table}
 
-FedProx improves test AUROC to **0.8033** (+1.89\% over FedAvg) and increases F1-score to **0.1622** (+3.63\% over FedAvg). Figure~\ref{fig:fedprox_roc_cm} displays the three-way ROC curve and FedProx confusion matrix.
+FedProx improves test AUROC to \textbf{0.8033} (+1.89\% over FedAvg) and increases F1-score to \textbf{0.1622} (+3.63\% over FedAvg). Figure~\ref{fig:fedprox_roc_cm} displays the three-way ROC curve and FedProx confusion matrix.
 
 \begin{figure*}[t]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/fedprox_three_way_roc.png}
-\caption{Three-Way ROC Overlay}
-\end{subfigure}
+\subfloat[Three-Way ROC Overlay]{\includegraphics[width=0.48\textwidth]{images/fedprox_three_way_roc.png}\label{fig:prox_roc}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/fedprox_confusion_matrix.png}
-\caption{FedProx Confusion Matrix}
-\end{subfigure}
+\subfloat[FedProx Confusion Matrix]{\includegraphics[width=0.48\textwidth]{images/fedprox_confusion_matrix.png}\label{fig:prox_cm}}
 \caption{Three-way comparative test set ROC curve overlay and confusion matrix.}
 \label{fig:fedprox_roc_cm}
 \end{figure*}
@@ -344,13 +278,14 @@ $$\min_{v_k} h_k(v_k; w^*) = \mathcal{L}_{\text{local}}(v_k) + \frac{\lambda}{2}
 We configure $\lambda = 0.1$. Personalized weights $v_k$ remain private to node $k$.
 
 \subsection{Results and Four-Way Benchmarking}
-Table~\ref{tab:fourway} summarizes four-way performance. Ditto Personalized achieves an Accuracy of **86.01\%** (+10.07\% over FedAvg) and F1-score of **0.1629**. Figure~\ref{fig:ditto_roc_cm} plots four-way ROC overlays and confusion matrices.
+Table~\ref{tab:fourway} summarizes four-way performance. Ditto Personalized achieves an Accuracy of \textbf{86.01\%} (+10.07\% over FedAvg) and F1-score of \textbf{0.1629}. Figure~\ref{fig:ditto_roc_cm} plots four-way ROC overlays and confusion matrices.
 
 \begin{table*}[t]
 \caption{Four-Way Test Performance Comparison Across Models}
 \label{tab:fourway}
 \centering
 \small
+\setlength{\tabcolsep}{6pt}
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Metric} & \textbf{Centralized} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Ditto Global} & \textbf{Ditto Personalized} \\
@@ -366,23 +301,15 @@ F1 Score & 0.1300 & 0.1259 & 0.1622 & 0.1433 & \textbf{0.1629} \\
 
 \begin{figure*}[t]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/four_way_roc_curve.png}
-\caption{Four-Way ROC Overlay}
-\end{subfigure}
+\subfloat[Four-Way ROC Overlay]{\includegraphics[width=0.48\textwidth]{images/four_way_roc_curve.png}\label{fig:ditto_roc}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/ditto_personalized_confusion_matrix.png}
-\caption{Ditto Personalized Confusion Matrix}
-\end{subfigure}
+\subfloat[Ditto Personalized Confusion Matrix]{\includegraphics[width=0.48\textwidth]{images/ditto_personalized_confusion_matrix.png}\label{fig:ditto_cm}}
 \caption{Four-way comparative test set evaluation.}
 \label{fig:ditto_roc_cm}
 \end{figure*}
 
 \section{Proposed FPDAF Framework}
-We propose the **Federated Personalized Drift-Aware Attention Framework (FPDAF)**, integrating multi-head temporal self-attention, AD-CUSUM drift detection, and DDP-ERP personalization.
+We propose the \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}, integrating multi-head temporal self-attention, AD-CUSUM drift detection, and DDP-ERP personalization.
 
 \subsection{Multi-Head Temporal Attention Architecture}
 The FPDAF model combines a shared 2-layer Bidirectional LSTM backbone with a Multi-Head Temporal Self-Attention pooling layer ($H=4$ heads). Attention scores $\alpha_t$ across 24-hour sequence time steps are computed as:
@@ -390,7 +317,7 @@ $$\alpha_t = \frac{\exp(W_a h_t)}{\sum_{j=1}^{24} \exp(W_a h_j)}$$
 yielding a weighted sequence context vector $c = \sum_{t=1}^{24} \alpha_t h_t$.
 
 \subsection{Adaptive Divergence-Weighted CUSUM (AD-CUSUM) Concept Drift Algorithm}
-To track institutional population drift online without false alarms from mini-batch noise, we formulate **AD-CUSUM**:
+To track institutional population drift online without false alarms from mini-batch noise, we formulate \textbf{AD-CUSUM}:
 $$S_r = \max\left(0, S_{r-1} + w_{\text{grad}}^{(r)} \cdot \left(\mathcal{L}_{\text{val}, r} + \beta \cdot D_{\text{JSD}}^{(r)} - \kappa_r\right)\right)$$
 where $D_{\text{JSD}}^{(r)} = \text{JSD}\left(P^{(r)} \parallel P^{(r-1)}\right)$ measures prediction probability entropy divergence, $w_{\text{grad}}^{(r)} = 1 + \tanh(\gamma \cdot \text{Var}(\nabla_\theta \mathcal{L}))$ scales updates by classifier head gradient variance, and $\kappa_r = \mu_{\text{loss}} + \alpha \sigma_{\text{loss}}$ auto-calibrates dynamic slack. The complete procedure is formalized in Algorithm~\ref{alg:ad_cusum}.
 
@@ -420,7 +347,7 @@ where $D_{\text{JSD}}^{(r)} = \text{JSD}\left(P^{(r)} \parallel P^{(r-1)}\right)
 \end{algorithm}
 
 \subsection{Dynamic Dual-Phase Saliency \& Entropy-Regularized Personalization (DDP-ERP)}
-To maximize precision under clinical cohort variance, we invent **DDP-ERP** for FPDAF-v2:
+To maximize precision under clinical cohort variance, we invent \textbf{DDP-ERP} for FPDAF-v2:
 \begin{enumerate}
 \item \textbf{Dual-Phase Cross-Attention}: Computes 2D attention matrices $\mathbf{A} = \text{Softmax}\left(\frac{\mathbf{Q}_t \mathbf{K}_v^T}{\sqrt{d_k}}\right)$ capturing both 24-hour sequence time steps ($\alpha_t$) and vital co-dependencies ($\beta_v$, e.g., Heart Rate vs. Blood Pressure correlation).
 \item \textbf{Entropy-Regularized Soft-Personalization}: Replaces rigid Ditto penalties with KL-divergence and cosine similarity contrastive loss:
@@ -464,6 +391,7 @@ Figure~\ref{fig:cusum_curves} plots running AD-CUSUM drift scores across communi
 \label{tab:fiveway}
 \centering
 \small
+\setlength{\tabcolsep}{6pt}
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Metric} & \textbf{Centralized} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Ditto Personalized} & \textbf{FPDAF v1} & \textbf{FPDAF-v2} \\
@@ -487,6 +415,7 @@ Table~\ref{tab:ablation} details module ablation metrics, confirming the necessi
 \label{tab:ablation}
 \centering
 \small
+\setlength{\tabcolsep}{6pt}
 \begin{tabular}{lccccc}
 \toprule
 \textbf{Metric} & \textbf{w/o AD-CUSUM} & \textbf{w/o Attention} & \textbf{w/o Personalization} & \textbf{FPDAF v1} & \textbf{FPDAF-v2} \\
@@ -505,17 +434,9 @@ Figure~\ref{fig:clinical_attention} plots the 5-way ROC curve overlay and averag
 
 \begin{figure*}[t]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/five_way_roc_curve.png}
-\caption{Five-Way ROC Overlay}
-\end{subfigure}
+\subfloat[Five-Way ROC Overlay]{\includegraphics[width=0.48\textwidth]{images/five_way_roc_curve.png}\label{fig:five_roc}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/temporal_attention_profile.png}
-\caption{Average Temporal Attention Curve}
-\end{subfigure}
+\subfloat[Average Temporal Attention Curve]{\includegraphics[width=0.48\textwidth]{images/temporal_attention_profile.png}\label{fig:attn_prof}}
 \caption{Clinical explainability and comparative performance overlays.}
 \label{fig:clinical_attention}
 \end{figure*}

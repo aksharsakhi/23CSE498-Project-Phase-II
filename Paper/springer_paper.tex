@@ -6,7 +6,7 @@
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algorithmic}
-\usepackage{subcaption}
+\usepackage[caption=false,font=footnotesize]{subfig}
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{cite}
@@ -59,7 +59,7 @@ However, standard FL frameworks face three major hurdles in real-world critical 
 \item \textbf{The Clinical Trust \& Transparency Gap}: Physicians cannot rely on "black-box" model outputs without temporal explanations indicating which historical hours and vital signals triggered the alert.
 \end{enumerate}
 
-To bridge all three gaps, we propose the **Federated Personalized Drift-Aware Attention Framework (FPDAF)**.
+To bridge all three gaps, we propose the \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}.
 
 \section{Related Work}
 \subsection{Federated Learning Paradigms in Healthcare}
@@ -109,17 +109,9 @@ and applied to validation and testing partitions.
 
 \begin{figure}[htbp]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/preprocessing_comparison.png}
-\caption{Imputation \& Z-Score Normalization}
-\end{subfigure}
+\subfloat[Imputation \& Z-Score Normalization]{\includegraphics[width=0.48\textwidth]{images/preprocessing_comparison.png}\label{fig:preproc_comp_sp}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/preprocessing_padding.png}
-\caption{Zero Pre-Padding Validation ($T < 24$h)}
-\end{subfigure}
+\subfloat[Zero Pre-Padding Validation ($T < 24$h)]{\includegraphics[width=0.48\textwidth]{images/preprocessing_padding.png}\label{fig:preproc_pad_sp}}
 \caption{Data preprocessing engineering pipeline validation.}
 \label{fig:preprocessing_springer}
 \end{figure}
@@ -205,6 +197,8 @@ $$\mathcal{L}_{\text{DDP-ERP}} = \mathcal{L}_{\text{ce}}(y, \hat{y}) + \lambda D
 \caption{Six-Way Test Performance Comparison (FPDAF v1 vs. Enhanced FPDAF-v2)}
 \label{tab:fiveway_springer}
 \centering
+\small
+\setlength{\tabcolsep}{4pt}
 \begin{tabular}{lcccccc}
 \toprule
 \textbf{Metric} & \textbf{Cent.} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Ditto P.} & \textbf{FPDAF v1} & \textbf{FPDAF-v2} \\
@@ -220,18 +214,10 @@ F1 Score & 0.1300 & 0.1259 & 0.1432 & 0.1574 & 0.1706 & \textbf{0.3056} \\
 
 \begin{figure}[htbp]
 \centering
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/five_way_roc_curve.png}
-\caption{Five-Way ROC Overlay}
-\end{subfigure}
+\subfloat[Five-Way ROC Overlay]{\includegraphics[width=0.48\textwidth]{images/five_way_roc_curve.png}\label{fig:five_roc_sp}}
 \hfill
-\begin{subfigure}[b]{0.48\textwidth}
-\centering
-\includegraphics[width=\linewidth]{images/temporal_attention_profile.png}
-\caption{Temporal Attention Profile}
-\end{subfigure}
-\caption{(Left) Five-way comparative test set ROC curve overlay. (Right) Average temporal attention score profile across 24-hour sequence windows.}
+\subfloat[Temporal Attention Profile]{\includegraphics[width=0.48\textwidth]{images/temporal_attention_profile.png}\label{fig:attn_prof_sp}}
+\caption{Clinical explainability and comparative performance overlays.}
 \label{fig:clinical_attention_springer}
 \end{figure}
 
