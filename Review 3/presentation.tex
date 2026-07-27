@@ -289,13 +289,13 @@
             Standard Personalized FL (e.g. Ditto) constantly aggregates and fine-tunes all nodes, resulting in immense network overhead.
             
             \vspace{0.2cm}
-            \textbf{The CUSUM Residual Monitor Trigger:}
+            \textbf{The Proposed AD-CUSUM Neural Trigger:}
             \begin{itemize}
-                \item We monitor cumulative validation loss residuals ($e_r$) over rounds:
-                \[ e_r = \mathcal{L}_{val, r} - \mu_0 \]
-                \[ S_r = \max(0, S_{r-1} + e_r - \kappa) \]
-                \item If $S_r > H$ (threshold $H = 3.0$), we declare institutional drift.
-                \item Triggers \textbf{Client-Side Selective Personalization (CSSP)}: freezes global backbone layers $\theta$ and adapts classification heads $\phi^k$ locally.
+                \item Novel \textbf{Adaptive Divergence-Weighted CUSUM} updates drift score $S_r$:
+                \[ S_r = \max\left(0, S_{r-1} + w_{\text{grad}}^{(r)} \cdot \left(\mathcal{L}_{val, r} + \beta D_{\text{JSD}}^{(r)} - \kappa_r\right)\right) \]
+                \item Combines loss residuals, prediction entropy divergence ($D_{\text{JSD}}$), and gradient variance weights ($w_{\text{grad}}$).
+                \item Auto-calibrating dynamic slack $\kappa_r = \mu_{loss} + \alpha \sigma_{loss}$ suppresses mini-batch noise.
+                \item If $S_r > H$ (threshold $H = 3.0$), triggers \textbf{Client-Side Selective Personalization (CSSP)}: freezes backbone layers $\theta$ and adapts classification head $\phi^k$ locally.
             \end{itemize}
         \end{column}
         \begin{column}{0.48\textwidth}

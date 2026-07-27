@@ -352,10 +352,10 @@ yielding a weighted context vector $c = \sum_{t=1}^{24} \alpha_t h_t$.
 \item \textbf{Personalized Classification Head}: Local classification layers mapping context $c$ to sepsis probability logit, regularized using the Ditto bi-level objective.
 \end{enumerate}
 
-\subsection{CUSUM Concept Drift Monitoring}
-To detect changes in client-specific ICU population distributions, FPDAF deploys online Cumulative Sum (CUSUM) residual monitoring. On each client validation loop, the prediction loss residual $e = \mathcal{L}_{val} - \mu_0$ is evaluated. The running CUSUM statistic $S_r$ at communication round $r$ accumulates positive deviations:
-$$S_r = \max(0, S_{r-1} + e_r - \kappa)$$
-where $\mu_0 = 0.25$ is the baseline validation loss error, and $\kappa = 0.02$ is the slack parameter. When $S_r > h$ (configured at threshold $h = 3.0$), concept drift is flagged and $S_r$ is reset to 0.
+\subsection{Adaptive Divergence-Weighted CUSUM (AD-CUSUM) Concept Drift Monitoring}
+To detect statistical shifts in client-specific ICU population distributions, FPDAF introduces a novel \textbf{Adaptive Divergence-Weighted Cumulative Sum (AD-CUSUM)} online drift monitor. Unlike univariate loss CUSUM, AD-CUSUM incorporates prediction entropy divergence and gradient variance weighting into a unified recurrence update:
+$$S_r = \max\left(0, S_{r-1} + w_{\text{grad}}^{(r)} \cdot \left(\mathcal{L}_{val, r} + \beta \cdot D_{\text{JSD}}^{(r)} - \kappa_r\right)\right)$$
+where $D_{\text{JSD}}^{(r)} = \text{JSD}\left(P^{(r)} \parallel P^{(r-1)}\right)$ computes Jensen-Shannon Divergence of output prediction probabilities across rounds, $w_{\text{grad}}^{(r)} = 1 + \tanh(\gamma \cdot \text{Var}(\nabla_\theta \mathcal{L}))$ scales residual progression by classifier head gradient variance to suppress stochastic mini-batch noise, and $\kappa_r = \mu_{\text{loss}} + \alpha \sigma_{\text{loss}}$ auto-calibrates dynamic slack. When $S_r > h$ (threshold $h = 3.0$), concept drift is flagged and $S_r$ resets to 0.
 
 \subsection{Client-Side Selective Personalization (CSSP)}
 Upon triggering concept drift, the client initiates the CSSP protocol. In the subsequent communication round:

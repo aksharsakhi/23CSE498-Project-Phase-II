@@ -135,10 +135,9 @@ FPDAF splits model weights into shared backbones (temporal feature extraction) a
 where $g_{\theta}$ represents the shared global LSTM layers (weights $\theta$), $h_{\phi^k}$ is the local classifier head (weights $\phi^k$), and $\alpha_i$ are temporal self-attention coefficients computed as:
 \[ e_i = v_a^T \tanh(W_s s_i + b_a), \quad \alpha_i = \frac{\exp(e_i)}{\sum_{j=1}^{t} \exp(e_j)} \]
 
-To handle temporal drift without constant full-parameter aggregation, our \textbf{CUSUM Neural Trigger} monitors validation residuals $e_r$ at communication round $r$:
-\[ e_r = \mathcal{L}_{val, r} - \mu_0 \]
-\[ S_r = \max(0, S_{r-1} + e_r - \kappa) \]
-where $\mu_0$ is the target baseline validation loss, $\kappa = 0.02$ represents the slack parameter, and $S_r$ is the cumulative deviation. If $S_r > H$ (threshold $H = 3.0$), the framework declares concept drift, freezes the global backbone $\theta$, and adapts the local personalization head $\phi^k$ independently (Client-Side Selective Personalization - CSSP).
+To handle temporal drift without constant full-parameter aggregation, our novel \textbf{Adaptive Divergence-Weighted CUSUM (AD-CUSUM)} monitors multi-modal validation error progression at communication round $r$:
+\[ S_r = \max\left(0, S_{r-1} + w_{\text{grad}}^{(r)} \cdot \left(\mathcal{L}_{val, r} + \beta \cdot D_{\text{JSD}}^{(r)} - \kappa_r\right)\right) \]
+where $D_{\text{JSD}}^{(r)} = \text{JSD}(P^{(r)} \parallel P^{(r-1)})$ measures prediction entropy divergence across rounds, $w_{\text{grad}}^{(r)} = 1 + \tanh(\gamma \cdot \text{Var}(\nabla_{\theta} \mathcal{L}))$ scales updates by classifier gradient variance, and $\kappa_r = \mu_{loss} + \alpha \sigma_{loss}$ provides auto-calibrating dynamic slack. If $S_r > H$ (threshold $H = 3.0$), the framework declares concept drift, freezes the global backbone $\theta$, and adapts the local personalization head $\phi^k$ independently (Client-Side Selective Personalization - CSSP).
 
 \section{Five-Way Benchmarking \& Results Analysis}
 We evaluated five different training setups on the preprocessed test set. The experimental metrics are summarized in Table 1:
