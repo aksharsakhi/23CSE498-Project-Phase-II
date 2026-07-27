@@ -89,7 +89,7 @@ CB.SC.U4CSE23753 & V. CHAKRAVARTHY     & & & \\
 In this final phase of the Capstone project, we have fully designed, implemented, and verified the \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}. The core objectives completed are:
 \begin{itemize}
     \item \textbf{Privacy-Preserving Collaborative Training:} Mastered and coded decentralized training using standard \textit{FedAvg} and regularization-based \textit{FedProx} in PyTorch across simulated hospital clients, ensuring raw patient data remains localized.
-    \item \textbf{Personalized Drift Adaptation:} Built custom client-side personalization layers combined with a statistical \textbf{CUSUM Residual Neural Trigger}. This unfreezes local classifier heads dynamically when institutional data drift is detected, reducing communication overhead.
+    \item \textbf{Personalized Drift Adaptation:} Built custom client-side personalization layers combined with a statistical \textbf{AD-CUSUM Residual Neural Trigger}. This unfreezes local classifier heads dynamically when institutional data drift is detected, reducing communication overhead.
     \item \textbf{Dual-Level Clinical Explainability:} Embedded a temporal self-attention mechanism to output patient-level attention weights over a 24-hour sequence window, pointing clinicians directly to critical timestamps.
     \item \textbf{Interactive CDSS Workstation:} Developed a production-quality Clinical Decision Support System (CDSS) dashboard using React, TypeScript, FastAPI, and a relational SQLite database for real-time risk predictions.
 \end{itemize}
@@ -98,8 +98,8 @@ In this final phase of the Capstone project, we have fully designed, implemented
 Our proposed FPDAF framework introduces three key scientific novelties that address the limitations of conventional healthcare federated setups:
 \begin{enumerate}
     \item \textbf{Sequential Attention Interpretability:} Unlike static black-box networks, we combine LSTM backbones with query-based temporal self-attention to output dynamic sequence saliency weights, allowing clinicians to visually track when a patient's risk profile escalates.
-    \item \textbf{CUSUM-Triggered Drift Adaptation:} We replace the standard continuous personalized weight aggregation model with an online Cumulative Sum (CUSUM) monitor that audits prediction loss residuals on the fly. Nodes adjust local head adaptation rates only when statistically significant concept drift occurs.
-    \item \textbf{Client-Side Selective Personalization (CSSP):} Upon CUSUM drift detection, the framework triggers CSSP to freeze the shared temporal LSTM layers and fine-tune only the local classification head. This reduces model communication overhead by **38\%** (saving network bandwidth) and cuts node adaptation time to under 6 minutes.
+    \item \textbf{AD-CUSUM-Triggered Drift Adaptation:} We replace the standard continuous personalized weight aggregation model with an online Cumulative Sum (AD-CUSUM) monitor that audits prediction loss residuals on the fly. Nodes adjust local head adaptation rates only when statistically significant concept drift occurs.
+    \item \textbf{Client-Side Selective Personalization (CSSP):} Upon AD-CUSUM drift detection, the framework triggers CSSP to freeze the shared temporal LSTM layers and fine-tune only the local classification head. This reduces model communication overhead by **38\%** (saving network bandwidth) and cuts node adaptation time to under 6 minutes.
 \end{enumerate}
 
 \section{Clinical Profile of ICU Sepsis \& Significance}
@@ -173,7 +173,7 @@ We verified the components of FPDAF by stripping different modules. The results 
 \hline
 \textbf{Ablation Configuration} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUROC} \\
 \hline
-FPDAF w/o CUSUM Trigger & 83.51\% & 8.51\% & 55.33\% & 0.1475 & 0.7603 \\
+FPDAF w/o AD-CUSUM Trigger & 83.51\% & 8.51\% & 55.33\% & 0.1475 & 0.7603 \\
 FPDAF w/o Temporal Attention & 80.01\% & 8.13\% & 52.81\% & 0.1412 & 0.7878 \\
 FPDAF w/o Personalization & 78.87\% & 8.05\% & 63.58\% & 0.1430 & 0.7887 \\
 \textbf{Full FPDAF (Proposed)} & \textbf{86.51\%} & \textbf{9.81\%} & \textbf{65.33\%} & \textbf{0.1706} & \textbf{0.8214} \\
@@ -185,9 +185,9 @@ FPDAF w/o Personalization & 78.87\% & 8.05\% & 63.58\% & 0.1430 & 0.7887 \\
 \section{Clinician CDSS Workspace Application Architecture}
 We built a production-quality Clinical Decision Support System (CDSS) workstation. The architecture is composed of:
 \begin{enumerate}
-    \item \textbf{SQLite Relational DB (`clinical\_warehouse.db`):} Houses tables for `patients` (demographics), `vitals` (24h metrics decoded using `scaler.pkl`), `predictions` (dynamic PyTorch inferences), `attentions` (temporal coefficients), and `drift\_metrics` (CUSUM values).
+    \item \textbf{SQLite Relational DB (`clinical\_warehouse.db`):} Houses tables for `patients` (demographics), `vitals` (24h metrics decoded using `scaler.pkl`), `predictions` (dynamic PyTorch inferences), `attentions` (temporal coefficients), and `drift\_metrics` (AD-CUSUM values).
     \item \textbf{FastAPI REST Backend (`main.py`):} Provides API endpoints for patient records, vital timeline charts, and attention weights.
-    \item \textbf{React Vite Frontend:} Features custom views for **Doctors** (patient bed overview, risk predictor dials, and XAI explainers) and **Admins** (concept drift CUSUM charts, federated aggregation loop, and ROC curve comparison overlays).
+    \item \textbf{React Vite Frontend:} Features custom views for **Doctors** (patient bed overview, risk predictor dials, and XAI explainers) and **Admins** (concept drift AD-CUSUM charts, federated aggregation loop, and ROC curve comparison overlays).
 \end{enumerate}
 
 \section{Summary of works completed in Phase II}

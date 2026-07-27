@@ -90,7 +90,7 @@
                     \begin{itemize}
                         \scriptsize
                         \item Built decentralized PyTorch algorithms (FedAvg, FedProx, Ditto).
-                        \item Implemented local CUSUM drift detection and Client-Side Selective Personalization.
+                        \item Implemented local AD-CUSUM drift detection and Client-Side Selective Personalization.
                     \end{itemize}
                     \vspace{0.2cm}
                     \item \textbf{Built Production-Grade CDSS Workstation:}
@@ -220,7 +220,7 @@
             \begin{column}{0.48\textwidth}
                 \scriptsize
                 \begin{itemize}
-                    \item \textbf{Online CUSUM Trigger:} Audits prediction loss residuals locally to detect population drift.
+                    \item \textbf{Online AD-CUSUM Trigger:} Audits prediction loss residuals locally to detect population drift.
                 \end{itemize}
             \end{column}
         \end{columns}
@@ -234,7 +234,7 @@
         Integrates a 4-head query-key temporal self-attention mechanism to output dynamic sequence saliency weights, mapping exactly which hourly vitals contributed to Sepsis alarms at the bedside.
     \end{alertblock}
     
-    \begin{alertblock}{2. Online CUSUM Residual Neural Drift Monitor}
+    \begin{alertblock}{2. Online AD-CUSUM Residual Neural Drift Monitor}
         \scriptsize
         Tracks local validation loss residuals round-by-round ($S_r > 3.0$). Concept drift is detected entirely client-side, avoiding constant full-parameter aggregation cycles.
     \end{alertblock}
@@ -279,8 +279,8 @@
     \end{columns}
 \end{frame}
 
-% --- DRIFT & CUSUM NEURAL TRIGGER (4) ---
-\begin{frame}{Proactive Drift Adaptation: CUSUM Neural Trigger}
+% --- DRIFT & AD-CUSUM NEURAL TRIGGER (4) ---
+\begin{frame}{Proactive Drift Adaptation: AD-CUSUM Neural Trigger}
     \begin{columns}
         \begin{column}{0.52\textwidth}
             \textbf{Concept Drift Challenge:}
@@ -346,7 +346,7 @@
 % --- ABLATION STUDY (6) ---
 \begin{frame}{Ablation Study Verification}
     \small
-    We verified the contributions of CUSUM triggers, temporal attention weights, and localized personalization by running ablation tests:
+    We verified the contributions of AD-CUSUM triggers, temporal attention weights, and localized personalization by running ablation tests:
     \vspace{0.2cm}
     \begin{table}
         \centering
@@ -356,7 +356,7 @@
             \hline
             \textbf{Ablation Configuration} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{AUROC} \\
             \hline
-            FPDAF w/o CUSUM Trigger & 83.51\% & 8.51\% & 55.33\% & 0.1475 & 0.7603 \\
+            FPDAF w/o AD-CUSUM Trigger & 83.51\% & 8.51\% & 55.33\% & 0.1475 & 0.7603 \\
             FPDAF w/o Temporal Attention & 80.01\% & 8.13\% & 52.81\% & 0.1412 & 0.7878 \\
             FPDAF w/o Personalization & 78.87\% & 8.05\% & 63.58\% & 0.1430 & 0.7887 \\
             \textbf{Full FPDAF (Proposed)} & \textbf{86.51\%} & \textbf{9.81\%} & \textbf{65.33\%} & \textbf{0.1706} & \textbf{0.8214} \\
@@ -367,7 +367,7 @@
     \begin{itemize}
         \scriptsize
         \item \textbf{No Attention:} Stripping temporal attention query projections leads to poor clinical explainability and limits optimization capacity.
-        \item \textbf{No CUSUM:} Disabling residual control limits leaves client nodes blind to data distribution drifts, leading to performance deterioration under heterogeneous ICU demographics.
+        \item \textbf{No AD-CUSUM:} Disabling residual control limits leaves client nodes blind to data distribution drifts, leading to performance deterioration under heterogeneous ICU demographics.
     \end{itemize}
 \end{frame}
 
@@ -386,7 +386,7 @@
             \textbf{Custom User Portals:}
             \begin{itemize}
                 \item \textbf{Doctor Portal:} Focuses on patient-care operations (searchable bed lists, hourly vital monitors, attention graphs, and risk prediction alerts).
-                \item \textbf{Admin Portal:} Focuses on machine learning telemetry (round parameter aggregations, CUSUM drift charts, and baseline comparisons).
+                \item \textbf{Admin Portal:} Focuses on machine learning telemetry (round parameter aggregations, AD-CUSUM drift charts, and baseline comparisons).
             \end{itemize}
         \end{column}
         \begin{column}{0.5\textwidth}
@@ -432,7 +432,7 @@
             \begin{column}{0.48\textwidth}
                 \scriptsize
                 \begin{itemize}
-                    \item \textbf{Drift Controls:} Plots CUSUM curves, tracking drift accumulation limits ($S_r > 3.0$) and CSSP backbone freezes.
+                    \item \textbf{Drift Controls:} Plots AD-CUSUM curves, tracking drift accumulation limits ($S_r > 3.0$) and CSSP backbone freezes.
                     \item \textbf{Round Tracker:} Animates client-server parameter upload/download loops using Framer Motion.
                 \end{itemize}
             \end{column}
@@ -483,7 +483,7 @@
                 \scriptsize
                 \begin{itemize}
                     \item \textbf{Federated Loop Animation}: Animates localized model weight uploads and global server distributions using Framer Motion.
-                    \item \textbf{CUSUM Drift Telemetry}: Tracks real-time concept drift curves ($S_r > 3.0$) and selective personalization triggers.
+                    \item \textbf{AD-CUSUM Drift Telemetry}: Tracks real-time concept drift curves ($S_r > 3.0$) and selective personalization triggers.
                     \item \textbf{LaTeX Equations \& Ablations}: Details mathematical optimization equations and five-way benchmark metrics.
                 \end{itemize}
             \end{block}

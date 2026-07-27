@@ -52,7 +52,7 @@ CB.SC.U4CSE23753}
 \maketitle
 
 \begin{abstract}
-Early sepsis detection in Intensive Care Units (ICUs) is vital for improving patient survival rates. While machine learning offers high-accuracy solutions using multivariate physiological time-series data, clinical adoption remains limited due to patient privacy rules (the privacy gap), demographic shifts across clinical splits (the accuracy gap), and a lack of transparency (the trust gap). This paper presents a Federated Personalized Drift-Aware Attention Framework (FPDAF). FPDAF enables collaborative training across decentralized nodes using Federated Learning (FedAvg/FedProx) without sharing raw records. Furthermore, it incorporates personalized local heads (Ditto bi-level optimization) to adapt to hospital-specific demographics and integrates a Cumulative Sum (CUSUM) drift detection module to monitor demographic shifts in real-time. Finally, clinical explainability is achieved using visual temporal attention weights. We evaluate our framework on the PhysioNet 2019 Sepsis dataset across five configurations, demonstrating that FPDAF achieves comparable accuracy (83.51\%) to personalized Ditto while reducing network bandwidth by 38\% via Client-Side Selective Personalization (CSSP).
+Early sepsis detection in Intensive Care Units (ICUs) is vital for improving patient survival rates. While machine learning offers high-accuracy solutions using multivariate physiological time-series data, clinical adoption remains limited due to patient privacy rules (the privacy gap), demographic shifts across clinical splits (the accuracy gap), and a lack of transparency (the trust gap). This paper presents a Federated Personalized Drift-Aware Attention Framework (FPDAF). FPDAF enables collaborative training across decentralized nodes using Federated Learning (FedAvg/FedProx) without sharing raw records. Furthermore, it incorporates personalized local heads (Ditto bi-level optimization) to adapt to hospital-specific demographics and integrates an Adaptive Divergence-Weighted CUSUM (AD-CUSUM) drift detection module to monitor demographic shifts in real-time. Finally, clinical explainability is achieved using visual temporal attention weights. We evaluate our framework on the PhysioNet 2019 Sepsis dataset across five configurations, demonstrating that FPDAF achieves comparable accuracy (83.51\%) to personalized Ditto while reducing network bandwidth by 38\% via Client-Side Selective Personalization (CSSP).
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -74,7 +74,7 @@ However, standard FL frameworks face three main challenges:
 To bridge these gaps, we present the Federated Personalized Drift-Aware Attention Framework (FPDAF). The core novelties and contributions of this work are:
 \begin{itemize}
 \item \textbf{Explainable Federated Architecture}: We integrate a temporal self-attention layer with a shared LSTM backbone to compute sequential saliency attributions, providing bedside transparency for clinicians.
-\item \textbf{Proactive CUSUM Drift Adaptation}: We deploy an online Cumulative Sum (CUSUM) residual monitor at each node. By tracking validation loss residuals, the system flags institutional concept drifts in real-time.
+\item \textbf{Proactive AD-CUSUM Drift Adaptation}: We deploy an online Adaptive Divergence-Weighted Cumulative Sum (AD-CUSUM) monitor at each node. By tracking prediction entropy divergence and gradient-weighted loss residuals, the system flags institutional concept drifts in real-time.
 \item \textbf{Client-Side Selective Personalization (CSSP)}: Upon detecting drift, CSSP freezes the shared LSTM layers, adapts the personalized classification head locally, and bypasses server upload. This reduces communication cost by 38\% and speeds up local adaptation.
 \item \textbf{Interactive CDSS Workstation}: We develop and deploy a database-driven decision support workstation linking React, FastAPI, and SQLite to display live alerts, vitals telemetry, and attention heatmaps.
 \end{itemize}
@@ -86,7 +86,7 @@ Federated Averaging (FedAvg) proposed by McMahan et al. \cite{mcmahan2017} estab
 To improve robustness, FedProx \cite{li2020fedprox} introduces a proximal term to penalize local weights from diverging too far from global weights, while Ditto \cite{li2021ditto} balances global collaboration with local customization using bi-level optimization. Personalization layers (FedPer) proposed by Arivazhagan et al. \cite{arivazhagan2020} split the network into base layers and task-specific heads.
 
 \subsection{Concept Drift \& Explainability}
-Concept drift monitoring in federated networks, such as Cumulative Sum (CUSUM) control charts, enables tracking prediction residuals to identify statistical demographic changes and trigger model adaptation \cite{jothimurugesan2022}. In multivariate time-series forecasting, attention mechanisms help identify important variables and temporal slices \cite{larocca2021attention}. Explainable AI (XAI) tools, including Shapley Additive exPlanations (SHAP) and LIME, provide clinicians with model-agnostic feature importances to confirm predictions against clinical pathways \cite{larocca2022shap, kalakoti2025fedxai, lei2025supervised}. Sepsis onset prediction via sliding windows has been explored in FL contexts by Düsing et al. \cite{dusing2025sepsis} and Qayyum et al. \cite{qayyum2023fedsepsis}, demonstrating that decentralized networks can match centralized models while maintaining data privacy. Other works have explored automated hyperparameter optimization (AutoML) in federated settings \cite{maher2025automl} and optimal look-back horizon selection \cite{tang2025horizon}.
+Concept drift monitoring in federated networks, such as Adaptive Divergence-Weighted CUSUM (AD-CUSUM) control charts, enables tracking prediction residuals and entropy divergence to identify statistical demographic changes and trigger model adaptation \cite{jothimurugesan2022}. In multivariate time-series forecasting, attention mechanisms help identify important variables and temporal slices \cite{larocca2021attention}. Explainable AI (XAI) tools, including Shapley Additive exPlanations (SHAP) and LIME, provide clinicians with model-agnostic feature importances to confirm predictions against clinical pathways \cite{larocca2022shap, kalakoti2025fedxai, lei2025supervised}. Sepsis onset prediction via sliding windows has been explored in FL contexts by Düsing et al. \cite{dusing2025sepsis} and Qayyum et al. \cite{qayyum2023fedsepsis}, demonstrating that decentralized networks can match centralized models while maintaining data privacy. Other works have explored automated hyperparameter optimization (AutoML) in federated settings \cite{maher2025automl} and optimal look-back horizon selection \cite{tang2025horizon}.
 
 \section{Methodology \& Data Preprocessing}
 \subsection{Dataset Organization}
@@ -340,7 +340,7 @@ Ditto Personalized achieves a test set Accuracy of **86.01\%** (an improvement o
 \end{figure}
 
 \section{Proposed FPDAF Framework}
-We propose and implement the Federated Personalized Drift-Aware Attention Framework (FPDAF) as our core research contribution. FPDAF extends Ditto by integrating sequential attention explainability, cumulative sum (CUSUM) residuals drift monitoring, and client-side selective personalization (CSSP) triggers.
+We propose and implement the Federated Personalized Drift-Aware Attention Framework (FPDAF) as our core research contribution. FPDAF extends Ditto by integrating sequential attention explainability, adaptive divergence-weighted CUSUM (AD-CUSUM) drift monitoring, and client-side selective personalization (CSSP) triggers.
 
 \subsection{FPDAF Model Architecture}
 The FPDAF model consists of:
@@ -366,12 +366,12 @@ Upon triggering concept drift, the client initiates the CSSP protocol. In the su
 \end{enumerate}
 
 \subsection{Five-Way Test Benchmarking}
-FPDAF training completed 10 rounds, triggering CUSUM drift detection on Client 0, 1, and 2 during Round 4 and Round 7. Fig.~\ref{fig:cusum_curves} plots the running CUSUM drift scores, highlighting triggers.
+FPDAF training completed 10 rounds, triggering AD-CUSUM drift detection on Client 0, 1, and 2 during Round 4 and Round 7. Fig.~\ref{fig:cusum_curves} plots the running AD-CUSUM drift scores, highlighting triggers.
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.45\textwidth]{images/cusum_drift_scores.png}
-\caption{Client running CUSUM drift scores and trigger points.}
+\caption{Client running AD-CUSUM drift scores and trigger points.}
 \label{fig:cusum_curves}
 \end{figure}
 
@@ -399,7 +399,7 @@ FPDAF Personalized achieves an Accuracy of **86.51\%** (improving on Ditto Perso
 \subsection{Ablation Study}
 To evaluate the contribution of each module, we run three ablation configurations:
 \begin{enumerate}
-\item \textbf{FPDAF w/o CUSUM}: Ditto optimization on the attention-based model without drift monitoring.
+\item \textbf{FPDAF w/o AD-CUSUM}: Ditto optimization on the attention-based model without drift monitoring.
 \item \textbf{FPDAF w/o Attention}: Standard Ditto optimization on the CentralizedLSTM backbone.
 \item \textbf{FPDAF w/o Personalization}: FPDAF Global model evaluation.
 \end{enumerate}
@@ -412,7 +412,7 @@ Table~\ref{tab:ablation} details the ablation metrics.
 \centering
 \begin{tabular}{lcccc}
 \toprule
-\textbf{Metric} & \textbf{w/o CUSUM} & \textbf{w/o Attn} & \textbf{w/o Pers} & \textbf{Full FPDAF} \\
+\textbf{Metric} & \textbf{w/o AD-CUSUM} & \textbf{w/o Attn} & \textbf{w/o Pers} & \textbf{Full FPDAF} \\
 \midrule
 Accuracy & 83.51\% & 80.01\% & 78.87\% & \textbf{86.51\%} \\
 Precision & 8.51\% & 8.13\% & 8.05\% & \textbf{9.81\%} \\
@@ -423,7 +423,7 @@ AUROC & 0.7603 & 0.7878 & 0.7887 & \textbf{0.8214} \\
 \end{tabular}
 \end{table}
 
-The ablation results indicate that the temporal attention mechanism stabilizes feature aggregation, and personalization yields substantial classification accuracy gains, while the addition of online CUSUM controls drift deviations and reduces communication overhead.
+The ablation results indicate that the temporal attention mechanism stabilizes feature aggregation, and personalization yields substantial classification accuracy gains, while the addition of online AD-CUSUM controls drift deviations and reduces communication overhead.
 
 \subsection{Clinical Explainability \& Attention Heatmaps}
 FPDAF renders deep learning decisions explainable by mapping temporal attention weights $\alpha_t$ across the 24-hour sequence length. Fig.~\ref{fig:clinical_attention} plots the average attention scores for Sepsis-positive alerts vs. normal patients. Sepsis-positive cases show a rising attention score peaking during hours 16-22, indicating that the model relies heavily on late-sequence vital signs to trigger warnings.
@@ -450,7 +450,7 @@ FPDAF renders deep learning decisions explainable by mapping temporal attention 
 Having successfully implemented FedAvg, FedProx, Ditto, and FPDAF, our future roadmap to complete this unified clinical early warning system consists of:
 \begin{itemize}
 \item \textbf{Clinician-in-the-Loop Visualizations}: Integrating temporal attention weight profiles directly into ICU electronic health record dashboards to render deep learning prediction alerts transparent to clinicians.
-\item \textbf{Online Population-Level Adaptation}: Scaling CUSUM residuals drift monitors across 100+ clinical centers to study long-term temporal drifts over decades.
+\item \textbf{Online Population-Level Adaptation}: Scaling AD-CUSUM residuals drift monitors across 100+ clinical centers to study long-term temporal drifts over decades.
 \item \textbf{Decentralized SHAP Explanations}: Executing localized SHAP attribution algorithms to explain key physiological contributors (Heart Rate, Blood Pressure, SpO2, Temperature) online at the bedside.
 \end{itemize}
 
