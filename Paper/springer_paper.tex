@@ -6,14 +6,15 @@
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{subcaption}
 \usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{cite}
 
 \hypersetup{
     colorlinks=true,
-    linkcolor=teal,
-    citecolor=blue,
+    linkcolor=blue,
+    citecolor=teal,
     urlcolor=cyan
 }
 
@@ -67,29 +68,31 @@ Federated Averaging (FedAvg) \cite{mcmahan2017} introduced local stochastic grad
 \subsection{Concept Drift Detection in Clinical Time-Series}
 Statistical process control algorithms, such as Cumulative Sum (CUSUM) and Page-Hinkley tests, monitor residual error progressions to detect distributional shifts \cite{jothimurugesan2022}. However, classical CUSUM charts fail in high-variance deep learning setups due to mini-batch loss fluctuations. In time-series forecasting, attention mechanisms project query-key-value representations to capture long-range temporal dependencies \cite{larocca2021attention, tang2025horizon}. Combining attention with local drift triggers enables dynamic online model adaptation.
 
-\section{Methodology \& Preprocessing}
+\section{Methodology \& Data Preprocessing}
 \subsection{PhysioNet 2019 Cohort \& Feature Schema}
-We evaluate our framework on the PhysioNet Computing in Cardiology Challenge 2019 dataset, comprising 40,327 ICU patient records with 40 hourly physiological signals (e.g., Heart Rate, Mean Arterial Pressure, Temperature, Respiratory Rate, Oxygen Saturation, WBC count) and hourly binary `SepsisLabel` annotations. Table~\ref{tab:vitals_schema} details the primary physiological vital signs and clinical laboratory features monitored.
+We evaluate our framework on the PhysioNet Computing in Cardiology Challenge 2019 dataset, comprising 40,327 ICU patient records with 40 hourly physiological signals (e.g., Heart Rate, Mean Arterial Pressure, Temperature, Respiratory Rate, Oxygen Saturation, WBC count) and hourly binary `SepsisLabel` annotations. Table~\ref{tab:vitals_schema_springer} details the primary physiological vital signs and clinical laboratory features monitored.
 
 \begin{table}[htbp]
-\caption{Physiological Vital Signs \& Laboratory Schema}
-\label{tab:vitals_schema}
+\caption{Physiological Vital Signs \& Laboratory Feature Schema}
+\label{tab:vitals_schema_springer}
 \centering
-\begin{tabular}{lll}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{llll}
 \toprule
-\textbf{Category} & \textbf{Clinical Parameter} & \textbf{Measurement Unit} \\
+\textbf{Category} & \textbf{Clinical Parameter} & \textbf{Measurement Unit} & \textbf{Normal Clinical Range} \\
 \midrule
-Vital Signs & Heart Rate (HR) & Beats / min (bpm) \\
-Vital Signs & Systolic Blood Pressure (SBP) & mmHg \\
-Vital Signs & Mean Arterial Pressure (MAP) & mmHg \\
-Vital Signs & Body Temperature & $^\circ$C \\
-Vital Signs & Oxygen Saturation ($\text{SpO}_2$) & \% \\
-Vital Signs & Respiration Rate (Resp) & Breaths / min \\
-Laboratory & White Blood Cell Count (WBC) & $10^3/\mu\text{L}$ \\
-Laboratory & Platelets & $10^3/\mu\text{L}$ \\
-Laboratory & Lactate & mmol/L \\
-Laboratory & Blood Glucose & mg/dL \\
-Demographic & Age \& Gender & Years / Binary \\
+Vital Signs & Heart Rate (HR) & Beats / min (bpm) & 60 -- 100 bpm \\
+Vital Signs & Systolic Blood Pressure (SBP) & mmHg & 90 -- 120 mmHg \\
+Vital Signs & Mean Arterial Pressure (MAP) & mmHg & 70 -- 105 mmHg \\
+Vital Signs & Body Temperature & $^\circ$C & 36.5 -- 37.5 $^\circ$C \\
+Vital Signs & Oxygen Saturation ($\text{SpO}_2$) & \% & 95 -- 100 \% \\
+Vital Signs & Respiration Rate (Resp) & Breaths / min & 12 -- 20 breaths/min \\
+Laboratory & White Blood Cell Count (WBC) & $10^3/\mu\text{L}$ & 4.5 -- 11.0 $10^3/\mu\text{L}$ \\
+Laboratory & Platelets & $10^3/\mu\text{L}$ & 150 -- 450 $10^3/\mu\text{L}$ \\
+Laboratory & Lactate & mmol/L & 0.5 -- 2.2 mmol/L \\
+Laboratory & Blood Glucose & mg/dL & 70 -- 140 mg/dL \\
+Demographic & Age \& Gender & Years / Binary & 18 -- 90+ Years \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -106,11 +109,19 @@ and applied to validation and testing partitions.
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.48\textwidth]{images/preprocessing_comparison.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/preprocessing_comparison.png}
+\caption{Imputation \& Z-Score Normalization}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/preprocessing_padding.png}
-\caption{(Left) Vital sign time-series before and after patient-level imputation and leakage-free z-score normalization. (Right) Zero pre-padding validation on a short-stay ICU patient window ($T < 24$h) to form uniform 24-hour sequence matrices.}
-\label{fig:preprocessing_comparison}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/preprocessing_padding.png}
+\caption{Zero Pre-Padding Validation ($T < 24$h)}
+\end{subfigure}
+\caption{Data preprocessing engineering pipeline validation.}
+\label{fig:preprocessing_springer}
 \end{figure}
 
 \section{Baseline \& Federated Framework Formulations}
@@ -137,7 +148,7 @@ where $D_{\text{JSD}}^{(r)} = \text{JSD}\left(P^{(r)} \parallel P^{(r-1)}\right)
 
 \begin{algorithm}[htbp]
 \caption{Proposed AD-CUSUM Drift Detection Algorithm (Project Invention)}
-\label{alg:ad_cusum}
+\label{alg:ad_cusum_springer}
 \begin{algorithmic}[1]
 \REQUIRE Validation loss $\mathcal{L}_{\text{val}, r}$, predictions $P^{(r)}$, baseline $\mu_0$, threshold $H = 3.0$, parameters $\beta, \gamma, \alpha$.
 \ENSURE Drift alert flag $\text{drift\_flag} \in \{\text{True}, \text{False}\}$, updated score $S_r$.
@@ -166,7 +177,7 @@ $$\mathcal{L}_{\text{DDP-ERP}} = \mathcal{L}_{\text{ce}}(y, \hat{y}) + \lambda D
 
 \begin{algorithm}[htbp]
 \caption{Proposed DDP-ERP Personalization Algorithm (Project Invention)}
-\label{alg:ddp_erp}
+\label{alg:ddp_erp_springer}
 \begin{algorithmic}[1]
 \REQUIRE Sequence features $X_k$, global parameters $\theta_{\text{global}}$, local parameters $\phi^k$, weights $\lambda, \eta$.
 \ENSURE Updated local personalized model $\phi^k$, predictions $\hat{y}$.
@@ -185,14 +196,14 @@ $$\mathcal{L}_{\text{DDP-ERP}} = \mathcal{L}_{\text{ce}}(y, \hat{y}) + \lambda D
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.85\textwidth]{images/cusum_drift_scores.png}
+\includegraphics[width=0.88\textwidth]{images/cusum_drift_scores.png}
 \caption{Client running AD-CUSUM concept drift scores across communication rounds highlighting threshold triggers ($H=3.0$).}
-\label{fig:cusum_curves}
+\label{fig:cusum_springer}
 \end{figure}
 
 \begin{table}[htbp]
 \caption{Six-Way Test Performance Comparison (FPDAF v1 vs. Enhanced FPDAF-v2)}
-\label{tab:fiveway}
+\label{tab:fiveway_springer}
 \centering
 \begin{tabular}{lcccccc}
 \toprule
@@ -209,11 +220,19 @@ F1 Score & 0.1300 & 0.1259 & 0.1432 & 0.1574 & 0.1706 & \textbf{0.3056} \\
 
 \begin{figure}[htbp]
 \centering
-\includegraphics[width=0.48\textwidth]{images/five_way_roc_curve.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/five_way_roc_curve.png}
+\caption{Five-Way ROC Overlay}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/temporal_attention_profile.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/temporal_attention_profile.png}
+\caption{Temporal Attention Profile}
+\end{subfigure}
 \caption{(Left) Five-way comparative test set ROC curve overlay. (Right) Average temporal attention score profile across 24-hour sequence windows.}
-\label{fig:clinical_attention}
+\label{fig:clinical_attention_springer}
 \end{figure}
 
 \section{Conclusion}

@@ -9,6 +9,7 @@
 \usepackage{booktabs}
 \usepackage{algorithm}
 \usepackage{algorithmic}
+\usepackage{subcaption}
 \usepackage{hyperref}
 
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
@@ -52,7 +53,7 @@ CB.SC.U4CSE23753}
 \maketitle
 
 \begin{abstract}
-Early detection of clinical sepsis in Intensive Care Units (ICUs) is vital for preventing septic shock, multi-organ failure, and patient death. While deep learning models achieve high predictive accuracy over multivariate physiological time-series data, their widespread clinical adoption remains constrained by strict medical data privacy regulations (the privacy gap), institutional demographic heterogeneity across hospital sites (the accuracy gap), online temporal concept drift, and a lack of model transparency (the trust gap). To overcome these challenges, this paper presents the \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}. FPDAF enables privacy-preserving collaborative model training across decentralized hospital nodes without transmitting raw electronic medical records. The framework introduces two original algorithmic inventions developed in this research: (1) \textbf{Adaptive Divergence-Weighted Cumulative Sum (AD-CUSUM)}, which monitors validation entropy divergence and classifier gradient variance to detect institutional concept drift in real-time without false triggers from mini-batch stochastic noise, and (2) \textbf{Dynamic Dual-Phase Saliency \& Entropy-Regularized Personalization (DDP-ERP)}, which combines 2D temporal-vital cross-attention with KL-divergence and contrastive loss regularization. Upon drift alert, Client-Side Selective Personalization (CSSP) freezes the shared Bidirectional LSTM backbone parameters and fine-tunes local classification heads privately, reducing network communication cost by 38\% while cutting local adaptation latency to under 6 minutes. Rigorous 6-way benchmark evaluation on the PhysioNet 2019 Sepsis cohort (40,327 patients across 3 hospital splits) demonstrates that Enhanced FPDAF-v2 achieves a test set Accuracy of \textbf{96.42\%} (surpassing our $>95\%$ target) and an AUROC of \textbf{0.9418}, outperforming standard FedAvg, FedProx, and Ditto frameworks while maintaining complete patient privacy and bedside temporal explainability.
+Early detection of clinical sepsis in Intensive Care Units (ICUs) is vital for preventing septic shock, multi-organ failure, and patient mortality. While deep learning models achieve high predictive accuracy over multivariate physiological time-series data, their widespread clinical adoption remains constrained by medical data privacy regulations (the privacy gap), institutional demographic heterogeneity across hospital sites (the accuracy gap), online temporal concept drift, and a lack of model transparency (the trust gap). To overcome these challenges, this paper presents the \textbf{Federated Personalized Drift-Aware Attention Framework (FPDAF)}. FPDAF enables privacy-preserving collaborative model training across decentralized hospital nodes without transmitting raw electronic medical records. The framework introduces two original algorithmic inventions developed in this research: (1) \textbf{Adaptive Divergence-Weighted Cumulative Sum (AD-CUSUM)}, which monitors validation entropy divergence and classifier gradient variance to detect institutional concept drift in real-time without false triggers from stochastic mini-batch noise, and (2) \textbf{Dynamic Dual-Phase Saliency \& Entropy-Regularized Personalization (DDP-ERP)}, which combines 2D temporal-vital cross-attention with KL-divergence and contrastive loss regularization. Upon drift alert, Client-Side Selective Personalization (CSSP) freezes the shared Bidirectional LSTM backbone parameters and fine-tunes local classification heads privately, reducing network communication cost by 38\% while cutting local adaptation latency to under 6 minutes. Rigorous 6-way benchmark evaluation on the PhysioNet 2019 Sepsis cohort (40,327 patients across 3 hospital splits) demonstrates that Enhanced FPDAF-v2 achieves a test set Accuracy of \textbf{96.42\%} (surpassing our $>95\%$ target) and an AUROC of \textbf{0.9418}, outperforming standard FedAvg, FedProx, and Ditto frameworks while maintaining complete patient privacy and bedside temporal explainability.
 \end{abstract}
 
 \begin{IEEEkeywords}
@@ -100,28 +101,29 @@ Clinical adoption requires explainable predictions. Feature attribution tools li
 \subsection{PhysioNet 2019 Cohort \& Feature Schema}
 We evaluate our framework on the PhysioNet Computing in Cardiology Challenge 2019 dataset, comprising 40,327 ICU patient records with 40 hourly physiological signals (e.g., Heart Rate, Mean Arterial Pressure, Temperature, Respiratory Rate, Oxygen Saturation, WBC count) and hourly binary `SepsisLabel` annotations. Table~\ref{tab:vitals_schema} details the primary physiological vital signs and clinical laboratory features monitored.
 
-\begin{table}[htbp]
-\caption{Physiological Vital Signs \& Laboratory Schema}
+\begin{table*}[t]
+\caption{Physiological Vital Signs \& Laboratory Feature Schema}
 \label{tab:vitals_schema}
 \centering
-\begin{tabular}{lll}
+\small
+\begin{tabular}{llll}
 \toprule
-\textbf{Category} & \textbf{Clinical Parameter} & \textbf{Measurement Unit} \\
+\textbf{Category} & \textbf{Clinical Parameter} & \textbf{Measurement Unit} & \textbf{Normal Clinical Range} \\
 \midrule
-Vital Signs & Heart Rate (HR) & Beats / min (bpm) \\
-Vital Signs & Systolic Blood Pressure (SBP) & mmHg \\
-Vital Signs & Mean Arterial Pressure (MAP) & mmHg \\
-Vital Signs & Body Temperature & $^\circ$C \\
-Vital Signs & Oxygen Saturation ($\text{SpO}_2$) & \% \\
-Vital Signs & Respiration Rate (Resp) & Breaths / min \\
-Laboratory & White Blood Cell Count (WBC) & $10^3/\mu\text{L}$ \\
-Laboratory & Platelets & $10^3/\mu\text{L}$ \\
-Laboratory & Lactate & mmol/L \\
-Laboratory & Blood Glucose & mg/dL \\
-Demographic & Age \& Gender & Years / Binary \\
+Vital Signs & Heart Rate (HR) & Beats / min (bpm) & 60 -- 100 bpm \\
+Vital Signs & Systolic Blood Pressure (SBP) & mmHg & 90 -- 120 mmHg \\
+Vital Signs & Mean Arterial Pressure (MAP) & mmHg & 70 -- 105 mmHg \\
+Vital Signs & Body Temperature & $^\circ$C & 36.5 -- 37.5 $^\circ$C \\
+Vital Signs & Oxygen Saturation ($\text{SpO}_2$) & \% & 95 -- 100 \% \\
+Vital Signs & Respiration Rate (Resp) & Breaths / min & 12 -- 20 breaths/min \\
+Laboratory & White Blood Cell Count (WBC) & $10^3/\mu\text{L}$ & 4.5 -- 11.0 $10^3/\mu\text{L}$ \\
+Laboratory & Platelets & $10^3/\mu\text{L}$ & 150 -- 450 $10^3/\mu\text{L}$ \\
+Laboratory & Lactate & mmol/L & 0.5 -- 2.2 mmol/L \\
+Laboratory & Blood Glucose & mg/dL & 70 -- 140 mg/dL \\
+Demographic & Age \& Gender & Years / Binary & 18 -- 90+ Years \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{Leakage-Free Preprocessing Pipeline}
 To ensure clinical rigor and prevent data leakage, we establish a three-stage PyTorch data engineering pipeline:
@@ -133,15 +135,23 @@ and applied to validation and testing partitions.
 \item \textbf{24-Hour Sliding Sequence Windowing}: Continuous patient stays are segmented into 24-hour sliding sequence matrices $X_k \in \mathbb{R}^{24 \times 40}$. Short ICU stays ($T < 24$h) are pre-padded with zero vectors.
 \end{enumerate}
 
-Figures~\ref{fig:preprocessing_comparison} and \ref{fig:preprocessing_padding} visually validate the preprocessing transformations and zero pre-padding routines.
+Figure~\ref{fig:preprocessing_fig} presents the vital sign imputation and zero pre-padding validation plots.
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{images/preprocessing_comparison.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/preprocessing_comparison.png}
+\caption{Imputation \& Z-Score Normalization}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/preprocessing_padding.png}
-\caption{(Left) Vital sign time-series before and after patient-level imputation and leakage-free z-score normalization. (Right) Zero pre-padding validation on a short-stay ICU patient window ($T < 24$h) to form uniform 24-hour sequence matrices.}
-\label{fig:preprocessing_comparison}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/preprocessing_padding.png}
+\caption{Zero Pre-Padding Validation ($T < 24$h)}
+\end{subfigure}
+\caption{Data preprocessing engineering pipeline validation.}
+\label{fig:preprocessing_fig}
 \end{figure*}
 
 \section{Centralized Baseline BiLSTM Model}
@@ -153,7 +163,7 @@ $$\mathcal{L}_{\text{BCE}} = -\left[ w_{\text{pos}} \cdot y \log \sigma(\hat{y})
 where $w_{\text{pos}} = \frac{N_{\text{neg}}}{N_{\text{pos}}} \approx 37.17$.
 
 \subsection{Baseline Inference Performance}
-The centralized model early-stopped at Epoch 9 as validation AUROC peaked at 0.8232. Final test set metrics are detailed in Table~\ref{tab:metrics}. Figure~\ref{fig:baseline_results} presents the test ROC curve (AUROC = 0.8058) and confusion matrix heatmap.
+The centralized model early-stopped at Epoch 9 as validation AUROC peaked at 0.8232. Final test set metrics are detailed in Table~\ref{tab:metrics}. Figure~\ref{fig:baseline_fig} presents the test ROC curve (AUROC = 0.8058) and confusion matrix heatmap.
 
 \begin{table}[htbp]
 \caption{Centralized Baseline Test Evaluation}
@@ -172,13 +182,21 @@ F1 Score & 0.1300 \\
 \end{tabular}
 \end{table}
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{images/baseline_roc.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/baseline_roc.png}
+\caption{Centralized Test ROC Curve}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/baseline_confusion_matrix.png}
-\caption{(Left) Receiver Operating Characteristic (ROC) curve of the baseline model on the test dataset. (Right) Centralized baseline test set confusion matrix heatmap.}
-\label{fig:baseline_results}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/baseline_confusion_matrix.png}
+\caption{Test Confusion Matrix Heatmap}
+\end{subfigure}
+\caption{Centralized Baseline BiLSTM test evaluation.}
+\label{fig:baseline_fig}
 \end{figure*}
 
 \section{Federated Learning via FedAvg}
@@ -200,12 +218,20 @@ where $n_k$ is the local sample size of client node $k$ and $N = \sum n_k$.
 \subsection{Results and Baseline Degradation Analysis}
 FedAvg training early-stopped at round 7. Figure~\ref{fig:fed_curves} shows global validation loss and AUROC curves across rounds. Table~\ref{tab:comparison} compares FedAvg against the Centralized Baseline.
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{images/federated_rounds_loss.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/federated_rounds_loss.png}
+\caption{Validation Loss Across Rounds}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/federated_rounds_auroc.png}
-\caption{FedAvg global model performance across 10 communication rounds: (Left) Validation Loss progression, (Right) Validation AUROC progression.}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/federated_rounds_auroc.png}
+\caption{Validation AUROC Across Rounds}
+\end{subfigure}
+\caption{FedAvg global model performance across 10 communication rounds.}
 \label{fig:fed_curves}
 \end{figure*}
 
@@ -228,12 +254,20 @@ F1 Score & 0.1300 & 0.1259 & -0.0041 \\
 
 Due to client Non-IID heterogeneity, FedAvg exhibits a **2.14\% drop in test AUROC** (0.7844 vs 0.8058) and a **4.97\% drop in Recall**, confirming that a single static global consensus model struggles under institutional demographic shifts. Figure~\ref{fig:fed_roc_cm} plots the FedAvg ROC curve and confusion matrix.
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{images/federated_comparative_roc.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/federated_comparative_roc.png}
+\caption{FedAvg Test ROC Overlay}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/federated_confusion_matrix.png}
-\caption{(Left) Comparative test set ROC curve overlay for FedAvg vs Centralized baseline. (Right) FedAvg global model test confusion matrix heatmap.}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/federated_confusion_matrix.png}
+\caption{FedAvg Confusion Matrix}
+\end{subfigure}
+\caption{FedAvg global model test evaluation.}
 \label{fig:fed_roc_cm}
 \end{figure*}
 
@@ -248,12 +282,20 @@ We configure $\mu = 0.01$, constraining client weights from drifting too far fro
 \subsection{Results and Three-Way Benchmarking}
 FedProx early-stopped at round 8, with validation AUROC peaking at 0.8062 in Round 2. Figure~\ref{fig:fedprox_curves} presents validation metrics across rounds, and Table~\ref{tab:threeway} details three-way comparative performance.
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{images/fedprox_rounds_loss.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/fedprox_rounds_loss.png}
+\caption{FedProx Validation Loss}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/fedprox_rounds_auroc.png}
-\caption{FedProx global model training metrics across rounds: (Left) Validation Loss curve, (Right) Validation AUROC curve.}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/fedprox_rounds_auroc.png}
+\caption{FedProx Validation AUROC}
+\end{subfigure}
+\caption{FedProx global model training metrics across rounds.}
 \label{fig:fedprox_curves}
 \end{figure*}
 
@@ -276,12 +318,20 @@ F1 Score & 0.1300 & 0.1259 & 0.1622 & +0.0363 \\
 
 FedProx improves test AUROC to **0.8033** (+1.89\% over FedAvg) and increases F1-score to **0.1622** (+3.63\% over FedAvg). Figure~\ref{fig:fedprox_roc_cm} displays the three-way ROC curve and FedProx confusion matrix.
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{images/fedprox_three_way_roc.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/fedprox_three_way_roc.png}
+\caption{Three-Way ROC Overlay}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/fedprox_confusion_matrix.png}
-\caption{(Left) Three-way comparative test set ROC curve overlay. (Right) FedProx test set confusion matrix heatmap.}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/fedprox_confusion_matrix.png}
+\caption{FedProx Confusion Matrix}
+\end{subfigure}
+\caption{Three-way comparative test set ROC curve overlay and confusion matrix.}
 \label{fig:fedprox_roc_cm}
 \end{figure*}
 
@@ -296,13 +346,14 @@ We configure $\lambda = 0.1$. Personalized weights $v_k$ remain private to node 
 \subsection{Results and Four-Way Benchmarking}
 Table~\ref{tab:fourway} summarizes four-way performance. Ditto Personalized achieves an Accuracy of **86.01\%** (+10.07\% over FedAvg) and F1-score of **0.1629**. Figure~\ref{fig:ditto_roc_cm} plots four-way ROC overlays and confusion matrices.
 
-\begin{table}[htbp]
-\caption{Four-Way Test Performance Comparison}
+\begin{table*}[t]
+\caption{Four-Way Test Performance Comparison Across Models}
 \label{tab:fourway}
 \centering
+\small
 \begin{tabular}{lccccc}
 \toprule
-\textbf{Metric} & \textbf{Cent.} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Ditto G.} & \textbf{Ditto P.} \\
+\textbf{Metric} & \textbf{Centralized} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Ditto Global} & \textbf{Ditto Personalized} \\
 \midrule
 Accuracy & 75.09\% & 75.94\% & 83.85\% & 79.89\% & \textbf{86.01\%} \\
 Precision & 7.14\% & 6.94\% & 9.36\% & 8.05\% & \textbf{9.63\%} \\
@@ -311,14 +362,22 @@ F1 Score & 0.1300 & 0.1259 & 0.1622 & 0.1433 & \textbf{0.1629} \\
 \textbf{AUROC} & \textbf{0.8058} & \textbf{0.7844} & \textbf{0.8033} & \textbf{0.7887} & 0.7878 \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{images/four_way_roc_curve.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/four_way_roc_curve.png}
+\caption{Four-Way ROC Overlay}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/ditto_personalized_confusion_matrix.png}
-\caption{(Left) Four-way comparative test set ROC curve overlay. (Right) Ditto personalized model test confusion matrix heatmap.}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/ditto_personalized_confusion_matrix.png}
+\caption{Ditto Personalized Confusion Matrix}
+\end{subfigure}
+\caption{Four-way comparative test set evaluation.}
 \label{fig:ditto_roc_cm}
 \end{figure*}
 
@@ -393,20 +452,21 @@ When $S_r > H$, CSSP freezes the shared LSTM backbone parameters (\textit{requir
 \subsection{Six-Way Model Benchmarking Results}
 Figure~\ref{fig:cusum_curves} plots running AD-CUSUM drift scores across communication rounds. Table~\ref{tab:fiveway} presents comprehensive 6-way comparative results on the test cohort.
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.85\textwidth]{images/cusum_drift_scores.png}
+\includegraphics[width=0.88\textwidth]{images/cusum_drift_scores.png}
 \caption{Client running AD-CUSUM concept drift scores across communication rounds highlighting threshold triggers ($H=3.0$).}
 \label{fig:cusum_curves}
 \end{figure*}
 
-\begin{table}[htbp]
+\begin{table*}[t]
 \caption{Six-Way Test Performance Comparison (FPDAF v1 vs. Enhanced FPDAF-v2)}
 \label{tab:fiveway}
 \centering
+\small
 \begin{tabular}{lcccccc}
 \toprule
-\textbf{Metric} & \textbf{Cent.} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Ditto P.} & \textbf{FPDAF v1} & \textbf{FPDAF-v2} \\
+\textbf{Metric} & \textbf{Centralized} & \textbf{FedAvg} & \textbf{FedProx} & \textbf{Ditto Personalized} & \textbf{FPDAF v1} & \textbf{FPDAF-v2} \\
 \midrule
 Accuracy & 75.09\% & 75.94\% & 78.85\% & 82.45\% & 86.51\% & \textbf{96.42\%} \\
 Precision & 7.14\% & 6.94\% & 8.12\% & 8.98\% & 9.81\% & \textbf{18.75\%} \\
@@ -415,20 +475,21 @@ F1 Score & 0.1300 & 0.1259 & 0.1432 & 0.1574 & 0.1706 & \textbf{0.3056} \\
 \textbf{AUROC} & 0.8058 & 0.7844 & 0.7933 & 0.7989 & 0.8214 & \textbf{0.9418} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 Enhanced FPDAF-v2 achieves a test Accuracy of \textbf{96.42\%} (+9.91\% over FPDAF v1) and an AUROC of \textbf{0.9418} (+0.1204 over FPDAF v1), achieving near-perfect clinical sepsis risk stratification.
 
 \subsection{Ablation Study Analysis}
 Table~\ref{tab:ablation} details module ablation metrics, confirming the necessity of temporal attention, AD-CUSUM drift triggers, and DDP-ERP regularization.
 
-\begin{table}[htbp]
+\begin{table*}[t]
 \caption{Ablation Study Performance Comparison}
 \label{tab:ablation}
 \centering
+\small
 \begin{tabular}{lccccc}
 \toprule
-\textbf{Metric} & \textbf{w/o AD-CUSUM} & \textbf{w/o Attn} & \textbf{w/o Pers} & \textbf{FPDAF v1} & \textbf{FPDAF-v2} \\
+\textbf{Metric} & \textbf{w/o AD-CUSUM} & \textbf{w/o Attention} & \textbf{w/o Personalization} & \textbf{FPDAF v1} & \textbf{FPDAF-v2} \\
 \midrule
 Accuracy & 83.51\% & 80.01\% & 78.87\% & 86.51\% & \textbf{96.42\%} \\
 Precision & 8.51\% & 8.13\% & 8.05\% & 9.81\% & \textbf{18.75\%} \\
@@ -437,17 +498,25 @@ F1 Score & 0.1475 & 0.1412 & 0.1430 & 0.1706 & \textbf{0.3056} \\
 AUROC & 0.7603 & 0.7878 & 0.7887 & 0.8214 & \textbf{0.9418} \\
 \bottomrule
 \end{tabular}
-\end{table}
+\end{table*}
 
 \subsection{Clinical Explainability \& Temporal Attention Profiles}
 Figure~\ref{fig:clinical_attention} plots the 5-way ROC curve overlay and average temporal attention score profiles across 24-hour windows. Sepsis-positive patients exhibit a distinct rising attention profile peaking between hours 16 and 22, giving clinicians a transparent hours-early window to administer fluids and antibiotics. Figure~\ref{fig:clinical_cm} presents the FPDAF personalized confusion matrix.
 
-\begin{figure*}[htbp]
+\begin{figure*}[t]
 \centering
-\includegraphics[width=0.48\textwidth]{images/five_way_roc_curve.png}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/five_way_roc_curve.png}
+\caption{Five-Way ROC Overlay}
+\end{subfigure}
 \hfill
-\includegraphics[width=0.48\textwidth]{images/temporal_attention_profile.png}
-\caption{(Left) Five-way comparative test set ROC curve overlay. (Right) Average temporal attention score profile across 24-hour sequence windows.}
+\begin{subfigure}[b]{0.48\textwidth}
+\centering
+\includegraphics[width=\linewidth]{images/temporal_attention_profile.png}
+\caption{Average Temporal Attention Curve}
+\end{subfigure}
+\caption{Clinical explainability and comparative performance overlays.}
 \label{fig:clinical_attention}
 \end{figure*}
 
