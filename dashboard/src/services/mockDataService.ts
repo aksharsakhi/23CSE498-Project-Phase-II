@@ -42,6 +42,10 @@ export interface DriftRecord {
   client0: number;
   client1: number;
   client2: number;
+  // Novel AD-CUSUM specific metrics
+  jsd_divergence?: number;
+  w_grad?: number;
+  kappa_r?: number;
 }
 
 export interface ModelMetrics {
@@ -174,16 +178,16 @@ export const MOCK_VITALS: Record<string, VitalSignRecord[]> = {
 };
 
 export const MOCK_DRIFT: DriftRecord[] = [
-  { round: 1, client0: 0.42, client1: 0.38, client2: 0.35 },
-  { round: 2, client0: 0.68, client1: 0.45, client2: 0.52 },
-  { round: 3, client0: 0.95, client1: 0.62, client2: 0.78 },
-  { round: 4, client0: 1.45, client1: 0.88, client2: 1.12 },
-  { round: 5, client0: 2.10, client1: 1.15, client2: 1.65 },
-  { round: 6, client0: 2.85, client1: 1.42, client2: 2.30 },
-  { round: 7, client0: 3.42, client1: 1.75, client2: 3.15 }, // Trigger CSSP for client 0 & 2
-  { round: 8, client0: 0.12, client1: 2.10, client2: 0.15 }, // Reset post-adapt
-  { round: 9, client0: 0.35, client1: 2.45, client2: 0.38 },
-  { round: 10, client0: 0.58, client1: 2.92, client2: 0.62 }
+  { round: 1, client0: 0.42, client1: 0.38, client2: 0.35, jsd_divergence: 0.012, w_grad: 1.02, kappa_r: 0.018 },
+  { round: 2, client0: 0.68, client1: 0.45, client2: 0.52, jsd_divergence: 0.028, w_grad: 1.05, kappa_r: 0.019 },
+  { round: 3, client0: 0.95, client1: 0.62, client2: 0.78, jsd_divergence: 0.045, w_grad: 1.12, kappa_r: 0.021 },
+  { round: 4, client0: 1.45, client1: 0.88, client2: 1.12, jsd_divergence: 0.089, w_grad: 1.24, kappa_r: 0.024 },
+  { round: 5, client0: 2.10, client1: 1.15, client2: 1.65, jsd_divergence: 0.142, w_grad: 1.38, kappa_r: 0.026 },
+  { round: 6, client0: 2.85, client1: 1.42, client2: 2.30, jsd_divergence: 0.198, w_grad: 1.56, kappa_r: 0.029 },
+  { round: 7, client0: 3.42, client1: 1.75, client2: 3.15, jsd_divergence: 0.265, w_grad: 1.78, kappa_r: 0.034 }, // AD-CUSUM Trigger for client 0 & 2
+  { round: 8, client0: 0.12, client1: 2.10, client2: 0.15, jsd_divergence: 0.015, w_grad: 1.03, kappa_r: 0.020 }, // Reset post-adapt
+  { round: 9, client0: 0.35, client1: 2.45, client2: 0.38, jsd_divergence: 0.022, w_grad: 1.06, kappa_r: 0.021 },
+  { round: 10, client0: 0.58, client1: 2.92, client2: 0.62, jsd_divergence: 0.038, w_grad: 1.09, kappa_r: 0.022 }
 ];
 
 export const MOCK_COMPARISON: ModelMetrics[] = [

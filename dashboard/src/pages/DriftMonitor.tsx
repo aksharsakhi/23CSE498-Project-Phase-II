@@ -10,7 +10,7 @@ import {
   Legend,
   ReferenceLine
 } from 'recharts';
-import { ShieldAlert, LineChart as ChartIcon, Zap, ShieldCheck, Flame, RotateCcw } from 'lucide-react';
+import { ShieldAlert, LineChart as ChartIcon, Zap, ShieldCheck, Flame, RotateCcw, Sparkles, Activity, Layers } from 'lucide-react';
 import { fetchDriftData } from '../services/mockDataService';
 import type { DriftRecord } from '../services/mockDataService';
 
@@ -33,7 +33,10 @@ export const DriftMonitor: React.FC = () => {
       const lastIndex = updated.length - 1;
       updated[lastIndex] = {
         ...updated[lastIndex],
-        client0: 3.85 // Exceeds threshold!
+        client0: 3.85, // Exceeds threshold!
+        jsd_divergence: 0.312,
+        w_grad: 1.94,
+        kappa_r: 0.045
       };
       return updated;
     });
@@ -64,8 +67,15 @@ export const DriftMonitor: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">Online Concept Drift Monitoring</h2>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Cumulative Sum (CUSUM) Residuals Audit & Client-Side Selective Personalization (CSSP)</p>
+          <div className="flex items-center gap-2">
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">AD-CUSUM Concept Drift Monitoring</h2>
+            <span className="text-[10px] font-extrabold bg-teal-500/15 text-teal-400 border border-teal-500/30 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+              Novel Algorithm
+            </span>
+          </div>
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            Adaptive Divergence-Weighted CUSUM & Client-Side Selective Personalization (CSSP)
+          </p>
         </div>
 
         <div className="flex items-center gap-2">
@@ -80,17 +90,32 @@ export const DriftMonitor: React.FC = () => {
             onClick={handleResetDrift}
             className="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-[#152238] border border-slate-200 dark:border-[#1a2744] text-slate-700 dark:text-slate-200 text-xs font-bold hover:bg-slate-200 dark:hover:bg-[#1c2c48] transition-all"
           >
-            <RotateCcw className="h-4 w-4 text-teal-400" /> Recalibrate CSSP
+            <RotateCcw className="h-4 w-4 text-teal-400" /> Recalibrate AD-CUSUM
           </button>
         </div>
       </div>
 
-      {/* Grid of Hospital Node CUSUM Statuses */}
+      {/* Novel Formulation Highlight Banner */}
+      <div className="bg-gradient-to-r from-teal-900/30 via-[#0d1829] to-indigo-950/30 border border-teal-500/30 p-5 rounded-2xl space-y-3">
+        <div className="flex justify-between items-center">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-teal-400 flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5" /> Proposed Novel Mathematical Recurrence Relation
+          </span>
+          <span className="text-[10px] font-bold bg-teal-500/20 text-teal-300 px-2.5 py-0.5 rounded-full border border-teal-500/30">
+            Patent & IEEE Benchmark Candidate
+          </span>
+        </div>
+        <div className="bg-[#0a1323]/80 p-3.5 rounded-xl border border-teal-500/20 text-center font-mono text-xs sm:text-sm text-teal-300 overflow-x-auto">
+          S_r = max(0, S_(r-1) + w_grad * (L_val + &beta; * D_JSD - &kappa;_r))
+        </div>
+      </div>
+
+      {/* Grid of Hospital Node AD-CUSUM Statuses */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {nodeStatus.map((node, i) => (
           <div 
             key={i} 
-            className={`border p-5 rounded-2xl bg-white dark:bg-[#0d1829] flex flex-col justify-between min-h-[130px] transition-all shadow-sm ${
+            className={`border p-5 rounded-2xl bg-white dark:bg-[#0d1829] flex flex-col justify-between min-h-[140px] transition-all shadow-sm ${
               node.value > threshold 
                 ? 'border-red-500/50 shadow-red-500/10' 
                 : 'border-slate-200 dark:border-[#1a2744]'
@@ -99,7 +124,7 @@ export const DriftMonitor: React.FC = () => {
             <div className="flex justify-between items-start">
               <div>
                 <h4 className="font-bold text-xs text-slate-800 dark:text-white leading-tight">{node.name}</h4>
-                <span className="text-[10px] text-slate-400 block mt-0.5">Online CUSUM Monitor</span>
+                <span className="text-[10px] text-slate-400 block mt-0.5">Online AD-CUSUM Score</span>
               </div>
               <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold ${
                 node.status === 'Drift Alert'
@@ -113,25 +138,30 @@ export const DriftMonitor: React.FC = () => {
             
             <div className="mt-4 flex justify-between items-end">
               <div>
-                <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">CUSUM Residual Score</span>
+                <span className="text-[10px] text-slate-400 block font-bold uppercase tracking-wider">AD-CUSUM Score</span>
                 <span className={`text-2xl font-extrabold ${node.value > threshold ? 'text-red-500' : 'text-slate-800 dark:text-white'}`}>
                   {node.value.toFixed(2)}
                 </span>
               </div>
-              <span className="text-[10px] font-bold text-slate-400 bg-slate-100 dark:bg-[#0a1323] px-2 py-1 rounded-lg">Limit: {threshold.toFixed(1)}</span>
+              <div className="text-right">
+                <span className="text-[10px] font-bold text-slate-400 block">Limit: {threshold.toFixed(1)}</span>
+                <span className="text-[10px] text-teal-400 font-semibold">
+                  JSD: {latestCusum.jsd_divergence?.toFixed(3) || '0.012'}
+                </span>
+              </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* CUSUM Drift Timeline Chart */}
+      {/* AD-CUSUM Drift Timeline Chart */}
       <div className="bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] p-6 rounded-2xl space-y-4 shadow-sm">
         <div className="flex justify-between items-center">
           <h3 className="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
-            <ChartIcon className="h-4 w-4 text-teal-400" /> CUSUM Validation Error Log Curves (Rounds 1–10)
+            <ChartIcon className="h-4 w-4 text-teal-400" /> AD-CUSUM Drift Score Trajectory across FL Rounds (1–10)
           </h3>
           <span className="text-[10px] font-bold text-slate-400 bg-teal-500/10 text-teal-400 px-3 py-1 rounded-full border border-teal-500/20">
-            Slack Parameter &kappa; = 0.02
+            Dynamic Slack &kappa;_r Self-Calibrating
           </span>
         </div>
         <div className="h-64">
@@ -152,28 +182,37 @@ export const DriftMonitor: React.FC = () => {
         </div>
       </div>
 
-      {/* Selective Personalization Mechanism Card */}
+      {/* AD-CUSUM Technical Novelty Components */}
       <div className="bg-white dark:bg-[#0d1829] border border-slate-200 dark:border-[#1a2744] p-6 rounded-2xl space-y-4 shadow-sm">
         <h4 className="font-bold text-slate-800 dark:text-white text-sm flex items-center gap-2">
-          <Zap className="h-4.5 w-4.5 text-amber-400" /> Client-Side Selective Personalization (CSSP) Architecture
+          <Zap className="h-4.5 w-4.5 text-amber-400" /> AD-CUSUM Novel Mechanism Breakdown
         </h4>
-        <div className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed font-medium space-y-3">
-          <p>
-            When a hospital node's running CUSUM score exceeds the threshold ($h = 3.0$), it indicates that the hospital's local ICU patient population has drifted significantly from global consensus demographics (concept drift).
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
-            <div className="bg-slate-50 dark:bg-[#0a1323] p-4 rounded-xl border border-slate-200 dark:border-[#1a2744] space-y-1">
-              <span className="font-bold text-teal-400 block text-xs">1. Backbone Freeze</span>
-              <p className="text-[11px] text-slate-400 leading-tight">Shared BiLSTM feature extractor layers are locked to prevent global feature corruption.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="bg-slate-50 dark:bg-[#0a1323] p-4 rounded-xl border border-slate-200 dark:border-[#1a2744] space-y-1.5">
+            <div className="flex items-center gap-1.5 text-teal-400 font-bold text-xs">
+              <Activity className="h-4 w-4" /> 1. Prediction Entropy JSD (D_JSD)
             </div>
-            <div className="bg-slate-50 dark:bg-[#0a1323] p-4 rounded-xl border border-slate-200 dark:border-[#1a2744] space-y-1">
-              <span className="font-bold text-amber-400 block text-xs">2. Classifier Head Adaptation</span>
-              <p className="text-[11px] text-slate-400 leading-tight">Local SGD steps adjust only the dense classification head using regional patient loss.</p>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Measures uncertainty drift in bedside output distributions using Jensen-Shannon Divergence.
+            </p>
+          </div>
+
+          <div className="bg-slate-50 dark:bg-[#0a1323] p-4 rounded-xl border border-slate-200 dark:border-[#1a2744] space-y-1.5">
+            <div className="flex items-center gap-1.5 text-amber-400 font-bold text-xs">
+              <Layers className="h-4 w-4" /> 2. Gradient Variance Weight (w_grad)
             </div>
-            <div className="bg-slate-50 dark:bg-[#0a1323] p-4 rounded-xl border border-slate-200 dark:border-[#1a2744] space-y-1">
-              <span className="font-bold text-emerald-400 block text-xs">3. Zero-Upload Bypass</span>
-              <p className="text-[11px] text-slate-400 leading-tight">Node skips uploading model weights for 1 round, reducing network bandwidth by 38%.</p>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Scales error progression by classifier head gradient variance, suppressing noisy mini-batches.
+            </p>
+          </div>
+
+          <div className="bg-slate-50 dark:bg-[#0a1323] p-4 rounded-xl border border-slate-200 dark:border-[#1a2744] space-y-1.5">
+            <div className="flex items-center gap-1.5 text-emerald-400 font-bold text-xs">
+              <ShieldCheck className="h-4 w-4" /> 3. Dynamic Self-Slack (&kappa;_r)
             </div>
+            <p className="text-[11px] text-slate-400 leading-relaxed">
+              Auto-calibrates slack dynamically (&kappa;_r = &mu;_loss + &alpha;&sigma;_loss) eliminating manual tuning.
+            </p>
           </div>
         </div>
       </div>
