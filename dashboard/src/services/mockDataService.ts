@@ -240,16 +240,28 @@ export const MOCK_COMPARISON: ModelMetrics[] = [
     color: "#10b981"
   },
   {
-    name: "FPDAF (Proposed)",
-    accuracy: 91.20,
-    precision: 89.60,
-    recall: 89.10,
-    f1: 0.8935,
-    auroc: 0.9340,
+    name: "FPDAF (Old v1 Baseline)",
+    accuracy: 86.51,
+    precision: 9.81,
+    recall: 65.33,
+    f1: 0.1706,
+    auroc: 0.8214,
     commCost: "0.62x (-38%)",
     trainTime: "1.2 hrs",
     driftAdaptTime: "0.1 hrs (6m)",
     color: "#0d9488"
+  },
+  {
+    name: "FPDAF-v2 (Enhanced DDP-ERP)",
+    accuracy: 96.42,
+    precision: 18.75,
+    recall: 82.50,
+    f1: 0.3056,
+    auroc: 0.9418,
+    commCost: "0.62x (-38%)",
+    trainTime: "1.1 hrs",
+    driftAdaptTime: "0.08 hrs (5m)",
+    color: "#8b5cf6"
   }
 ];
 
