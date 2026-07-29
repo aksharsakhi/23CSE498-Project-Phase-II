@@ -60,3 +60,11 @@ runs/
 *.fls
 *.fdb_latexmk
 *.blg
+*.aux
+*.bbl
+*.blg
+*.log
+*.nav
+*.out
+*.snm
+*.toc
