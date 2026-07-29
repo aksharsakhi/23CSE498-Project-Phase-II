@@ -337,55 +337,6 @@
     \end{columns}
 \end{frame}
 
-% --- DEDICATED SLIDE 2: 3-HOSPITAL FEDERATED UPDATE LIFECYCLE ---
-\begin{frame}{Decentralized Model Update Lifecycle (Future Implementation)}
-    \begin{columns}[t]
-        \begin{column}{0.5\textwidth}
-            \begin{block}{Proposed 5-Step Iterative Communication Loop}
-                \scriptsize
-                \begin{enumerate}
-                    \item \textbf{Step 1: Global Model Broadcast} \\
-                    Central server initializes $W_{\text{global}}^0$ and broadcasts weights to Hospital 1, Hospital 2, and Hospital 3.
-                    
-                    \item \textbf{Step 2: On-Device Data \& Local Training} \\
-                    Hospitals collect bedside ICU vitals locally. Each node trains for $E=2$ local SGD epochs, computing local weight updates $\Delta w_k$.
-                    
-                    \item \textbf{Step 3: Privacy Update Transmission} \\
-                    Hospitals send \textbf{ONLY mathematical weight updates} ($\Delta w_k$) over secure TLS. Zero raw patient records ever leave the hospital!
-                    
-                    \item \textbf{Step 4: Central Server Aggregation} \\
-                    Central server aggregates updates via weighted averaging: $W_{\text{global}}^{t+1} = \sum_{k=1}^3 \frac{n_k}{N} W_k^{t+1}$.
-                    
-                    \item \textbf{Step 5: Round Synchronization} \\
-                    Server sends $W_{\text{global}}^{t+1}$ back to all 3 hospitals, continuously updating bedside clinical risk dials.
-                \end{enumerate}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.5\textwidth}
-            \begin{block}{3-Hospital Architecture Nodes}
-                \scriptsize
-                \begin{itemize}
-                    \item \textbf{Hospital 1 (Client Node 0):} 92,613 training samples, 3.24\% sepsis positive rate.
-                    \item \textbf{Hospital 2 (Client Node 1):} 151,916 training samples, 3.09\% sepsis positive rate.
-                    \item \textbf{Hospital 3 (Client Node 2):} 233,140 training samples, 2.07\% sepsis positive rate.
-                \end{itemize}
-            \end{block}
-            \centering
-            \begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
-                \node (server) [fill=amritaMaroon!20, draw=amritaMaroon, thick, rounded corners=4pt, font=\bfseries\scriptsize, align=center, inner sep=6pt] at (0,2) {Central Federated Server\\(Aggregation: $W_{\text{global}}^{t+1} = \sum \frac{n_k}{N} W_k$)};
-                \node (h1) [fill=blue!15, draw=blue, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (-2.5,-0.8) {Hospital 1\\(Client Node 0)\\Local SGD $E=2$};
-                \node (h2) [fill=green!15, draw=green!60!black, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (0,-0.8) {Hospital 2\\(Client Node 1)\\Local SGD $E=2$};
-                \node (h3) [fill=orange!15, draw=orange!80!black, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (2.5,-0.8) {Hospital 3\\(Client Node 2)\\Local SGD $E=2$};
-                
-                \draw[<->, thick, draw=blue] (server) -- (h1) node[midway, left, font=\tiny\bfseries] {$\Delta w_1$};
-                \draw[<->, thick, draw=green!60!black] (server) -- (h2) node[midway, fill=white, font=\tiny\bfseries] {$\Delta w_2$};
-                \draw[<->, thick, draw=orange!80!black] (server) -- (h3) node[midway, right, font=\tiny\bfseries] {$\Delta w_3$};
-            \end{tikzpicture}
-        \end{column}
-    \end{columns}
-\end{frame}
-
 % --- DEDICATED SLIDE 3: CONCEPT DRIFT & AD-CUSUM DEEP-DIVE ---
 \begin{frame}{Concept Drift Detection \& AD-CUSUM Architecture}
     \begin{columns}[t]
@@ -651,6 +602,56 @@
         \end{column}
     \end{columns}
 \end{frame}
+
+% --- DEDICATED SLIDE 2: 3-HOSPITAL FEDERATED UPDATE LIFECYCLE ---
+\begin{frame}{Decentralized Model Update Lifecycle (Future Implementation)}
+    \begin{columns}[t]
+        \begin{column}{0.5\textwidth}
+            \begin{block}{Proposed 5-Step Iterative Communication Loop}
+                \scriptsize
+                \begin{enumerate}
+                    \item \textbf{Step 1: Global Model Broadcast} \\
+                    Central server initializes $W_{\text{global}}^0$ and broadcasts weights to Hospital 1, Hospital 2, and Hospital 3.
+                    
+                    \item \textbf{Step 2: On-Device Data \& Local Training} \\
+                    Hospitals collect bedside ICU vitals locally. Each node trains for $E=2$ local SGD epochs, computing local weight updates $\Delta w_k$.
+                    
+                    \item \textbf{Step 3: Privacy Update Transmission} \\
+                    Hospitals send \textbf{ONLY mathematical weight updates} ($\Delta w_k$) over secure TLS. Zero raw patient records ever leave the hospital!
+                    
+                    \item \textbf{Step 4: Central Server Aggregation} \\
+                    Central server aggregates updates via weighted averaging: $W_{\text{global}}^{t+1} = \sum_{k=1}^3 \frac{n_k}{N} W_k^{t+1}$.
+                    
+                    \item \textbf{Step 5: Round Synchronization} \\
+                    Server sends $W_{\text{global}}^{t+1}$ back to all 3 hospitals, continuously updating bedside clinical risk dials.
+                \end{enumerate}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.5\textwidth}
+            \begin{block}{3-Hospital Architecture Nodes}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Hospital 1 (Client Node 0):} 92,613 training samples, 3.24\% sepsis positive rate.
+                    \item \textbf{Hospital 2 (Client Node 1):} 151,916 training samples, 3.09\% sepsis positive rate.
+                    \item \textbf{Hospital 3 (Client Node 2):} 233,140 training samples, 2.07\% sepsis positive rate.
+                \end{itemize}
+            \end{block}
+            \centering
+            \begin{tikzpicture}[scale=0.8, every node/.style={transform shape}]
+                \node (server) [fill=amritaMaroon!20, draw=amritaMaroon, thick, rounded corners=4pt, font=\bfseries\scriptsize, align=center, inner sep=6pt] at (0,2) {Central Federated Server\\(Aggregation: $W_{\text{global}}^{t+1} = \sum \frac{n_k}{N} W_k$)};
+                \node (h1) [fill=blue!15, draw=blue, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (-2.5,-0.8) {Hospital 1\\(Client Node 0)\\Local SGD $E=2$};
+                \node (h2) [fill=green!15, draw=green!60!black, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (0,-0.8) {Hospital 2\\(Client Node 1)\\Local SGD $E=2$};
+                \node (h3) [fill=orange!15, draw=orange!80!black, thick, rounded corners=4pt, font=\tiny\bfseries, align=center] at (2.5,-0.8) {Hospital 3\\(Client Node 2)\\Local SGD $E=2$};
+                
+                \draw[<->, thick, draw=blue] (server) -- (h1) node[midway, left, font=\tiny\bfseries] {$\Delta w_1$};
+                \draw[<->, thick, draw=green!60!black] (server) -- (h2) node[midway, fill=white, font=\tiny\bfseries] {$\Delta w_2$};
+                \draw[<->, thick, draw=orange!80!black] (server) -- (h3) node[midway, right, font=\tiny\bfseries] {$\Delta w_3$};
+            \end{tikzpicture}
+        \end{column}
+    \end{columns}
+\end{frame}
+
 
 % --- SUMMARY & ROADMAP COMPLIANCE ---
 \begin{frame}{Project Roadmap \& Future Work}
