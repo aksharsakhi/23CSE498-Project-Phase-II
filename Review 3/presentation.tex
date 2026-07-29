@@ -649,18 +649,33 @@
 \end{frame}
 
 % --- SUMMARY & ROADMAP COMPLIANCE ---
-\begin{frame}{Summary of Completed Phase II Works}
-    \begin{itemize}
-        \small
-        \item \textbf{Data Preprocessing Completed:} Decoded sparse vitals logs to construct clean sequence windows.
-        \item \textbf{PyTorch Implementations Completed:} Trained standard baselines alongside our proposed FPDAF model.
-        \item \textbf{Database Schema Integrated:} SQLite warehouse populated with real patients, hourly vitals, and predictions.
-        \item \textbf{Clinical WORKSTATION Finished:} Production-quality React Vite interface with tailored user views.
-        \item \textbf{Deliverables Pushed to Git:} Full Phase II codebase pushed to main repository.
-    \end{itemize}
-    \vspace{0.3cm}
-    \begin{block}{Roadmap Compliance}
-        Our completed milestones match the project objectives, delivering a privacy-preserving and explainable Sepsis prediction pipeline.
+\begin{frame}{Project Roadmap \& Future Work}
+    \scriptsize
+    \begin{table}
+        \centering
+        \renewcommand{\arraystretch}{1.4}
+        \resizebox{0.95\textwidth}{!}{%
+        \begin{tabular}{|l|l|c|}
+            \hline
+            \textbf{Project Phase} & \textbf{Key Milestones \& Tasks} & \textbf{Status} \\
+            \hline
+            \textbf{Phase I} & Literature Survey, Dataset Extraction, System Architecture Design & \textbf{\textcolor{green!60!black}{Completed}} \\
+            \hline
+            \textbf{Phase II (Review 3)} & Implemented AD-CUSUM Drift Detection \textit{(FPDAF-v1 Baseline)} & \textbf{\textcolor{green!60!black}{Completed}} \\
+            \hline
+            \textbf{Phase II (Review 3)} & Developed production-ready Full-Stack Clinician CDSS Dashboard & \textbf{\textcolor{green!60!black}{Completed}} \\
+            \hline
+            \textbf{Future (Review 4)} & \textbf{Next Step:} Invent \textit{Dynamic Dual-Phase (DDP)} Cross-Attention Algorithm & \textbf{\textcolor{blue}{Pending}} \\
+            \hline
+            \textbf{Future (Review 4)} & \textbf{Next Step:} Implement \textit{Entropy-Regularized Personalization (ERP)} & \textbf{\textcolor{blue}{Pending}} \\
+            \hline
+            \textbf{Future (Review 4)} & \textbf{Next Step:} Final 6-Way Benchmarking (aiming for $>95\%$ Accuracy) & \textbf{\textcolor{blue}{Pending}} \\
+            \hline
+        \end{tabular}}
+    \end{table}
+    \vspace{0.2cm}
+    \begin{block}{Roadmap Alignment}
+        100\% of Review 3 objectives have been completed. Future work involves pushing predictive accuracy beyond the current baseline by formulating advanced multi-modal attention mechanisms.
     \end{block}
 \end{frame}
 
