@@ -75,9 +75,13 @@
                     \item \textbf{Comment 1: Start Implementation} \\
                     The implementation phase of the proposed federated framework must be initiated.
                     
-                    \vspace{0.4cm}
+                    \vspace{0.3cm}
                     \item \textbf{Comment 2: Working Prototype \& Dashboard} \\
                     Build a functional clinician dashboard and working prototype to demonstrate live clinical decision support.
+                    
+                    \vspace{0.3cm}
+                    \item \textbf{Comment 3: Concept Drift Detection} \\
+                    How will the framework detect and handle concept drift across different hospital sites?
                 \end{itemize}
             \end{block}
         \end{column}
@@ -86,14 +90,14 @@
             \begin{block}{Action Taken \& Implementation Status}
                 \scriptsize
                 \begin{itemize}
-                    \item \textbf{Implemented Federated Pipelines:}
+                    \item \textbf{Implemented Federated Pipelines (Comments 1 \& 3):}
                     \begin{itemize}
                         \scriptsize
-                        \item Built decentralized PyTorch algorithms (FedAvg, FedProx, Ditto).
-                        \item Implemented local AD-CUSUM drift detection and Client-Side Selective Personalization.
+                        \item Built decentralized PyTorch algorithms (FedAvg, FedProx).
+                        \item Implemented local \textbf{AD-CUSUM drift detection} (Adaptive Divergence-Weighted CUSUM) to identify clinical shifts in real-time.
                     \end{itemize}
                     \vspace{0.2cm}
-                    \item \textbf{Built Production-Grade CDSS Workstation:}
+                    \item \textbf{Built Production-Grade CDSS Workstation (Comment 2):}
                     \begin{itemize}
                         \scriptsize
                         \item \textbf{Data Warehouse}: Local SQLite clinical database.
