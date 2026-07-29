@@ -115,19 +115,14 @@
                 \textbf{Adaptive Divergence-Weighted CUSUM}: Combines loss residuals, Jensen-Shannon entropy divergence ($D_{\text{JSD}}$), and gradient variance weighting ($w_{\text{grad}}$) to detect population drift without mini-batch noise false alarms.
             \end{alertblock}
             
-            \begin{alertblock}{2. DDP-ERP Personalization Algorithm (New Invention)}
+            \begin{alertblock}{2. Client-Side Selective Personalization (CSSP)}
                 \scriptsize
-                \textbf{Dynamic Dual-Phase \& Entropy Regularization}: Integrates 2D temporal-vital cross-attention ($\alpha_t \otimes \beta_v$) with KL-Divergence soft-personalization, boosting test accuracy to \textbf{96.42\%} (>95\% target) and \textbf{0.9418 AUROC}.
+                Freezes backbone weights during drift adaptation rounds, saving \textbf{38\% in communication bandwidth} (1.52 GB vs 2.48 GB) and cutting adaptation time to \textbf{6 minutes}.
             \end{alertblock}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{alertblock}{3. Client-Side Selective Personalization (CSSP)}
-                \scriptsize
-                Freezes backbone weights during drift adaptation rounds, saving \textbf{38\% in communication bandwidth} (1.52 GB vs 2.48 GB) and cutting adaptation time to \textbf{6 minutes}.
-            \end{alertblock}
-            
-            \begin{alertblock}{4. Production Clinical CDSS Workstation}
+            \begin{alertblock}{3. Production Clinical CDSS Workstation}
                 \scriptsize
                 Full-stack bedside decision support system linking React/Vite, FastAPI REST server, and SQLite database with 24-hour sequence hour scrubbers and SSC Hour-1 bundle checklists.
             \end{alertblock}
@@ -669,18 +664,6 @@
     \end{block}
 \end{frame}
 
-% --- REFERENCES ---
-\begin{frame}[allowframebreaks]{References}
-    \tiny
-    \nocite{churaev2023,jothimurugesan2022,arivazhagan2020,mcmahan2017,liu2022}
-    \nocite{yang2025mvfl,kalakoti2025fedxai,noseda2025financial,karamanlioglu2025clinical,wang2025personalized}
-    \nocite{abdelsater2024llama,maher2025automl,gupta2025privacy,yuan2024trend,tang2025horizon}
-    \nocite{zhang2022multitask,larocca2021attention,amato2023clustering,larocca2022shap,bernardi2023adaptive}
-    \nocite{dusing2025sepsis,qayyum2023fedsepsis,lei2025supervised,pan2025multiprog,maurya2025secure}
-    \bibliographystyle{IEEEtran}
-    \bibliography{latex/ref}
-\end{frame}
-
 % --- INDIVIDUAL CONTRIBUTIONS ---
 \begin{frame}{Individual Team Contributions}
     \scriptsize
@@ -704,6 +687,18 @@
             \hline
         \end{tabular}}
     \end{table}
+\end{frame}
+
+% --- REFERENCES ---
+\begin{frame}[allowframebreaks]{References}
+    \tiny
+    \nocite{churaev2023,jothimurugesan2022,arivazhagan2020,mcmahan2017,liu2022}
+    \nocite{yang2025mvfl,kalakoti2025fedxai,noseda2025financial,karamanlioglu2025clinical,wang2025personalized}
+    \nocite{abdelsater2024llama,maher2025automl,gupta2025privacy,yuan2024trend,tang2025horizon}
+    \nocite{zhang2022multitask,larocca2021attention,amato2023clustering,larocca2022shap,bernardi2023adaptive}
+    \nocite{dusing2025sepsis,qayyum2023fedsepsis,lei2025supervised,pan2025multiprog,maurya2025secure}
+    \bibliographystyle{IEEEtran}
+    \bibliography{latex/ref}
 \end{frame}
 
 % --- THANK YOU ---
