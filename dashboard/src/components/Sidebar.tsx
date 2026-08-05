@@ -93,8 +93,17 @@ export const Sidebar: React.FC<SidebarProps> = ({ userRole, activeTab, setActive
               <span className="font-bold text-teal-400">{userRole}</span>
             </div>
             <p className="text-[9px] text-slate-500 leading-tight">
-              Personalized Federated Learning node active
+              Personalized Federated Learning node active.
             </p>
+            <div className="mt-2 pt-2 border-t border-[#1a2b4a]">
+              <div className="flex justify-between items-center text-[10px] text-slate-400 mb-1">
+                <span>Project Progress (DDP Met)</span>
+                <span className="text-teal-400 font-bold">60%</span>
+              </div>
+              <div className="w-full bg-[#0a1628] rounded-full h-1.5 border border-[#1a2b4a]">
+                <div className="bg-teal-500 h-1.5 rounded-full" style={{ width: '60%' }}></div>
+              </div>
+            </div>
           </div>
         )}
         

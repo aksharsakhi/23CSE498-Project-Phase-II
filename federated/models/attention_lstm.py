@@ -108,8 +108,8 @@ class PersonalizedAttentionLSTM(nn.Module):
             bidirectional=True
         )
         
-        # Multi-Head Temporal Self-Attention pooling (Shared backbone parameter weights)
-        self.attention = MultiHeadTemporalAttention(hidden_dim=hidden_dim * 2, num_heads=4)
+        # DDP Cross-Attention pooling (Shared backbone parameter weights)
+        self.attention = DualPhaseCrossAttention(hidden_dim=hidden_dim * 2, num_vitals=input_dim)
         
         # Fully Connected Classification Head (Personalized head weights)
         self.classifier = nn.Sequential(
@@ -124,10 +124,10 @@ class PersonalizedAttentionLSTM(nn.Module):
         lstm_out, _ = self.lstm(x)
         
         if return_attention:
-            context, attn_weights = self.attention(lstm_out, return_attention=True)
+            context, attn_weights = self.attention(lstm_out, x_raw=x, return_attention=True)
             logits = self.classifier(context)
             return logits, attn_weights
             
-        context = self.attention(lstm_out, return_attention=False)
+        context = self.attention(lstm_out, x_raw=x, return_attention=False)
         logits = self.classifier(context)
         return logits
