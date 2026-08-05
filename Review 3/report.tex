@@ -103,6 +103,7 @@ Our proposed FPDAF framework introduces three key scientific novelties that addr
     \item \textbf{Sequential Attention Interpretability:} Unlike static black-box networks, we combine LSTM backbones with query-based temporal self-attention to output dynamic sequence saliency weights, allowing clinicians to visually track when a patient's risk profile escalates.
     \item \textbf{AD-CUSUM-Triggered Drift Adaptation:} We replace the standard continuous personalized weight aggregation model with an online Cumulative Sum (AD-CUSUM) monitor that audits prediction loss residuals on the fly. Nodes adjust local head adaptation rates only when statistically significant concept drift occurs.
     \item \textbf{Client-Side Selective Personalization (CSSP):} Upon AD-CUSUM drift detection, the framework triggers CSSP to freeze the shared temporal LSTM layers and fine-tune only the local classification head. This reduces model communication overhead by **38\%** (saving network bandwidth) and cuts node adaptation time to under 6 minutes.
+    \item \textbf{Dynamic Dual-Phase (DDP) Cross-Attention:} Formulates 2D attention matrices ($\alpha_t \otimes \beta_v$) to simultaneously weight both continuous hourly vitals ($\alpha_t$) and cross-feature co-variance ($\beta_v$, e.g., Blood Pressure vs Heart Rate), enabling multi-modal interpretability.
 \end{enumerate}
 
 \section{Clinical Profile of ICU Sepsis \& Significance}

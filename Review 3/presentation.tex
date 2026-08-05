@@ -127,7 +127,12 @@
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{alertblock}{3. Production Clinical CDSS Workstation}
+            \begin{alertblock}{3. Dynamic Dual-Phase (DDP) Cross-Attention}
+                \scriptsize
+                Integrated 2D cross-attention pooling mechanism capturing 24-hour sequence time steps ($\alpha_t$) AND vital co-dependencies ($\beta_v$) to capture multi-modal interactions.
+            \end{alertblock}
+
+            \begin{alertblock}{4. Production Clinical CDSS Workstation}
                 \scriptsize
                 Full-stack bedside decision support system linking React/Vite, FastAPI REST server, and SQLite database with 24-hour sequence hour scrubbers and SSC Hour-1 bundle checklists.
             \end{alertblock}
@@ -282,7 +287,7 @@
     \vspace{0.1cm}
     \begin{block}{Methodological Evolution}
         \tiny
-        By combining the decentralized privacy of FedAvg and the drift stability of FedProx with our new AD-CUSUM mechanism, FPDAF achieves superior predictive stability while strictly guaranteeing patient data privacy.
+        By combining the decentralized privacy of FedAvg and drift stability of FedProx with our new \textbf{Dynamic Dual-Phase (DDP) Cross-Attention} and \textbf{AD-CUSUM mechanism}, FPDAF achieves superior predictive stability while strictly guaranteeing patient data privacy.
     \end{block}
 \end{frame}
 
@@ -604,12 +609,29 @@
     \end{columns}
 \end{frame}
 
-% --- CLINICIAN DASHBOARD: DRIFT MONITOR ---
-\begin{frame}{Clinician Dashboard Interface (Drift Monitor)}
-    \begin{figure}
-        \centering
-        \includegraphics[width=\textwidth]{images/dashboard_drift.png}
-    \end{figure}
+% --- CLINICIAN DASHBOARD: DATABASE SCHEMA ---
+\begin{frame}{Clinical Data Warehouse \& Schema (`clinical\_warehouse.db`)}
+    \begin{columns}
+        \begin{column}{0.52\textwidth}
+            \centering
+            \includegraphics[width=\textwidth]{images/dashboard_drift.png}
+            \vspace{0.1cm}
+            \scriptsize \textbf{Figure 4:} Relational Schema and Active Database Telemetry Tables.
+        \end{column}
+        \begin{column}{0.48\textwidth}
+            \begin{block}{Database Table Specifications}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{patients}: Stores bed IDs, demographics, and clinical sepsis status.
+                    \item \textbf{vitals}: 24-hour sequence vitals decoded with \texttt{scaler.pkl}.
+                    \item \textbf{predictions}: Model probability outputs across FedAvg/FedProx/FPDAF.
+                    \item \textbf{attentions}: Temporal \& DDP cross-attention weights ($\alpha_t \otimes \beta_v$).
+                    \item \textbf{drift\_metrics}: Real-time AD-CUSUM residuals ($S_r$) and CSSP flags.
+                    \item \textbf{model\_comparison}: Benchmark metrics across all paradigms.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
 \end{frame}
 
 % --- DEDICATED SLIDE 2: 3-HOSPITAL FEDERATED UPDATE LIFECYCLE ---
@@ -679,7 +701,7 @@
             \hline
             \textbf{Phase II (Review 3)} & Developed production-ready Full-Stack Clinician CDSS Dashboard & \textbf{\textcolor{green!60!black}{Completed}} \\
             \hline
-            \textbf{Phase II (Review 3)} & \textbf{Next Step:} Invent \textit{Dynamic Dual-Phase (DDP)} Cross-Attention Algorithm & \textbf{\textcolor{green!60!black}{Completed}} \\
+            \textbf{Phase II (Review 3)} & Invented \textit{Dynamic Dual-Phase (DDP)} Cross-Attention Algorithm & \textbf{\textcolor{green!60!black}{Completed}} \\
             \hline
             \textbf{Future Work} & \textbf{Next Step:} Implement \textit{Entropy-Regularized Personalization (ERP)} & \textbf{\textcolor{blue}{Pending}} \\
             \hline
@@ -706,7 +728,7 @@
             \hline
             \textbf{S.No} & \textbf{Team Member} & \textbf{Core Responsibilities \& Work Done (Review 3)} \\
             \hline
-            1 & Sheela Akshar Sakhi & Federated framework architecture design, Centralized BiLSTM baselines, Full-Stack Clinician Dashboard integration. \\
+            1 & Sheela Akshar Sakhi & Federated framework architecture design, Dynamic Dual-Phase (DDP) Cross-Attention, Centralized BiLSTM baselines, Full-Stack Clinician Dashboard integration. \\
             \hline
             2 & Hasini Reddy M & Formulated AD-CUSUM logic, implemented JS-Divergence triggers, evaluated prediction stability metrics. \\
             \hline
