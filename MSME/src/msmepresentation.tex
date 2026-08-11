@@ -196,32 +196,51 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 5: PROTOTYPE READINESS & BEDSIDE UI DEMO (TRL 4/5)
+% SLIDE 5: EXPERIMENTAL BENCHMARKS & PROTOTYPE READINESS (NO UI SCREENSHOTS)
 % =========================================================================================
-\begin{frame}{Working Prototype Readiness \& Performance (TRL 4/5)}
+\begin{frame}{Experimental Validation \& Prototype Readiness (TRL 4/5)}
     \begin{columns}[t]
-        \begin{column}{0.46\textwidth}
+        \begin{column}{0.48\textwidth}
             \begin{block}{\textcolor{neonCyan}{Experimental Performance Metrics}}
                 \scriptsize
                 Validated on multi-center PhysioNet ICU cohorts:
                 \begin{itemize}
-                    \item \textbf{86.51\% Accuracy:} Superior to FedAvg (75.94\%) and FedProx (78.85\%).
-                    \item \textbf{0.8214 AUROC:} High predictive discrimination.
-                    \item \textbf{38\% Bandwidth Savings:} 1.52 GB vs 2.48 GB.
+                    \item \textbf{86.51\% Test Accuracy:} Outperforms FedAvg (75.94\%) and FedProx (78.85\%) under non-IID splits.
+                    \item \textbf{0.8214 AUROC Score:} Strong discrimination for early sepsis crash prediction.
+                    \item \textbf{38\% Bandwidth Savings:} 1.52 GB vs 2.48 GB in standard FL.
                 \end{itemize}
             \end{block}
             
             \begin{block}{\textcolor{neonTeal}{Software Stack Operational}}
                 \scriptsize
-                FastAPI backend, SQLite relational warehouse (`clinical\_warehouse.db`), and React Vite bedside dashboard fully functional.
+                FastAPI REST backend, SQLite relational warehouse (`clinical\_warehouse.db`), and React Vite bedside UI fully integrated.
             \end{block}
         \end{column}
         
-        \begin{column}{0.52\textwidth}
-            \begin{block}{\textcolor{neonAmber}{Clinician Bedside UI Workspace}}
-                \centering
-                \includegraphics[width=\textwidth,height=0.46\textheight,keepaspectratio]{images/dashboarddoctor.png} \\
-                \tiny \textcolor{neonCyan}{\textbf{Doctor Portal:}} Hourly vitals, risk dials, and temporal XAI heatmaps.
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textcolor{neonAmber}{Comparative Experimental Benchmarks}}
+                \tiny
+                \setlength{\tabcolsep}{3pt}
+                \renewcommand{\arraystretch}{1.2}
+                \begin{tabular}{l c c c}
+                \hline
+                \rowcolor{lightCyanBg}
+                \textbf{Model Paradigm} & \textbf{Accuracy} & \textbf{AUROC} & \textbf{Bandwidth} \\
+                \hline
+                Centralized BiLSTM & 75.09\% & 0.8058 & 0 MB (N/A) \\
+                FedAvg Baseline & 75.94\% & 0.7844 & 1.24 GB \\
+                FedProx Baseline & 78.85\% & 0.7933 & 1.24 GB \\
+                \textbf{FPDAF (Proposed)} & \textbf{86.51\%} & \textbf{0.8214} & \textbf{1.52 GB (Saved 38\%)} \\
+                \hline
+                \end{tabular}
+            \end{block}
+            
+            \begin{block}{\textcolor{neonRose}{Workstation Functional Modules}}
+                \scriptsize
+                \begin{itemize}
+                    \item \textbf{Doctor Bedside Portal:} Searchable bed list, hourly vital trends, and temporal XAI heatmaps.
+                    \item \textbf{Admin Telemetry Portal:} AD-CUSUM drift curves, federated round tracking, and metrics overlays.
+                \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
