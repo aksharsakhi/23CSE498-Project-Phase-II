@@ -92,20 +92,19 @@
     \vspace{0.4cm}
 
     % Central Glassmorphism Card
-    \begin{minipage}{0.75\textwidth}
+    \begin{minipage}{0.85\textwidth}
         \begin{block}{}
             \centering
             \vspace{0.1cm}
             \scriptsize
-            \textcolor{neonAmber}{\textbf{MSME Idea Hackathon 6.0 Proposal}}
+            \textcolor{neonAmber}{\textbf{MSME Idea Hackathon 6.0 Proposal}} \quad | \quad \textcolor{neonCyan}{\textbf{Sub-Theme 6: Frontier Technologies}}\\
+            \vspace{0.15cm}
+            \textcolor{textColor}{\textbf{Student Innovators:} Sheela Akshar Sakhi, Hasini Reddy M, Kousik Sarma Lakkaraju, Haswitha K, V. Chakravarthy}\\
+            \textcolor{mutedText}{\textbf{Mentors:} Dr. Ramya G. R. (Lead Mentor) \& Dr. Vandhana S. (Co-Mentor)}\\
+            \tiny \textcolor{neonTeal}{\textbf{Department of CSE, Amrita School of Computing, Amrita Vishwa Vidyapeetham, Coimbatore}}
             \vspace{0.1cm}
         \end{block}
     \end{minipage}
-
-    \vspace{0.4cm}
-    {\scriptsize \textcolor{textColor!60}{Presented by: \textbf{FPDAF Student Innovators Team}}} \\
-    \vspace{0.1cm}
-    {\tiny \textcolor{mutedText}{Anonymous Project Submission \quad | \quad Team ID: MSME-6.0-REDACTED}}
 \end{frame}
 
 % --- SLIDE 2: THE CLINICAL BURDEN & MARKET NEED ---
@@ -175,27 +174,32 @@
 \end{frame}
 
 % --- SLIDE 4: CORE UNIQUENESS & NOVELTIES ---
-\begin{frame}{Uniqueness of the Innovation (Key Novelties)}
+\begin{frame}{Uniqueness of the Innovation (Key Technical Novelties)}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{A.} Multi-Head Temporal XAI}
+            \begin{block}{\textcolor{neonCyan}{1.} Multi-Head Temporal XAI}
                 \scriptsize
-                Standard models are black-boxes. We embed temporal self-attentions that provide explainable insights into which specific hours and vital trends (e.g. SpO$_2$ drop at hour 14) influenced the alert.
+                Embeds 4-head query-key temporal self-attentions providing explainable heatmap insights into exact sequence hours (e.g. SpO$_2$ drop at hour 14) driving risk alerts.
             \end{block}
             
-            \begin{block}{\textcolor{neonTeal}{B.} CUSUM Concept Drift Auditing}
+            \begin{block}{\textcolor{neonTeal}{2.} CUSUM Concept Drift Auditing}
                 \scriptsize
-                An online Cumulative Sum neural monitor tracks validation loss residuals at each site to flag demographic shifts or equipment changes in real-time.
+                An online Cumulative Sum (AD-CUSUM) neural monitor tracks validation loss residuals at each hospital site to flag patient demographic shifts in real-time.
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{C.} Client-Side Selective Personalization}
+            \begin{block}{\textcolor{neonAmber}{3.} Dynamic Dual-Phase (DDP) Attention}
                 \scriptsize
-                Upon drift detection, Client-Side Selective Personalization (CSSP) freezes the shared deep LSTM backbone and adapts only the local classifier head:
+                Integrates 2D cross-attention ($\alpha_t \otimes \beta_v$) to capture simultaneous sequence time steps AND multi-modal vital co-dependencies (e.g., HR vs Blood Pressure).
+            \end{block}
+
+            \begin{block}{\textcolor{neonRose}{4.} Client-Side Selective Personalization}
+                \scriptsize
+                Freezes the shared deep LSTM backbone upon drift alerts, fine-tuning only local classifier heads:
                 \begin{itemize}
-                    \item \textbf{38\% Bandwidth Savings:} Freezes heavy layers, uploading only light parameters.
-                    \item \textbf{Rapid Calibration:} Adapts the local model to hospital patient profiles in \textbf{6 minutes}.
+                    \item \textbf{38\% Bandwidth Savings} (1.52 GB vs 2.48 GB).
+                    \item \textbf{Rapid Recalibration:} Adapts to hospital profiles in \textbf{6 minutes}.
                 \end{itemize}
             \end{block}
         \end{column}
@@ -221,28 +225,35 @@
 
 
 % --- SLIDE 7: PROTOTYPE READINESS & VALIDATION STATUS (TRL 4/5) ---
-\begin{frame}{Prototype Readiness \& Validation Status (TRL 4/5)}
+\begin{frame}{Prototype Readiness \& Performance Metrics (TRL 4/5)}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{TRL 4/5 Readiness Status}}
+            \begin{block}{\textcolor{neonCyan}{Validated Experimental Performance}}
                 \scriptsize
-                The proposed software systems are under active development:
+                Evaluated across multi-center PhysioNet ICU cohorts:
                 \begin{itemize}
-                    \item \textbf{Validated Backend:} Algorithms are validated using simulated hospital networks on historical EHR ICU data.
-                    \item \textbf{Public Health Ready:} Architected for scalable deployment and pilot validation within Indian public healthcare environments.
-                    \item \textbf{Proposed Workstations:} Clinician dashboards and telemetry portals are prepared for local bedside deployment.
+                    \item \textbf{86.51\% Test Accuracy:} Outperforms FedAvg (75.94\%) and FedProx (78.85\%) under non-IID data splits.
+                    \item \textbf{0.8214 AUROC Score:} Strong discrimination for early sepsis crash prediction.
+                    \item \textbf{38\% Bandwidth Reduction:} 1.52 GB network usage vs 2.48 GB in standard FL.
+                \end{itemize}
+            \end{block}
+            
+            \begin{block}{\textcolor{neonTeal}{Software \& Database Workstation}}
+                \scriptsize
+                Full-stack bedside workstation operational:
+                \begin{itemize}
+                    \item \textbf{FastAPI Backend \& SQLite Warehousing:} Decodes raw vitals using \texttt{scaler.pkl}.
+                    \item \textbf{React Vite Bedside UI:} Features Doctor \& Admin portals.
                 \end{itemize}
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonTeal}{Clinical Pilot Validation}}
-                \scriptsize
-                We have active pathways for hospital deployment:
-                \begin{itemize}
-                    \item \textbf{Clinical Collaboration:} Ongoing engagement with ICU specialists to refine predictive alert thresholds and clinical workflow.
-                    \item \textbf{Clinical Mentorship:} We are in active communication and review with senior ICU clinicians to oversee pilot testing protocols.
-                \end{itemize}
+            \begin{block}{\textcolor{neonAmber}{Bedside Workstation Telemetry Interface}}
+                \centering
+                \includegraphics[width=\textwidth,height=0.48\textheight,keepaspectratio]{images/dashboarddoctor.png} \\
+                \vspace{0.05cm}
+                \tiny \textcolor{neonCyan}{\textbf{Bedside Doctor Portal:}} Real-time vital timelines, risk dials, and temporal attention saliency heatmaps.
             \end{block}
         \end{column}
     \end{columns}
@@ -357,21 +368,21 @@
 \begin{frame}{Proposed Budget Justification (Total: \textbf{Rs. 15.0 Lakhs})}
     \begin{block}{Budget Request Under MSME Idea Hackathon 6.0 Guidelines (Maximum Grant):}
         \scriptsize
-        We request Rs. 15 Lakhs to fund the transition of our working prototype into clinical pilot installations:
+        We request Rs. 15 Lakhs to fund the transition of our working prototype into physical clinical pilot installations:
     \end{block}
     
     \begin{columns}[t]
         \begin{column}{0.31\textwidth}
-            \begin{block}{\textcolor{neonCyan}{\textbf{1. Technology \& Ops}}}
+            \begin{block}{\textcolor{neonCyan}{\textbf{1. Technology Costs}}}
                 \centering
                 \vspace{0.1cm}
                 {\normalsize\textbf{\textcolor{neonCyan}{Rs. 10.0 Lakhs}}} \\
                 \vspace{0.2cm}
                 \flushleft\tiny
                 \begin{itemize}
-                    \item Prototyping component fabrication, edge hardware prototyping and validation, and embedded assembly (3.6L).
-                    \item Data curation \& annotation (3.4L).
-                    \item Penetration testing \& DPDPA audits (3.0L).
+                    \item \textbf{Hardware \& Assembly (3.6L):} 3 Edge-AI Jetson nodes, PCB assembly, medical touch displays, workstation enclosures with Coimbatore MSMEs.
+                    \item \textbf{Data Annotation (3.4L):} Expert clinician curation \& vital stream simulation.
+                    \item \textbf{Security Audits (3.0L):} Penetration testing \& DPDPA audits.
                 \end{itemize}
             \end{block}
         \end{column}
@@ -384,8 +395,8 @@
                 \vspace{0.2cm}
                 \flushleft\tiny
                 \begin{itemize}
-                    \item ICU clinical consultants honorarium (1.8L).
-                    \item Incubation \& hardware lab support (1.2L).
+                    \item ICU clinical validation guidance (1.8L).
+                    \item Incubation facility \& testing lab support (1.2L).
                 \end{itemize}
             \end{block}
         \end{column}
