@@ -12,7 +12,7 @@
 \usetikzlibrary{calc, shadows}
 
 % Branding Colors (Premium Light Healthcare Palette)
-\definecolor{darkSlate}{HTML}{F8FAFC}    % Clean Clinical Canvas (slate-50)
+\definecolor{darkSlate}{HTML}{F8FAFC}    % Clean Clinical Canvas
 \definecolor{cardBg}{HTML}{FFFFFF}       % Pure White Card Background
 \definecolor{neonCyan}{HTML}{0284C7}     % Medical Sky Blue (Primary)
 \definecolor{neonTeal}{HTML}{0D9488}     % Medical Teal (Secondary)
@@ -22,10 +22,10 @@
 \definecolor{mutedText}{HTML}{475569}    % Slate-600 Muted Text
 
 % Block Header Tints (Aesthetics)
-\definecolor{lightCyanBg}{HTML}{E0F2FE}   % Sky-100 (Normal block header)
-\definecolor{lightAmberBg}{HTML}{FFEDD5}  % Orange-100 (Alert block header)
-\definecolor{lightTealBg}{HTML}{CCFBF1}   % Teal-100 (Example block header)
-\definecolor{lightRoseBg}{HTML}{FEE2E2}   % Red-100 (Critical block header)
+\definecolor{lightCyanBg}{HTML}{E0F2FE}   % Sky-100
+\definecolor{lightAmberBg}{HTML}{FFEDD5}  % Orange-100
+\definecolor{lightTealBg}{HTML}{CCFBF1}   % Teal-100
+\definecolor{lightRoseBg}{HTML}{FEE2E2}   % Red-100
 
 % Theme Setup
 \usetheme{default}
@@ -51,12 +51,12 @@
 % Custom Minimalist Footline
 \setbeamertemplate{footline}{
     \hfill
-    \tiny\textcolor{mutedText}{FPDAF Workstation \quad | \quad Page \insertframenumber\ / \inserttotalframenumber}
+    \tiny\textcolor{mutedText}{FPDAF Clinical Workstation \quad | \quad Slide \insertframenumber\ / \inserttotalframenumber}
     \hspace{0.6cm}
     \vspace{0.15cm}
 }
 
-% Customize Beamer Blocks to Look Like Futuristic Glass Cards
+% Customize Beamer Blocks
 \setbeamertemplate{blocks}[rounded][shadow=false]
 \setbeamercolor{block title}{bg=lightCyanBg, fg=neonCyan}
 \setbeamercolor{block body}{bg=cardBg, fg=textColor}
@@ -65,15 +65,15 @@
 \setbeamercolor{block title example}{bg=lightTealBg, fg=neonTeal}
 \setbeamercolor{block body example}{bg=cardBg, fg=textColor}
 
-% Pre-compile block styling overrides
-\addtobeamertemplate{block begin}{\vspace{0.1cm}\pgfsetfillopacity{0.95}}{\pgfsetfillopacity{1}}
-\addtobeamertemplate{block alerted begin}{\vspace{0.1cm}\pgfsetfillopacity{0.95}}{\pgfsetfillopacity{1}}
+\addtobeamertemplate{block begin}{\vspace{0.05cm}\pgfsetfillopacity{0.95}}{\pgfsetfillopacity{1}}
+\addtobeamertemplate{block alerted begin}{\vspace{0.05cm}\pgfsetfillopacity{0.95}}{\pgfsetfillopacity{1}}
 
 \begin{document}
 
-% --- SLIDE 1: FUTURISTIC TITLE PAGE ---
+% =========================================================================================
+% SLIDE 1: TITLE PAGE (TEAM & MENTORS)
+% =========================================================================================
 \begin{frame}[plain]
-    % Background glow effect
     \begin{tikzpicture}[remember picture,overlay]
         \shade[inner color=neonCyan!12, outer color=darkSlate!0] (current page.center) circle (5cm);
         \node[fill=neonAmber, text=white, font=\bfseries\tiny, anchor=north east, rounded corners=2pt, inner sep=4pt]
@@ -82,425 +82,251 @@
     \end{tikzpicture}
 
     \centering
-    \vspace{0.6cm}
-    \includegraphics[width=1.6cm]{images/clinical_logo.png} 
     \vspace{0.3cm}
+    \includegraphics[width=1.5cm]{images/clinical_logo.png} 
+    \vspace{0.2cm}
 
     {\Large \textbf{\textcolor{neonCyan}{FPDAF (Federated Personalized Drift Alerting Framework): CLINICAL AI EARLY-WARNING WORKSTATION}}} \\
     \vspace{0.1cm}
     {\normalsize \textcolor{textColor!80}{Explainable Federated Learning for Sepsis CDSS with Personalized Drift Adaptation}} \\
-    \vspace{0.4cm}
+    \vspace{0.3cm}
 
-    % Central Glassmorphism Card
-    \begin{minipage}{0.85\textwidth}
+    \begin{minipage}{0.88\textwidth}
         \begin{block}{}
             \centering
-            \vspace{0.1cm}
+            \vspace{0.05cm}
             \scriptsize
-            \textcolor{neonAmber}{\textbf{MSME Idea Hackathon 6.0 Proposal}} \quad | \quad \textcolor{neonCyan}{\textbf{Sub-Theme 6: Frontier Technologies}}\\
-            \vspace{0.15cm}
-            \textcolor{textColor}{\textbf{Student Innovators:} Sheela Akshar Sakhi, Hasini Reddy M, Kousik Sarma Lakkaraju, Haswitha K, V. Chakravarthy}\\
-            \textcolor{mutedText}{\textbf{Mentors:} Dr. Ramya G. R. (Lead Mentor) \& Dr. Vandhana S. (Co-Mentor)}\\
-            \tiny \textcolor{neonTeal}{\textbf{Department of CSE, Amrita School of Computing, Amrita Vishwa Vidyapeetham, Coimbatore}}
+            \textcolor{neonAmber}{\textbf{MSME Idea Hackathon 6.0 Proposal}} \quad | \quad \textcolor{neonCyan}{\textbf{Amrita Vishwa Vidyapeetham}}\\
             \vspace{0.1cm}
+            \textcolor{textColor}{\textbf{Student Team:} Sheela Akshar Sakhi, Hasini Reddy M, Kousik Sarma Lakkaraju, Haswitha K, V. Chakravarthy}\\
+            \textcolor{mutedText}{\textbf{Mentors:} Dr. Ramya G. R. (Lead Mentor) \& Dr. Vandhana S. (Co-Mentor)}\\
+            \tiny \textcolor{neonTeal}{\textbf{Department of Computer Science and Engineering, Amrita School of Computing, Coimbatore}}
+            \vspace{0.05cm}
         \end{block}
     \end{minipage}
 \end{frame}
 
-% --- SLIDE 2: THE CLINICAL BURDEN & MARKET NEED ---
-\begin{frame}{The Sepsis Challenge in ICU Care}
+% =========================================================================================
+% SLIDE 2: SEPSIS CLINICAL CRISIS & PRIVACY BOTTLENECK
+% =========================================================================================
+\begin{frame}{The Clinical Sepsis Crisis \& Privacy Bottleneck}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonRose}{[Risk]} Sepsis Pathological Threat}
+            \begin{block}{\textcolor{neonRose}{[Crisis]} National Mortality Burden in India}
                 \scriptsize
-                Sepsis is an extreme, systemic immune response to infection, causing rapid organ dysfunction.
                 \begin{itemize}
-                    \item \textbf{Septic Shock Crash:} Multi-organ failure and blood pressure drop.
-                    \item \textbf{The Time Challenge:} Survival drops by \textbf{8\% per hour} of delayed administration.
-                    \item \textbf{Diagnosis Bottleneck:} Initial symptoms are masked, mimicking minor infections.
+                    \item \textbf{2.9 to 3.0 Million Deaths} annually in India (accounting for \textbf{30\%} of total national deaths).
+                    \item \textbf{34\% to 50\%+ Mortality} in Indian ICUs.
+                    \item \textbf{8\% Survival Drop} per hour of delayed detection.
                 \end{itemize}
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{[Metrics]} Critical Scale in India}
+            \begin{block}{\textcolor{neonAmber}{[Bottleneck]} Data Sovereignty \& Drift Limits}
                 \scriptsize
-                Sepsis is a leading clinical bottleneck:
                 \begin{itemize}
-                    \item \textbf{2.9 to 3.0 Million Deaths:} Estimated annually across India (accounting for \textbf{30\%} of total deaths).
-                    \item \textbf{ICU Mortality Rates:} Ranges from \textbf{34\% to over 50\%} inside Indian intensive care units.
+                    \item \textbf{DPDPA \& HIPAA Privacy Mandates:} Private patient records cannot be centralized to external cloud servers.
+                    \item \textbf{Clinical Data Drift:} Hospital demographics vary, causing static cloud AI models to lose accuracy.
                 \end{itemize}
-                \vspace{0.1cm}
-                \tiny Source: \href{https://www.georgeinstitute.org.in/projects/sepsis-in-india-prevalence-study-sips}{\textcolor{neonCyan}{George Institute for Global Health (2020)}} | \href{https://pubmed.ncbi.nlm.nih.gov/30704986/}{\textcolor{neonCyan}{ISCCM}}
             \end{block}
         \end{column}
     \end{columns}
     
-    \begin{alertblock}{Clinical Data Privacy Obstacle}
+    \vspace{0.1cm}
+    \begin{alertblock}{\textcolor{neonCyan}{The FPDAF Solution}}
         \scriptsize
-        Traditional centralized AI requires uploading highly sensitive Patient Health Information (PHI) to external clouds, violating strict data-sovereignty regulations such as HIPAA and the Indian DPDPA (Section 8).
+        FPDAF acts as a bedside early-warning radar system using Federated Learning to train collaborative models while keeping raw patient data localized inside hospital firewalls.
     \end{alertblock}
 \end{frame}
 
-% --- SLIDE 3: CONCEPT & SYSTEM OBJECTIVE ---
-\begin{frame}{Concept \& Objective Overview}
-    \begin{block}{The Objective: Decentralized Clinical Early Warning}
-        \scriptsize
-        FPDAF (Federated Personalized Drift Alerting Framework) is an intelligent, secure Clinical Decision Support System (CDSS) running locally in intensive care units. Using Federated Learning, hospital clients train a shared model collaboratively while keeping patient charts local.
-    \end{block}
-    
-    \begin{columns}[t]
-        \begin{column}{0.31\textwidth}
-            \begin{block}{\textcolor{neonCyan}{1.} Real-time Telemetry}
-                \scriptsize
-                Continuously segments and scales sliding 24h patient streams (vitals \& labs) on local server nodes.
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.31\textwidth}
-            \begin{block}{\textcolor{neonTeal}{2.} Secure Federated Core}
-                \scriptsize
-                Hospital firewalls remain closed. Clients swap only weight tensors (FedAvg/FedProx) with the coordinate server.
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.31\textwidth}
-            \begin{block}{\textcolor{neonAmber}{3.} Bedside Warnings}
-                \scriptsize
-                Generates stable vs. critical notifications along with explainable temporal heatmap visualizations.
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-% --- SLIDE 4: CORE UNIQUENESS & NOVELTIES ---
-\begin{frame}{Uniqueness of the Innovation (Key Technical Novelties)}
-    \begin{columns}[t]
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{1.} Multi-Head Temporal XAI}
-                \scriptsize
-                Embeds 4-head query-key temporal self-attentions providing explainable heatmap insights into exact sequence hours (e.g. SpO$_2$ drop at hour 14) driving risk alerts.
-            \end{block}
-            
-            \begin{block}{\textcolor{neonTeal}{2.} CUSUM Concept Drift Auditing}
-                \scriptsize
-                An online Cumulative Sum (AD-CUSUM) neural monitor tracks validation loss residuals at each hospital site to flag patient demographic shifts in real-time.
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{3.} Dynamic Dual-Phase (DDP) Attention}
-                \scriptsize
-                Integrates 2D cross-attention ($\alpha_t \otimes \beta_v$) to capture simultaneous sequence time steps AND multi-modal vital co-dependencies (e.g., HR vs Blood Pressure).
-            \end{block}
-
-            \begin{block}{\textcolor{neonRose}{4.} Client-Side Selective Personalization}
-                \scriptsize
-                Freezes the shared deep LSTM backbone upon drift alerts, fine-tuning only local classifier heads:
-                \begin{itemize}
-                    \item \textbf{38\% Bandwidth Savings} (1.52 GB vs 2.48 GB).
-                    \item \textbf{Rapid Recalibration:} Adapts to hospital profiles in \textbf{6 minutes}.
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-% --- SLIDE 5: SYSTEM FLOWCHART ---
-\begin{frame}{Flowchart of the Proposed Solution}
+% =========================================================================================
+% SLIDE 3: SYSTEM ARCHITECTURE & DATAFLOW
+% =========================================================================================
+\begin{frame}{Proposed FPDAF Solution \& System Architecture}
     \centering
-    % Rounded Futuristic frame around the architecture diagram
     \begin{tikzpicture}
         \node[draw=neonCyan!50, fill=cardBg, rounded corners=6pt, inner sep=4pt, drop shadow] {
-            \includegraphics[height=0.55\textheight,keepaspectratio]{images/fpdafarcdiagram.png}
+            \includegraphics[height=0.52\textheight,keepaspectratio]{images/fpdafarcdiagram.png}
         };
     \end{tikzpicture}
     
     \vspace{0.1cm}
     \begin{block}{}
         \centering
-        \tiny \textcolor{neonCyan}{\textbf{System Dataflow:}} Local preprocessed vital arrays flow through the shared BiLSTM feature extractor, attention query layers, and personalized heads, controlled by local CUSUM triggers.
+        \tiny \textcolor{neonCyan}{\textbf{System Dataflow:}} Local ICU vital streams pass through a shared BiLSTM backbone and DDP cross-attention layers. Local CUSUM triggers activate Client-Side Selective Personalization (CSSP) upon demographic drift without uploading raw EHR records.
     \end{block}
 \end{frame}
 
-
-% --- SLIDE 7: PROTOTYPE READINESS & VALIDATION STATUS (TRL 4/5) ---
-\begin{frame}{Prototype Readiness \& Performance Metrics (TRL 4/5)}
+% =========================================================================================
+% SLIDE 4: CORE TECHNICAL NOVELTIES & COMPETITIVE EDGE
+% =========================================================================================
+\begin{frame}{Core Technical Novelties \& Competitive Matrix}
     \begin{columns}[t]
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{Validated Experimental Performance}}
+        \begin{column}{0.55\textwidth}
+            \begin{block}{\textcolor{neonCyan}{Key Technical Novelties}}
                 \scriptsize
-                Evaluated across multi-center PhysioNet ICU cohorts:
                 \begin{itemize}
-                    \item \textbf{86.51\% Test Accuracy:} Outperforms FedAvg (75.94\%) and FedProx (78.85\%) under non-IID data splits.
-                    \item \textbf{0.8214 AUROC Score:} Strong discrimination for early sepsis crash prediction.
-                    \item \textbf{38\% Bandwidth Reduction:} 1.52 GB network usage vs 2.48 GB in standard FL.
+                    \item \textbf{1. Dynamic Dual-Phase (DDP) Attention:} 2D cross-attention ($\alpha_t \otimes \beta_v$) tracking 24h sequence hours AND vital co-dependencies.
+                    \item \textbf{2. AD-CUSUM Drift Auditing:} Online loss residual control charts flagging hospital demographic shifts in real-time.
+                    \item \textbf{3. Client-Side Selective Personalization (CSSP):} Freezes shared LSTM backbones, saving \textbf{38\% bandwidth} \& adapting in \textbf{6 mins}.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.43\textwidth}
+            \begin{block}{\textcolor{neonTeal}{Competitive Comparison}}
+                \tiny
+                \setlength{\tabcolsep}{2pt}
+                \renewcommand{\arraystretch}{1.2}
+                \begin{tabular}{l c c c}
+                \hline
+                \rowcolor{lightCyanBg}
+                \textbf{Feature} & \textbf{FPDAF} & \textbf{Epic} & \textbf{Philips} \\
+                \hline
+                Federated Privacy & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonRose}{No} & \textcolor{neonRose}{No} \\
+                Concept Drift Auditing & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonRose}{No} & \textcolor{neonRose}{No} \\
+                Temporal XAI Heatmaps & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonRose}{No} & \textcolor{neonRose}{No} \\
+                Edge-AI Deployment & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonAmber}{Partial} & \textbf{\textcolor{neonTeal}{Yes}} \\
+                \hline
+                \end{tabular}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =========================================================================================
+% SLIDE 5: PROTOTYPE READINESS & BEDSIDE UI DEMO (TRL 4/5)
+% =========================================================================================
+\begin{frame}{Working Prototype Readiness \& Performance (TRL 4/5)}
+    \begin{columns}[t]
+        \begin{column}{0.46\textwidth}
+            \begin{block}{\textcolor{neonCyan}{Experimental Performance Metrics}}
+                \scriptsize
+                Validated on multi-center PhysioNet ICU cohorts:
+                \begin{itemize}
+                    \item \textbf{86.51\% Accuracy:} Superior to FedAvg (75.94\%) and FedProx (78.85\%).
+                    \item \textbf{0.8214 AUROC:} High predictive discrimination.
+                    \item \textbf{38\% Bandwidth Savings:} 1.52 GB vs 2.48 GB.
                 \end{itemize}
             \end{block}
             
-            \begin{block}{\textcolor{neonTeal}{Software \& Database Workstation}}
+            \begin{block}{\textcolor{neonTeal}{Software Stack Operational}}
                 \scriptsize
-                Full-stack bedside workstation operational:
-                \begin{itemize}
-                    \item \textbf{FastAPI Backend \& SQLite Warehousing:} Decodes raw vitals using \texttt{scaler.pkl}.
-                    \item \textbf{React Vite Bedside UI:} Features Doctor \& Admin portals.
-                \end{itemize}
+                FastAPI backend, SQLite relational warehouse (`clinical\_warehouse.db`), and React Vite bedside dashboard fully functional.
             \end{block}
         \end{column}
         
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{Bedside Workstation Telemetry Interface}}
+        \begin{column}{0.52\textwidth}
+            \begin{block}{\textcolor{neonAmber}{Clinician Bedside UI Workspace}}
                 \centering
-                \includegraphics[width=\textwidth,height=0.48\textheight,keepaspectratio]{images/dashboarddoctor.png} \\
-                \vspace{0.05cm}
-                \tiny \textcolor{neonCyan}{\textbf{Bedside Doctor Portal:}} Real-time vital timelines, risk dials, and temporal attention saliency heatmaps.
+                \includegraphics[width=\textwidth,height=0.46\textheight,keepaspectratio]{images/dashboarddoctor.png} \\
+                \tiny \textcolor{neonCyan}{\textbf{Doctor Portal:}} Hourly vitals, risk dials, and temporal XAI heatmaps.
             \end{block}
         \end{column}
     \end{columns}
 \end{frame}
 
-
-% --- SLIDE 9: COMPETITIVE MATRIX ---
-\begin{frame}{Competitive Matrix: Comparison of Key Capabilities}
-    \begin{columns}[c]
-        \begin{column}{0.72\textwidth}
-            \scriptsize
-            \setlength{\tabcolsep}{1.5pt}
-            \renewcommand{\arraystretch}{1.3}
-            \begin{tabular}{l c c c c}
-            \hline
-            \rowcolor{lightCyanBg}
-            \textbf{\textcolor{neonCyan}{Feature}} & \textbf{\textcolor{neonCyan}{FPDAF (Ours)}} & \textbf{\textcolor{neonCyan}{Epic System}} & \textbf{\textcolor{neonCyan}{Philips Monitor}} & \textbf{\textcolor{neonCyan}{Google Health}} \\
-            \hline
-            Federated Privacy & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonRose}{No (Cloud)} & \textcolor{neonRose}{No (Local)} & \textcolor{neonRose}{No (Cloud)} \\
-            Concept Drift Auditing & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonRose}{No} & \textcolor{neonRose}{No} & \textcolor{neonRose}{No} \\
-            Temporal XAI Heatmaps & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonRose}{No} & \textcolor{neonRose}{No} & \textbf{\textcolor{neonTeal}{Yes}} \\
-            Local Customization (CSSP) & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonRose}{No} & \textcolor{neonRose}{No} & \textcolor{neonRose}{No} \\
-            Edge-AI Deployment & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonAmber}{Partial} & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonRose}{No} \\
-            DPDPA-Ready Compliance & \textbf{\textcolor{neonTeal}{Yes}} & \textcolor{neonAmber}{Partial} & \textcolor{neonAmber}{Partial} & \textcolor{neonAmber}{Partial} \\
-            \hline
-            \end{tabular}
-            \vspace{0.2cm}
-            \tiny \textcolor{mutedText}{$^*$Based on publicly available product specifications and literature review as of Q2.}\\
-            \textcolor{mutedText}{$^\dagger$Source: Indian Healthcare CDSS Market Analysis Report (2025).}
+% =========================================================================================
+% SLIDE 6: DETAILED BUDGET JUSTIFICATION (RS. 15.0 LAKHS) - EXPANDED FOR EVALUATORS!
+% =========================================================================================
+\begin{frame}{Detailed Budget Breakup \& Justification (Total: \textbf{Rs. 15.0 Lakhs})}
+    \begin{block}{Financial Outlay Under MSME Idea Hackathon 6.0 Guidelines (Maximum Grant Cap):}
+        \scriptsize
+        Comprehensive justification for Rs. 15 Lakhs to build physical Edge-AI bedside nodes and execute clinical trials:
+    \end{block}
+    
+    \begin{columns}[t]
+        \begin{column}{0.34\textwidth}
+            \begin{block}{\textcolor{neonCyan}{\textbf{1. Technology Costs (10.0L)}}}
+                \flushleft\tiny
+                \begin{itemize}
+                    \item \textbf{Hardware \& Assembly (3.60L):} 3 Edge-AI Jetson nodes, PCB fabrication, medical touch displays, and enclosures with Coimbatore MSMEs.
+                    \item \textbf{Data Curation (3.40L):} Expert clinician annotation \& vital stream simulation.
+                    \item \textbf{Security Audits (3.00L):} Penetration testing \& DPDPA compliance audits.
+                \end{itemize}
+            \end{block}
         \end{column}
         
-        \begin{column}{0.24\textwidth}
-            \begin{block}{\textcolor{neonCyan}{Strategic Advantage}}
-                \scriptsize
-                While big tech offers cloud AI and hardware brands offer dumb local alarms, FPDAF is the only system offering:
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\textcolor{neonTeal}{\textbf{2. Mentorship (3.0L)}}}
+                \flushleft\tiny
                 \begin{itemize}
-                    \item \textbf{Privacy-first training}
-                    \item \textbf{Bedside temporal explainability}
-                    \item \textbf{Local adaptation} to prevent medical drift.
+                    \item \textbf{Clinical Guidance (1.80L):} ICU specialist honorarium for clinical protocol validation.
+                    \item \textbf{Lab Support (1.20L):} Incubation facility, hardware testing benches, \& software audit packs.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.32\textwidth}
+            \begin{block}{\textcolor{neonAmber}{\textbf{3. Field Trials (2.0L)}}}
+                \flushleft\tiny
+                \begin{itemize}
+                    \item \textbf{Node Deployment (1.00L):} On-site installation across partnering regional ICUs.
+                    \item \textbf{Telemetry Audits (1.00L):} Multi-site ICU field data collection and travel.
                 \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
 \end{frame}
 
-% --- SLIDE 10: INDUSTRIAL APPLICATION & MSME HARDWARE ---
-\begin{frame}{Indian MSME Hardware \& Industrial Application}
+% =========================================================================================
+% SLIDE 7: INDIAN MSME MANUFACTURING & 12-MONTH ROADMAP
+% =========================================================================================
+\begin{frame}{Indian MSME Hardware Assembly \& Commercialization Roadmap}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
             \begin{block}{\textcolor{neonCyan}{Indian MSME Hardware Integration}}
                 \scriptsize
-                Unlike pure software startups, FPDAF (Federated Personalized Drift Alerting Framework) is proposed as an \textbf{integrated medical hardware product}:
+                FPDAF is an \textbf{integrated medical hardware product}:
                 \begin{itemize}
-                    \item \textbf{Physical Node Box:} A bedside workstation cabinet containing custom local display, visual/audio alarms, and network interface.
-                    \item \textbf{Local Assembly Partner:} Discussions initiated with local embedded electronics and medical device MSMEs in Coimbatore for PCB assembly and edge hardware enclosure fabrication.
+                    \item \textbf{Physical Node Enclosure:} Bedside cabinet with custom display, visual alarms, and network ports.
+                    \item \textbf{Local MSME Manufacturing:} Partnering with Coimbatore electronics MSMEs for PCB assembly and cabinet fabrication.
                 \end{itemize}
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonTeal}{Industrial Applications}}
+            \begin{block}{\textcolor{neonTeal}{12-Month Commercialization Roadmap}}
                 \scriptsize
-                \begin{itemize}
-                    \item \textbf{Hospital ICU Deployment:} Integrates with patient monitors via lightweight APIs to run as an intelligent local CDSS layer.
-                    \item \textbf{OEM Licensing:} Licensing the lightweight, PyTorch-based early-warning algorithm to patient monitoring equipment manufacturers (e.g. Philips, GE Healthcare).
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-% --- SLIDE 11: MARKET POTENTIAL & BUSINESS MODEL ---
-\begin{frame}{Market Sizing \& Government Adoption}
-    \begin{columns}[t]
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{TAM/SAM/SOM Sizing}}
-                \scriptsize
-                Detailed market mapping highlights scaling capacity:
-                \begin{itemize}
-                    \item \textbf{Estimated TAM: Rs. 1,000 Crores} (India's Clinical Decision Support System market)$^\dagger$.
-                    \item \textbf{Estimated SAM: Rs. 375 Crores} (Corporate/private hospital ICU networks representing ~2,50,000 private ICU beds).
-                    \item \textbf{Estimated SOM: Rs. 40 Crores} (Regional hospital networks targetable in Years 1--2 representing 12 chains).
-                \end{itemize}
-            \end{block}
-            
-            \begin{block}{\textcolor{neonTeal}{Government Adoption}}
-                \scriptsize
-                Designed for scalable deployment across public healthcare infrastructure:
-                \begin{itemize}
-                    \item \textbf{Potential Users:} AIIMS, State Medical Colleges, Government Hospitals, District Hospitals, Corporate Chains, Tele-ICU Networks.
-                \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{Commercialization \& Scaling Strategy}}
-                \scriptsize
-                We scale through a 5-Phase commercialization strategy:
                 \begin{enumerate}
-                    \item \textbf{Phase 1:} Pilot hospital validation.
-                    \item \textbf{Phase 2:} Regional network deployment.
-                    \item \textbf{Phase 3:} Government procurement and public hospital deployment.
-                    \item \textbf{Phase 4:} Scaling to private hospital networks.
-                    \item \textbf{Phase 5:} Global export scaling.
+                    \item \textbf{Months 1-2:} Edge PCB fabrication \& MSME enclosure assembly.
+                    \item \textbf{Months 3-5:} Multi-node network setup \& shadow trials.
+                    \item \textbf{Months 6-12:} ISO 13485 / DPDPA audit pack \& CDSCO Class B filing.
                 \end{enumerate}
             \end{block}
         \end{column}
     \end{columns}
 \end{frame}
 
-% --- SLIDE 9: BUDGET JUSTIFICATION GRID (FUTURISTIC CARDS) ---
-\begin{frame}{Proposed Budget Justification (Total: \textbf{Rs. 15.0 Lakhs})}
-    \begin{block}{Budget Request Under MSME Idea Hackathon 6.0 Guidelines (Maximum Grant):}
-        \scriptsize
-        We request Rs. 15 Lakhs to fund the transition of our working prototype into physical clinical pilot installations:
-    \end{block}
-    
-    \begin{columns}[t]
-        \begin{column}{0.31\textwidth}
-            \begin{block}{\textcolor{neonCyan}{\textbf{1. Technology Costs}}}
-                \centering
-                \vspace{0.1cm}
-                {\normalsize\textbf{\textcolor{neonCyan}{Rs. 10.0 Lakhs}}} \\
-                \vspace{0.2cm}
-                \flushleft\tiny
-                \begin{itemize}
-                    \item \textbf{Hardware \& Assembly (3.6L):} 3 Edge-AI Jetson nodes, PCB assembly, medical touch displays, workstation enclosures with Coimbatore MSMEs.
-                    \item \textbf{Data Annotation (3.4L):} Expert clinician curation \& vital stream simulation.
-                    \item \textbf{Security Audits (3.0L):} Penetration testing \& DPDPA audits.
-                \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.31\textwidth}
-            \begin{block}{\textcolor{neonTeal}{\textbf{2. Clinical Mentorship}}}
-                \centering
-                \vspace{0.1cm}
-                {\normalsize\textbf{\textcolor{neonTeal}{Rs. 3.0 Lakhs}}} \\
-                \vspace{0.2cm}
-                \flushleft\tiny
-                \begin{itemize}
-                    \item ICU clinical validation guidance (1.8L).
-                    \item Incubation facility \& testing lab support (1.2L).
-                \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.31\textwidth}
-            \begin{block}{\textcolor{neonAmber}{\textbf{3. Field Travel \& Trials}}}
-                \centering
-                \vspace{0.1cm}
-                {\normalsize\textbf{\textcolor{neonAmber}{Rs. 2.0 Lakhs}}} \\
-                \vspace{0.2cm}
-                \flushleft\tiny
-                \begin{itemize}
-                    \item Bedside node hardware setups (1.0L).
-                    \item Multi-site ICU telemetry audits (1.0L).
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-% --- SLIDE 10: ROADMAP TIMELINE ---
-\begin{frame}{Project Development Roadmap (12 Months)}
-    \centering
-    \begin{tikzpicture}[
-        node distance=3.6cm,
-        stepCard/.style={draw=neonCyan!50, fill=cardBg, rounded corners=4pt, font=\scriptsize\bfseries, inner sep=8pt, align=center, text width=3cm}
-    ]
-        % Horizontal glow line
-        \draw[textColor!25, line width=4pt, rounded corners] (-4.5, 0) -- (4.5, 0);
-        \draw[neonCyan, line width=1.5pt, rounded corners] (-4.5, 0) -- (1.5, 0);
-        
-        % Nodes
-        \node[stepCard, at={(-3.8, 0)}] (p1) {\textcolor{neonCyan}{Months 1-2} \\ EHR Data Mapping \\ API Integration \\ (Vitals Connectors)};
-        
-        \node[stepCard, at={(0, 0)}] (p2) {\textcolor{neonTeal}{Months 3-5} \\ Retrospective Trials \\ Offline Validation \\ (300+ Patient Cohort)};
-        
-        \node[stepCard, at={(3.8, 0)}] (p3) {\textcolor{neonAmber}{Months 6-12} \\ Multi-Hospital Silent Run \\ Parallel Bedside Pilot \\ (Accuracy Tuning)};
-        
-        % Glow circles
-        \fill[neonCyan] (-3.8, -1.1) circle (4pt);
-        \fill[neonTeal] (0, -1.1) circle (4pt);
-        \fill[neonAmber] (3.8, -1.1) circle (4pt);
-    \end{tikzpicture}
-    
-    \vspace{0.4cm}
-    \begin{block}{Commercialization Goal (Post 12 Months)}
-        \scriptsize
-        Acquire CDSS medical software safety certifications, apply for patent filings on the CUSUM trigger mechanisms, and deploy commercial B2B SaaS nodes across Indian ICU networks.
-    \end{block}
-\end{frame}
-
-% --- SLIDE 11: WHY SELECT FPDAF (EVALUATOR FOCUS) ---
-\begin{frame}{Why FPDAF (Federated Personalized Drift Alerting Framework) is the Perfect Fit for MSME Funding}
-    \begin{columns}[t]
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonTeal}{[Impact]} High Social \& Medical Impact}
-                \scriptsize
-                Sepsis is the leading cause of ICU mortality. Early bedside warning directly:
-                \begin{itemize}
-                    \item Improves patient clinical outcomes through early clinical fluid and antibiotic intervention.
-                    \item Reduces ICU average length of stay (ALoS), helping to potentially reduce ICU treatment costs.
-                \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{[Alignment]} National Mission Alignment}
-                \scriptsize
-                \begin{itemize}
-                    \item \textbf{Aatmanirbhar Bharat:} Completely local design, reducing dependency on imported clinical systems.
-                    \item \textbf{Viksit Bharat @2047:} Empowers rural and semi-urban health centers with low-cost clinical intelligence.
-                    \item \textbf{High Feasibility:} Functional prototype developed, compiled, and validated on actual public EHR cohorts.
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
-\end{frame}
-
-% --- SLIDE 12: FUTURISTIC CONCLUSION ---
+% =========================================================================================
+% SLIDE 8: CONCLUSION & Q&A
+% =========================================================================================
 \begin{frame}[plain]
     \begin{tikzpicture}[remember picture,overlay]
         \shade[inner color=neonTeal!12, outer color=darkSlate!0] (current page.center) circle (5cm);
     \end{tikzpicture}
     
     \centering
-    \vspace{1.2cm}
-    {\Huge \textbf{\textcolor{neonCyan}{Thank You}}} \\
-    \vspace{0.4cm}
-    {\large \textcolor{textColor!80}{Explainable Healthcare AI to Save Lives at the Bedside}} \\
     \vspace{0.8cm}
+    {\Huge \textbf{\textcolor{neonCyan}{Thank You}}} \\
+    \vspace{0.2cm}
+    {\large \textcolor{textColor!80}{FPDAF: Explainable Edge-AI to Save Lives at the Bedside}} \\
+    \vspace{0.5cm}
     
-    \begin{minipage}{0.75\textwidth}
+    \begin{minipage}{0.8\textwidth}
         \begin{block}{MSME Idea Hackathon 6.0}
             \centering
             \scriptsize
-            Theme: \textbf{Frontier Technologies (Sub-Theme 6)} \\
+            \textbf{Sub-Theme 6: Frontier Technologies} \quad | \quad \textbf{Amrita Vishwa Vidyapeetham}\\
             \vspace{0.1cm}
-            \textcolor{mutedText}{Anonymous Project Submission} \\
-            \textbf{Host Institute Code:} MSME-HI-REDACTED
+            \textcolor{mutedText}{Lead Mentor: Dr. Ramya G. R. \quad | \quad Co-Mentor: Dr. Vandhana S.}\\
+            \textcolor{neonTeal}{\textbf{Student Team:} Sheela Akshar Sakhi, Hasini Reddy M, Kousik Sarma L., Haswitha K, V. Chakravarthy}
         \end{block}
     \end{minipage}
     
-    \vspace{0.4cm}
-    {\normalsize \textcolor{neonTeal}{Questions \& Discussion}}
+    \vspace{0.3cm}
+    {\normalsize \textcolor{neonTeal}{\textbf{Questions \& Expert Discussion}}}
 \end{frame}
 
 \end{document}
