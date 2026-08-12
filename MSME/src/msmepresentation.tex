@@ -153,42 +153,43 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 3: MARKET SIZE (TAM / SAM / SOM) & DPDPA REGULATORY MOAT
+% SLIDE 3: MARKET SIZE (TAM / SAM / SOM) & DPDPA REGULATORY MOAT (WITH ICU EDGE VISUAL)
 % =========================================================================================
 \begin{frame}{Market Opportunity (TAM / SAM / SOM) \& Regulatory Moat}
-    \begin{columns}[t]
-        \begin{column}{0.48\textwidth}
+    \begin{columns}[c]
+        \begin{column}{0.52\textwidth}
             \begin{block}{\textcolor{neonCyan}{Market Opportunity \& TAM/SAM/SOM [8]}}
                 \tiny
                 Addressing India's critical ICU monitoring shortage:
                 \begin{itemize}
-                    \item \textbf{TAM (Total Addressable Market):} \textbf{Rs. 8,500 Crores} (150,000+ ICU beds across 70,000 Indian hospitals).
-                    \item \textbf{SAM (Serviceable Addressable Market):} \textbf{Rs. 1,200 Crores} (30,000 tertiary care beds requiring AI decision support).
-                    \item \textbf{SOM (3-Year Target Market):} \textbf{Rs. 40 Crores} (2,500 beds across 12 regional hospital chains).
+                    \item \textbf{TAM (Total Addressable):} \textbf{Rs. 8,500 Cr} (150k+ beds, 70k hospitals).
+                    \item \textbf{SAM (Serviceable):} \textbf{Rs. 1,200 Cr} (30k tertiary care beds).
+                    \item \textbf{SOM (3-Yr Target):} \textbf{Rs. 40 Cr} (2,500 beds across 12 chains).
+                \end{itemize}
+            \end{block}
+
+            \begin{block}{\textcolor{neonAmber}{DPDPA 2023 Regulatory Privacy Moat [8]}}
+                \tiny
+                \begin{itemize}
+                    \item \textbf{Zero Cloud Upload:} DPDPA 2023 bans uploading raw patient EHR.
+                    \item \textbf{FPDAF Solution:} On-device Edge-AI node performing collaborative FL without data leaving hospital premises.
                 \end{itemize}
             \end{block}
         \end{column}
         
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{DPDPA 2023 Regulatory Moat [8]}}
-                \tiny
-                Zero-cloud-upload privacy paradigm:
-                \begin{itemize}
-                    \item \textbf{Cloud AI Legal Liability:} DPDPA 2023 bans uploading raw patient charts to third-party cloud servers.
-                    \item \textbf{Demographic Data Drift:} Regional patient variations degrade static central AI models.
-                    \item \textbf{FPDAF Solution:} On-device Edge-AI node performing collaborative federated learning without data leaving hospital premises.
-                \end{itemize}
+        \begin{column}{0.44\textwidth}
+            \begin{block}{\textcolor{neonTeal}{Bedside Edge-AI Node Concept}}
+                \centering
+                \begin{tikzpicture}
+                    \node[draw=neonTeal!50, fill=cardBg, rounded corners=4pt, inner sep=2pt, drop shadow] {
+                        \includegraphics[width=0.92\textwidth,height=0.45\textheight,keepaspectratio]{images/icu_edge_privacy.png}
+                    };
+                \end{tikzpicture}
             \end{block}
         \end{column}
     \end{columns}
-    
-    \vspace{0.02cm}
-    \begin{exampleblock}{\textcolor{neonTeal}{FPDAF Value Proposition}}
-        \tiny
-        A zero-cloud-upload Edge-AI workstation node that trains collaboratively across hospitals while guaranteeing 100\% DPDPA data privacy.
-    \end{exampleblock}
 
-    \vspace{0.02cm}
+    \vspace{0.01cm}
     \begin{block}{}
         \tiny \textcolor{neonCyan}{\textbf{Market \& Legal References:}} \textcolor{mutedText}{[8] Digital Personal Data Protection (DPDPA) Act, MeitY, Gazette of India 2023. NITI Aayog Healthcare Report 2023.}
     \end{block}
@@ -215,40 +216,40 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 5: PROPRIETARY IP & INNOVATION MOAT
+% SLIDE 5: PROPRIETARY IP & INNOVATION MOAT (WITH XAI HEATMAP VISUAL)
 % =========================================================================================
 \begin{frame}{Proprietary IP \& Technological Innovation Moat}
-    \begin{columns}[t]
-        \begin{column}{0.48\textwidth}
+    \begin{columns}[c]
+        \begin{column}{0.50\textwidth}
             \begin{block}{\textcolor{neonCyan}{1. Dynamic Dual-Phase (DDP) Attention [13]}}
-                \scriptsize
-                2D cross-attention ($\alpha_t \otimes \beta_v$) tracking 24h sequence hours AND multi-modal vital co-dependencies (e.g., HR vs Blood Pressure).
+                \tiny
+                2D cross-attention ($\alpha_t \otimes \beta_v$) tracking 24h sequence hours AND multi-modal vital co-dependencies (e.g., HR vs BP).
             \end{block}
             
             \begin{block}{\textcolor{neonTeal}{2. AD-CUSUM Drift Auditing [14]}}
-                \scriptsize
+                \tiny
                 Real-time loss residual control charts flagging patient population shifts on edge nodes before model degradation occurs.
+            \end{block}
+
+            \begin{block}{\textcolor{neonAmber}{3. Client-Side Selective Personalization [7]}}
+                \tiny
+                Freezes shared LSTM backbones upon drift alerts, fine-tuning only local heads with \textbf{38\% Bandwidth Savings}.
             \end{block}
         \end{column}
         
-        \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{3. Client-Side Selective Personalization [7]}}
-                \scriptsize
-                Freezes shared LSTM backbones upon drift alerts, fine-tuning only local heads:
-                \begin{itemize}
-                    \item \textbf{38\% Bandwidth Savings} (1.52 GB vs 2.48 GB).
-                    \item \textbf{Rapid Calibration:} Adapts in \textbf{6 minutes}.
-                \end{itemize}
-            \end{block}
-
+        \begin{column}{0.46\textwidth}
             \begin{block}{\textcolor{neonRose}{4. Temporal XAI Saliency Heatmaps}}
-                \scriptsize
-                Generates hourly bedside vital contribution heatmaps for ICU doctor verification.
+                \centering
+                \begin{tikzpicture}
+                    \node[draw=neonRose!50, fill=cardBg, rounded corners=4pt, inner sep=2pt, drop shadow] {
+                        \includegraphics[width=0.92\textwidth,height=0.45\textheight,keepaspectratio]{images/ai_xai_saliency.png}
+                    };
+                \end{tikzpicture}
             \end{block}
         \end{column}
     \end{columns}
 
-    \vspace{0.02cm}
+    \vspace{0.01cm}
     \begin{block}{}
         \tiny \textcolor{neonCyan}{\textbf{Algorithmic References:}} \textcolor{mutedText}{[13] Vaswani et al., NeurIPS 2017 (2D Cross-Attention). [14] Page E.S., Biometrika 1954 (CUSUM Control Charts). [7] Li et al., MLSys 2020.}
     \end{block}
@@ -399,18 +400,17 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 9: BUSINESS MODEL, UNIT ECONOMICS & MSME MANUFACTURING NETWORK
+% SLIDE 9: BUSINESS MODEL, UNIT ECONOMICS & MSME MANUFACTURING NETWORK (WITH MSME VISUAL)
 % =========================================================================================
 \begin{frame}{Business Model, Unit Economics \& MSME Ecosystem}
-    \begin{columns}[t]
-        \begin{column}{0.48\textwidth}
+    \begin{columns}[c]
+        \begin{column}{0.50\textwidth}
             \begin{block}{\textcolor{neonCyan}{\textbf{Monetization \& Revenue Model}}}
                 \tiny
-                Triple-tier monetization model for healthcare scaling:
                 \begin{itemize}
-                    \item \textbf{1. B2B Edge Node Appliance:} Selling hardware nodes at \textbf{Rs. 1.50L -- 2.00L / node}.
-                    \item \textbf{2. SaaS Telemetry Subscription:} Model maintenance \& drift auditing at \textbf{Rs. 25,000 / node / year}.
-                    \item \textbf{3. OEM Engine Licensing:} Licensing PyTorch FL engine to monitor OEMs (Philips, Mindray).
+                    \item \textbf{B2B Edge Node Appliance:} \textbf{Rs. 1.50L -- 2.00L / node}.
+                    \item \textbf{SaaS Telemetry Subscription:} \textbf{Rs. 25,000 / node / year}.
+                    \item \textbf{OEM Engine Licensing:} Licensing PyTorch FL engine.
                 \end{itemize}
             \end{block}
             
@@ -421,20 +421,19 @@
             \end{block}
         \end{column}
         
-        \begin{column}{0.48\textwidth}
+        \begin{column}{0.46\textwidth}
             \begin{block}{\textcolor{neonAmber}{\textbf{Domestic MSME Manufacturing Network}}}
-                \tiny
-                Leveraging domestic electronics \& sheet metal MSME clusters:
-                \begin{itemize}
-                    \item \textbf{PCB Electronics Assembly:} SMT component mounting \& carrier board fabrication with regional electronics MSMEs.
-                    \item \textbf{Metallic Cabinet Enclosure:} Powder-coated sheet metal node fabrication with regional industrial MSMEs.
-                    \item \textbf{12-Month Roadmap [9,10]:} ISO 13485 quality pack, CDSCO Class B filing, and 3-hospital tele-ICU pilot run.
-                \end{itemize}
+                \centering
+                \begin{tikzpicture}
+                    \node[draw=neonAmber!50, fill=cardBg, rounded corners=4pt, inner sep=2pt, drop shadow] {
+                        \includegraphics[width=0.92\textwidth,height=0.42\textheight,keepaspectratio]{images/msme_manufacturing.png}
+                    };
+                \end{tikzpicture}
             \end{block}
         \end{column}
     \end{columns}
     
-    \vspace{0.02cm}
+    \vspace{0.01cm}
     \begin{block}{}
         \tiny \textcolor{neonCyan}{\textbf{Regulatory Standards:}} \textcolor{mutedText}{[9] CDSCO Medical Device Rules 2017 (Class B SaMD). [10] ISO 13485:2016 Quality Management System Standard.}
     \end{block}
