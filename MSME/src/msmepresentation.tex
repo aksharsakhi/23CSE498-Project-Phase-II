@@ -168,11 +168,11 @@
                 \end{itemize}
             \end{block}
 
-            \begin{block}{\textcolor{neonAmber}{DPDPA 2023 Regulatory Privacy Moat [8]}}
+            \begin{block}{\textcolor{neonAmber}{DPDPA Privacy-by-Design Architecture [8]}}
                 \tiny
                 \begin{itemize}
-                    \item \textbf{Zero Cloud Upload:} DPDPA 2023 bans uploading raw patient EHR.
-                    \item \textbf{FPDAF Solution:} On-device Edge-AI node performing collaborative FL without data leaving hospital premises.
+                    \item \textbf{Minimizing Exposure:} Avoids routine transfer of raw patient telemetry to an external cloud, keeping data within the hospital.
+                    \item \textbf{FPDAF Solution:} Architecture designed to support compliance requirements via on-device Edge-AI federated learning.
                 \end{itemize}
             \end{block}
         \end{column}
@@ -323,7 +323,7 @@
     \textbf{Philips IntelliVue} & Bedside hardware monitor & Threshold alarms (No AI) & Rs. 15--20 Lakhs/bed & \textcolor{neonRose}{\textbf{No}} \\
     \textbf{GE Healthcare CARESCAPE} & Enterprise server software & Vendor lock-in, No privacy & Rs. 25--30 Lakhs/setup & \textcolor{neonRose}{\textbf{No}} \\
     \rowcolor{lightTealBg}
-    \textbf{\textcolor{textColor}{FPDAF HealthTech (Ours)}} & \textbf{\textcolor{textColor}{Federated Edge-AI Node}} & \textbf{\textcolor{textColor}{100\% DPDPA, Real-time Drift}} & \textbf{\textcolor{neonTeal}{Rs. 1.5--2.0 L/node}} & \textbf{\textcolor{neonTeal}{YES}} \\
+    \textbf{\textcolor{textColor}{FPDAF HealthTech (Ours)}} & \textbf{\textcolor{textColor}{Federated Edge-AI Node}} & \textbf{\textcolor{textColor}{Privacy-by-Design, Real-time Drift}} & \textbf{\textcolor{neonTeal}{Rs. 1.5--2.0 L/node}} & \textbf{\textcolor{neonTeal}{YES}} \\
     \hline
     \end{tabular}
     
@@ -343,7 +343,7 @@
             \begin{block}{\textcolor{neonTeal}{Commercial Differentiation}}
                 \tiny
                 \begin{itemize}
-                    \item \textbf{100\% DPDPA Compliance [8]:} Eliminates legal risk of uploading EHR patient charts to external clouds.
+                    \item \textbf{Privacy-by-Design Architecture [8]:} Minimizes data exposure by keeping raw clinical telemetry within the hospital network.
                     \item \textbf{Bedside Explainability:} XAI saliency heatmaps display exact hourly vital triggers for clinician validation.
                 \end{itemize}
             \end{block}
@@ -359,11 +359,12 @@
 % =========================================================================================
 % SLIDE 7: PROTOTYPE VALIDATION & SOFTWARE STACK ARCHITECTURE
 % =========================================================================================
-\begin{frame}{Prototype Validation \& Software Architecture (TRL 4/5)}
+\begin{frame}{Software Architecture \& Retrospective Validation}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{Clinical Benchmark Performance [5]}}
+            \begin{block}{\textcolor{neonCyan}{Retrospective Benchmark Performance [5]}}
                 \tiny
+                (Experimental baseline built on PhysioNet retrospective data)
                 \begin{itemize}
                     \item \textbf{86.51\% Accuracy:} Outperforms FedAvg (75.94\%) [6] and FedProx (78.85\%) [7] under non-IID data splits.
                     \item \textbf{0.8214 AUROC Score:} High predictive discrimination for early sepsis crash detection.
@@ -468,7 +469,7 @@
             \begin{block}{\textcolor{neonTeal}{\textbf{Node Unit Economics}}}
                 \tiny
                 \textbf{Selling Price:} Rs. 1,75,000 \quad | \quad \textbf{BOM Cost:} Rs. 65,000 \\
-                \textbf{Gross Margin per Node:} \textbf{\textcolor{neonTeal}{63\% Profit Margin}}
+                \textbf{Gross Margin per Node:} \textbf{\textcolor{neonTeal}{63\% Gross Margin}}
             \end{block}
         \end{column}
         
@@ -495,7 +496,7 @@
     
     \vspace{0.01cm}
     \begin{block}{}
-        \tiny \textcolor{neonCyan}{\textbf{Regulatory Standards:}} \textcolor{mutedText}{[9] CDSCO Medical Device Rules 2017 (Class B SaMD). [10] ISO 13485:2016 Quality Management System Standard.}
+        \tiny \textcolor{neonCyan}{\textbf{Regulatory Standards:}} \textcolor{mutedText}{[9] Anticipated Regulatory Pathway: CDSCO Medical Device Rules 2017 (Risk-based Classification). [10] ISO 13485:2016 Quality Management System.}
     \end{block}
 \end{frame}
 
@@ -529,8 +530,8 @@
             \begin{block}{\textcolor{neonAmber}{Regulatory, Legal \& Quality Standards}}
                 \tiny
                 \begin{itemize}
-                    \item \textbf{[8] DPDPA Act 2023:} \textit{Digital Personal Data Protection Act}, MeitY, Gazette of India, 2023.
-                    \item \textbf{[9] CDSCO SaMD Rules:} \textit{Medical Device Rules 2017 (Class B)}, CDSCO, MoHFW.
+                    \item \textbf{[8] DPDPA Act 2023:} \textit{Digital Personal Data Protection Rules}, MeitY.
+                    \item \textbf{[9] CDSCO Guidelines:} \textit{Medical Device Rules 2017 (Risk-based Classification)}, CDSCO, MoHFW.
                     \item \textbf{[10] ISO 13485:2016:} \textit{Medical devices -- QMS Standards}, ISO.
                 \end{itemize}
             \end{block}
