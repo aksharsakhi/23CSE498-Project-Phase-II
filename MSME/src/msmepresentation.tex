@@ -134,14 +134,16 @@
         \end{column}
     \end{columns}
     
-    \vspace{0.03cm}
+    \vspace{0.02cm}
     \begin{alertblock}{\textcolor{neonCyan}{Indian Healthcare Mortality Impact [3]}}
         \tiny
         Sepsis accounts for \textbf{3.0 Million deaths annually in India} (\textbf{30\%} of total hospital deaths), making early automated crash prediction an urgent national healthcare priority.
     \end{alertblock}
 
-    \vspace{0.03cm}
-    \tiny \textcolor{mutedText}{\textbf{Clinical References:} [1] Singer et al., JAMA 2016 (Sepsis-3). [2] Kumar et al., Crit Care Med 2006 (8\%/hr mortality rise). [3] Rudd et al., Lancet 2020 (3.0M Indian deaths/yr). [4] Drew et al., PLoS ONE 2014 (85\%-95\% false alarms).}
+    \vspace{0.02cm}
+    \begin{block}{}
+        \tiny \textcolor{neonCyan}{\textbf{Clinical References:}} \textcolor{mutedText}{[1] Singer et al., JAMA 2016 (Sepsis-3). [2] Kumar et al., Crit Care Med 2006 (8\%/hr mortality rise). [3] Rudd et al., Lancet 2020 (3.0M Indian deaths/yr). [4] Drew et al., PLoS ONE 2014 (85\%-95\% false alarms).}
+    \end{block}
 \end{frame}
 
 % =========================================================================================
@@ -150,7 +152,7 @@
 \begin{frame}{Market Opportunity (TAM / SAM / SOM) \& Regulatory Moat}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{Market Opportunity \& TAM/SAM/SOM [1]}}
+            \begin{block}{\textcolor{neonCyan}{Market Opportunity \& TAM/SAM/SOM [8]}}
                 \tiny
                 Addressing India's critical ICU monitoring shortage:
                 \begin{itemize}
@@ -162,7 +164,7 @@
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{DPDPA 2023 Regulatory Moat [2]}}
+            \begin{block}{\textcolor{neonAmber}{DPDPA 2023 Regulatory Moat [8]}}
                 \tiny
                 Zero-cloud-upload privacy paradigm:
                 \begin{itemize}
@@ -174,14 +176,16 @@
         \end{column}
     \end{columns}
     
-    \vspace{0.03cm}
+    \vspace{0.02cm}
     \begin{exampleblock}{\textcolor{neonTeal}{FPDAF Value Proposition}}
         \tiny
         A zero-cloud-upload Edge-AI workstation node that trains collaboratively across hospitals while guaranteeing 100\% DPDPA data privacy.
     \end{exampleblock}
 
-    \vspace{0.03cm}
-    \tiny \textcolor{mutedText}{\textbf{Market \& Legal References:} [1] NITI Aayog, "Healthcare Sector in India", Govt. Report 2023. [2] Digital Personal Data Protection (DPDPA) Act, MeitY, Gazette of India 2023.}
+    \vspace{0.02cm}
+    \begin{block}{}
+        \tiny \textcolor{neonCyan}{\textbf{Market \& Legal References:}} \textcolor{mutedText}{[8] Digital Personal Data Protection (DPDPA) Act, MeitY, Gazette of India 2023. NITI Aayog Healthcare Report 2023.}
+    \end{block}
 \end{frame}
 
 % =========================================================================================
@@ -198,11 +202,10 @@
     \vspace{0.02cm}
     \begin{block}{}
         \centering
-        \tiny \textcolor{neonCyan}{\textbf{Edge Architecture [1,2]:}} Bedside Jetson nodes process local 24h telemetry streams through BiLSTM + DDP attention layers. Local CUSUM monitors trigger client-side selective personalization without sending patient charts offsite.
+        \tiny \textcolor{neonCyan}{\textbf{Edge Architecture [11]:}} Bedside Jetson nodes process local 24h telemetry streams through BiLSTM + DDP attention layers. Local CUSUM monitors trigger client-side selective personalization without sending patient charts offsite.
+        \newline
+        \textcolor{mutedText}{\textbf{Standards:} ISO/IEEE 11073 \& HL7 FHIR Release 4 Medical Data Transfer Standards. NVIDIA Jetson Orin Nano Specs 2024.}
     \end{block}
-
-    \vspace{0.02cm}
-    \tiny \textcolor{mutedText}{\textbf{Architectural Standards:} [1] ISO/IEEE 11073 \& HL7 FHIR Release 4 Medical Data Transfer Standards. [2] NVIDIA Jetson Orin Nano Embedded Edge Architecture Specs 2024.}
 \end{frame}
 
 % =========================================================================================
@@ -211,19 +214,19 @@
 \begin{frame}{Proprietary IP \& Technological Innovation Moat}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{1. Dynamic Dual-Phase (DDP) Attention [1]}}
+            \begin{block}{\textcolor{neonCyan}{1. Dynamic Dual-Phase (DDP) Attention [13]}}
                 \scriptsize
                 2D cross-attention ($\alpha_t \otimes \beta_v$) tracking 24h sequence hours AND multi-modal vital co-dependencies (e.g., HR vs Blood Pressure).
             \end{block}
             
-            \begin{block}{\textcolor{neonTeal}{2. AD-CUSUM Drift Auditing [2]}}
+            \begin{block}{\textcolor{neonTeal}{2. AD-CUSUM Drift Auditing [14]}}
                 \scriptsize
                 Real-time loss residual control charts flagging patient population shifts on edge nodes before model degradation occurs.
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{3. Client-Side Selective Personalization [3]}}
+            \begin{block}{\textcolor{neonAmber}{3. Client-Side Selective Personalization [7]}}
                 \scriptsize
                 Freezes shared LSTM backbones upon drift alerts, fine-tuning only local heads:
                 \begin{itemize}
@@ -239,8 +242,10 @@
         \end{column}
     \end{columns}
 
-    \vspace{0.03cm}
-    \tiny \textcolor{mutedText}{\textbf{Technical References:} [1] Vaswani et al., NeurIPS 2017 (2D Cross-Attention). [2] Page, E. S., Biometrika 1954 (CUSUM Control Charts). [3] Li et al., MLSys 2020 (Federated Optimization).}
+    \vspace{0.02cm}
+    \begin{block}{}
+        \tiny \textcolor{neonCyan}{\textbf{Algorithmic References:}} \textcolor{mutedText}{[13] Vaswani et al., NeurIPS 2017 (2D Cross-Attention). [14] Page E.S., Biometrika 1954 (CUSUM Control Charts). [7] Li et al., MLSys 2020.}
+    \end{block}
 \end{frame}
 
 % =========================================================================================
@@ -254,7 +259,7 @@
     \begin{tabular}{p{3.2cm} p{2.6cm} p{3.2cm} p{2.2cm} c}
     \hline
     \rowcolor{lightCyanBg}
-    \textbf{\textcolor{neonCyan}{Competitor System [1-3]}} & \textbf{\textcolor{neonCyan}{Deployment Model}} & \textbf{\textcolor{neonCyan}{Privacy \& Data Limits}} & \textbf{\textcolor{neonCyan}{Est. Cost Outlay}} & \textbf{\textcolor{neonCyan}{Edge-AI}} \\
+    \textbf{\textcolor{neonCyan}{Competitor System [12]}} & \textbf{\textcolor{neonCyan}{Deployment Model}} & \textbf{\textcolor{neonCyan}{Privacy \& Data Limits}} & \textbf{\textcolor{neonCyan}{Est. Cost Outlay}} & \textbf{\textcolor{neonCyan}{Edge-AI}} \\
     \hline
     \textbf{Epic Deterioration Index} & Cloud SaaS EHR scoring & Cloud-only (Violates DPDPA) & \$50,000+/yr ($\sim$Rs 40L) & \textcolor{neonRose}{\textbf{No}} \\
     \textbf{Philips IntelliVue} & Bedside hardware monitor & Threshold alarms (No AI) & Rs. 15--20 Lakhs/bed & \textcolor{neonRose}{\textbf{No}} \\
@@ -280,7 +285,7 @@
             \begin{block}{\textcolor{neonTeal}{Commercial Differentiation}}
                 \tiny
                 \begin{itemize}
-                    \item \textbf{100\% DPDPA Compliance [4]:} Eliminates legal risk of uploading EHR patient charts to external clouds.
+                    \item \textbf{100\% DPDPA Compliance [8]:} Eliminates legal risk of uploading EHR patient charts to external clouds.
                     \item \textbf{Bedside Explainability:} XAI saliency heatmaps display exact hourly vital triggers for clinician validation.
                 \end{itemize}
             \end{block}
@@ -288,7 +293,9 @@
     \end{columns}
 
     \vspace{0.02cm}
-    \tiny \textcolor{mutedText}{\textbf{Market Cost References:} [1] Epic Systems EDI Specs 2022. [2] Philips IntelliVue MX800 Guide. [3] GE CARESCAPE B850 Technical Catalog. [4] DPDPA Act 2023.}
+    \begin{block}{}
+        \tiny \textcolor{neonCyan}{\textbf{Market Benchmarks:}} \textcolor{mutedText}{[12] Epic Systems EDI Specs (2022); Philips IntelliVue MX800 Guide (2023); GE CARESCAPE B850 Catalog (2023). [8] DPDPA Act 2023.}
+    \end{block}
 \end{frame}
 
 % =========================================================================================
@@ -297,11 +304,10 @@
 \begin{frame}{Venture Validation \& Software Stack Architecture (TRL 4/5)}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{Clinical Benchmark Performance [1]}}
+            \begin{block}{\textcolor{neonCyan}{Clinical Benchmark Performance [5]}}
                 \tiny
-                Validated on multi-center PhysioNet ICU cohorts:
                 \begin{itemize}
-                    \item \textbf{86.51\% Accuracy:} Outperforms FedAvg (75.94\%) [2] and FedProx (78.85\%) [3] under non-IID data splits.
+                    \item \textbf{86.51\% Accuracy:} Outperforms FedAvg (75.94\%) [6] and FedProx (78.85\%) [7] under non-IID data splits.
                     \item \textbf{0.8214 AUROC Score:} High predictive discrimination for early sepsis crash detection.
                     \item \textbf{38\% Bandwidth Savings:} 1.52 GB vs 2.48 GB in standard FL.
                 \end{itemize}
@@ -332,15 +338,17 @@
                 \tiny
                 Hospital network administration \& monitoring:
                 \begin{itemize}
-                    \item \textbf{AD-CUSUM Control Charts:} Live statistical residual tracking for demographic shifts.
+                    \item \textbf{AD-CUSUM Control Charts [14]:} Live statistical residual tracking for demographic shifts.
                     \item \textbf{Federated Health Status:} Round-by-round client sync status and node health.
                 \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
 
-    \vspace{0.03cm}
-    \tiny \textcolor{mutedText}{\textbf{Validation References:} [1] Reyna et al., PhysioNet/CinC Challenge 2019 (40,000 ICU records). [2] McMahan et al., AISTATS 2017 (FedAvg). [3] Li et al., MLSys 2020 (FedProx).}
+    \vspace{0.02cm}
+    \begin{block}{}
+        \tiny \textcolor{neonCyan}{\textbf{Validation References:}} \textcolor{mutedText}{[5] Reyna et al., PhysioNet Challenge 2019 (40,000 ICU records). [6] McMahan et al., AISTATS 2017. [7] Li et al., MLSys 2020.}
+    \end{block}
 \end{frame}
 
 % =========================================================================================
@@ -353,7 +361,7 @@
     \begin{tabular}{p{3.2cm} p{5.5cm} c}
     \hline
     \rowcolor{lightCyanBg}
-    \textbf{\textcolor{neonCyan}{Component Category}} & \textbf{\textcolor{neonCyan}{Itemized Component Specs \& Market Quote [1-3]}} & \textbf{\textcolor{neonCyan}{Cost Outlay}} \\
+    \textbf{\textcolor{neonCyan}{Component Category}} & \textbf{\textcolor{neonCyan}{Itemized Component Specs \& Market Quote}} & \textbf{\textcolor{neonCyan}{Cost Outlay}} \\
     \hline
     \textbf{A. Edge Hardware Prototyping \& MSME Assembly} & 
     $\bullet$ 3x NVIDIA Jetson Orin Nano (8GB) Kits @ Rs 48K/ea = \textbf{1.44L} \newline
@@ -378,8 +386,10 @@
     \hline
     \end{tabular}
 
-    \vspace{0.03cm}
-    \tiny \textcolor{mutedText}{\textbf{Expenditure Quotes:} [1] NVIDIA India Authorized Distributor 2024 Quotes. [2] CERT-In Empanelled Auditor Rates 2024. [3] Regional MSME Electronics Assembly Quotations 2024.}
+    \vspace{0.02cm}
+    \begin{block}{}
+        \tiny \textcolor{neonCyan}{\textbf{Expenditure Quotes:}} \textcolor{mutedText}{NVIDIA India Authorized Distributor 2024 Quotes. CERT-In Empanelled Auditor Fee Schedule 2024. Regional MSME Electronics Assembly Quotes 2024.}
+    \end{block}
 \end{frame}
 
 % =========================================================================================
@@ -412,7 +422,7 @@
                 \begin{itemize}
                     \item \textbf{PCB Electronics Assembly:} SMT component mounting \& carrier board fabrication with regional electronics MSMEs.
                     \item \textbf{Metallic Cabinet Enclosure:} Powder-coated sheet metal node fabrication with regional industrial MSMEs.
-                    \item \textbf{12-Month Roadmap [1,2]:} ISO 13485 quality pack, CDSCO Class B filing, and 3-hospital tele-ICU pilot run.
+                    \item \textbf{12-Month Roadmap [9,10]:} ISO 13485 quality pack, CDSCO Class B filing, and 3-hospital tele-ICU pilot run.
                 \end{itemize}
             \end{block}
         \end{column}
@@ -420,16 +430,59 @@
     
     \vspace{0.02cm}
     \begin{block}{}
-        \centering
-        \tiny \textcolor{neonAmber}{\textbf{Market Scaling Traction:}} Target Year 1--2 SOM of \textbf{Rs. 40 Crores} across 12 regional hospital chains representing 2,500 ICU beds.
+        \tiny \textcolor{neonCyan}{\textbf{Regulatory Standards:}} \textcolor{mutedText}{[9] CDSCO Medical Device Rules 2017 (Class B SaMD). [10] ISO 13485:2016 Quality Management Standard.}
     \end{block}
-
-    \vspace{0.02cm}
-    \tiny \textcolor{mutedText}{\textbf{Regulatory Standards:} [1] CDSCO Medical Device Rules 2017 (Class B SaMD). [2] ISO 13485:2016 Medical Devices Management.}
 \end{frame}
 
 % =========================================================================================
-% SLIDE 10: VENTURE PITCH CLOSING
+% SLIDE 10: DEDICATED REFERENCES SLIDE (FULL FORMAL CITATIONS - COMPACT FIT)
+% =========================================================================================
+\begin{frame}{Key Clinical Publications, Datasets \& Regulatory References}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textcolor{neonCyan}{Clinical Pathology \& Sepsis Guidelines}}
+                \tiny
+                \begin{itemize}
+                    \item \textbf{[1] Sepsis-3 Consensus:} Singer M, et al., "Sepsis-3 Consensus", \textit{JAMA}, 315(8):801--810, 2016.
+                    \item \textbf{[2] Golden Hour Window:} Kumar A, et al., \textit{Crit Care Med}, 34(6):1589--1596, 2006.
+                    \item \textbf{[3] Global Burden:} Rudd KE, et al., \textit{The Lancet}, 395:200--211, 2020.
+                    \item \textbf{[4] Alarm Fatigue:} Drew BJ, et al., \textit{PLoS ONE}, 9(10):e110274, 2014.
+                \end{itemize}
+            \end{block}
+            
+            \begin{block}{\textcolor{neonTeal}{Datasets \& Federated Learning Engine}}
+                \tiny
+                \begin{itemize}
+                    \item \textbf{[5] PhysioNet ICU Cohort:} Reyna MA, et al., \textit{Crit Care Med}, 2019.
+                    \item \textbf{[6] FedAvg Engine:} McMahan B, et al., \textit{AISTATS}, 2017.
+                    \item \textbf{[7] FedProx Framework:} Li T, et al., \textit{MLSys}, 2020.
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textcolor{neonAmber}{Regulatory, Legal \& Quality Standards}}
+                \tiny
+                \begin{itemize}
+                    \item \textbf{[8] DPDPA Act 2023:} \textit{Digital Personal Data Protection Act}, MeitY, Gazette of India, 2023.
+                    \item \textbf{[9] CDSCO SaMD Rules:} \textit{Medical Device Rules 2017 (Class B)}, CDSCO, MoHFW.
+                    \item \textbf{[10] ISO 13485:2016:} \textit{Medical devices -- QMS Standards}, ISO.
+                \end{itemize}
+            \end{block}
+
+            \begin{block}{\textcolor{neonRose}{Hardware \& Industry Benchmarks}}
+                \tiny
+                \begin{itemize}
+                    \item \textbf{[11] Edge AI Hardware:} NVIDIA Jetson Orin Nano Technical Guide, NVIDIA Corp, 2024.
+                    \item \textbf{[12] Commercial Systems:} Epic EDI Specs (2022); Philips IntelliVue Guide (2023); GE CARESCAPE Catalog (2023).
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+% =========================================================================================
+% SLIDE 11: VENTURE PITCH CLOSING
 % =========================================================================================
 \begin{frame}[plain]
     \begin{tikzpicture}[remember picture,overlay]
