@@ -276,13 +276,13 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 7: VENTURE VALIDATION & BEDSIDE SOFTWARE MODULES (REPLACED VIDEO WITH REAL UI SHOWCASE)
+% SLIDE 7: VENTURE VALIDATION & SOFTWARE STACK ARCHITECTURE (CLEAN TEXT FIT)
 % =========================================================================================
-\begin{frame}{Venture Validation \& Operational Workstation UI (TRL 4/5)}
+\begin{frame}{Venture Validation \& Software Stack Architecture (TRL 4/5)}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
             \begin{block}{\textcolor{neonCyan}{Clinical Benchmark Performance}}
-                \scriptsize
+                \tiny
                 Validated on multi-center PhysioNet ICU cohorts:
                 \begin{itemize}
                     \item \textbf{86.51\% Accuracy:} Outperforms FedAvg (75.94\%) and FedProx (78.85\%) under non-IID data splits.
@@ -291,31 +291,34 @@
                 \end{itemize}
             \end{block}
             
-            \begin{block}{\textcolor{neonTeal}{Commercial Software Architecture}}
-                \scriptsize
-                FastAPI REST engine, SQLite relational warehouse (\texttt{clinical\_warehouse.db}), and React Vite touchscreen UI fully operational.
+            \begin{block}{\textcolor{neonTeal}{Commercial Software Stack}}
+                \tiny
+                \begin{itemize}
+                    \item \textbf{FastAPI REST Engine:} Local REST API serving inferencing sub-10ms.
+                    \item \textbf{SQLite Warehouse:} Structured telemetry storage (\texttt{clinical\_warehouse.db}).
+                    \item \textbf{React Vite Touch UI:} Bedside touchscreen interface for ICU nurses.
+                \end{itemize}
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{Clinician Bedside Portal UI}}
-                \centering
-                \vspace{0.03cm}
-                \begin{tikzpicture}
-                    \node[draw=neonCyan!50, fill=cardBg, rounded corners=4pt, inner sep=2pt, drop shadow] {
-                        \includegraphics[width=0.92\textwidth,height=0.20\textheight,keepaspectratio]{images/dashboarddoctor.png}
-                    };
-                \end{tikzpicture}
+            \begin{block}{\textcolor{neonAmber}{Clinician Bedside Decision Modules}}
+                \tiny
+                Bedside decision support functionalities:
+                \begin{itemize}
+                    \item \textbf{Real-Time Vital Stream:} Continuous 24h timeline tracking HR, MAP, SpO2, and RR.
+                    \item \textbf{Dynamic Risk Dial:} Sepsis Crash Risk Gauge (Green, Amber, Critical Red).
+                    \item \textbf{Temporal XAI Heatmaps:} Visual hourly vital contribution breakdown.
+                \end{itemize}
             \end{block}
-            
-            \begin{block}{\textcolor{neonRose}{Admin Telemetry \& Drift Portal UI}}
-                \centering
-                \vspace{0.03cm}
-                \begin{tikzpicture}
-                    \node[draw=neonTeal!50, fill=cardBg, rounded corners=4pt, inner sep=2pt, drop shadow] {
-                        \includegraphics[width=0.92\textwidth,height=0.20\textheight,keepaspectratio]{images/dashboardadmin.png}
-                    };
-                \end{tikzpicture}
+
+            \begin{block}{\textcolor{neonRose}{Admin Telemetry \& Drift Audit Portal}}
+                \tiny
+                Hospital network administration \& monitoring:
+                \begin{itemize}
+                    \item \textbf{AD-CUSUM Control Charts:} Live statistical residual tracking for demographic shifts.
+                    \item \textbf{Federated Health Status:} Round-by-round client sync status and node health.
+                \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
