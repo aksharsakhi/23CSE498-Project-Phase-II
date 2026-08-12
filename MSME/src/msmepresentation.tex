@@ -194,7 +194,7 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 5: COMPETITOR & COST BENCHMARKING ANALYSIS (NEW DETAILED SLIDE)
+% SLIDE 5: COMPETITOR & COST BENCHMARKING ANALYSIS
 % =========================================================================================
 \begin{frame}{Competitor Analysis \& Cost Benchmarking}
     \scriptsize
@@ -289,74 +289,71 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 7: FINANCIAL PLAN & RS. 15.0 LAKHS SEED GRANT BREAKDOWN
+% SLIDE 7: FINANCIAL PLAN & RS. 15.0 LAKHS SEED GRANT BREAKDOWN (HIGH-CONTRAST CLEAR TABLE)
 % =========================================================================================
 \begin{frame}{Financial Plan \& MSME Grant Outlay (Total: \textbf{Rs. 15.0 Lakhs})}
-    \begin{block}{Commercialization Seed Capital Utilization Under MSME Scheme:}
-        \scriptsize
-        Financial outlay for prototype hardware fabrication, data curation, security auditing, and pilot deployment:
-    \end{block}
-    
-    \begin{columns}[t]
-        \begin{column}{0.34\textwidth}
-            \begin{block}{\textcolor{neonCyan}{\textbf{1. Technology \& Hardware (10.0L)}}}
-                \flushleft\tiny
-                \begin{itemize}
-                    \item \textbf{Hardware \& Assembly (3.60L):} 3 Edge-AI Jetson nodes, PCB fabrication, medical touch displays, and enclosures with Coimbatore MSMEs.
-                    \item \textbf{Data Curation (3.40L):} Expert clinician annotation \& vital stream simulation.
-                    \item \textbf{Security Audits (3.00L):} Penetration testing \& DPDPA compliance audits.
-                \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.32\textwidth}
-            \begin{block}{\textcolor{neonTeal}{\textbf{2. Mentorship \& Labs (3.0L)}}}
-                \flushleft\tiny
-                \begin{itemize}
-                    \item \textbf{Clinical Guidance (1.80L):} ICU specialist honorarium for clinical protocol validation.
-                    \item \textbf{Lab Support (1.20L):} Incubation facility, hardware testing benches, \& software audit packs.
-                \end{itemize}
-            \end{block}
-        \end{column}
-        
-        \begin{column}{0.32\textwidth}
-            \begin{block}{\textcolor{neonAmber}{\textbf{3. Pilot Travel \& Setup (2.0L)}}}
-                \flushleft\tiny
-                \begin{itemize}
-                    \item \textbf{Node Deployment (1.00L):} On-site installation across partnering regional ICUs.
-                    \item \textbf{Telemetry Audits (1.00L):} Multi-site ICU field data collection and travel.
-                \end{itemize}
-            \end{block}
-        \end{column}
-    \end{columns}
+    \scriptsize
+    \setlength{\tabcolsep}{4pt}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{p{3.2cm} c p{6.8cm}}
+    \hline
+    \rowcolor{lightCyanBg}
+    \textbf{\textcolor{neonCyan}{Budget Activity Category}} & \textbf{\textcolor{neonCyan}{Grant Outlay}} & \textbf{\textcolor{neonCyan}{Detailed Expenditure Breakdown \& Justification}} \\
+    \hline
+    \textbf{1. Technology Expenditure} & \textbf{\textcolor{neonCyan}{Rs. 10.00 Lakhs}} & 
+    $\bullet$ \textbf{Hardware \& Assembly (3.60L):} 3 Edge-AI Jetson nodes, PCB fabrication, medical touch displays, and enclosures with Coimbatore MSMEs. \newline
+    $\bullet$ \textbf{Data Curation (3.40L):} Expert clinician annotation \& vital stream simulation. \newline
+    $\bullet$ \textbf{Security Audits (3.00L):} Penetration testing \& DPDPA compliance audits. \\
+    \hline
+    \textbf{2. Mentorship \& Labs} & \textbf{\textcolor{neonTeal}{Rs. 3.00 Lakhs}} & 
+    $\bullet$ \textbf{Clinical Guidance (1.80L):} ICU specialist honorarium for clinical validation. \newline
+    $\bullet$ \textbf{Lab Support (1.20L):} Incubation facility, hardware testing benches, \& software packs. \\
+    \hline
+    \textbf{3. Pilot Travel \& Setup} & \textbf{\textcolor{neonAmber}{Rs. 2.00 Lakhs}} & 
+    $\bullet$ \textbf{Node Deployment (1.00L):} On-site installation across partnering regional ICUs. \newline
+    $\bullet$ \textbf{Telemetry Audits (1.00L):} Multi-site ICU field data collection \& travel. \\
+    \hline
+    \rowcolor{lightTealBg}
+    \textbf{\textcolor{textColor}{TOTAL PROJECT COST}} & \textbf{\textcolor{neonCyan}{Rs. 15.00 Lakhs}} & \textbf{\textcolor{neonTeal}{100\% Grant Funded under MSME Idea Hackathon 6.0 Guidelines}} \\
+    \hline
+    \end{tabular}
 \end{frame}
 
 % =========================================================================================
-% SLIDE 8: BUSINESS MODEL & MSME MANUFACTURING PARTNERSHIP
+% SLIDE 8: BUSINESS MODEL & LOCAL MSME MANUFACTURING PARTNERSHIP (REDESIGNED)
 % =========================================================================================
-\begin{frame}{Business Model \& Local MSME Manufacturing Partnership}
+\begin{frame}{Business Model \& Local MSME Partnership}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{Commercialization \& Business Model}}
+            \begin{block}{\textcolor{neonCyan}{\textbf{Commercialization \& Revenue Streams}}}
                 \scriptsize
-                Dual-revenue monetization model:
+                Triple-tier monetization model for healthcare scaling:
                 \begin{itemize}
-                    \item \textbf{B2B Appliance Sales:} Selling turnkey Edge-AI workstation hardware nodes directly to ICU hospital chains.
-                    \item \textbf{OEM Software Licensing:} Licensing the PyTorch FL early-warning software engine to patient monitor manufacturers (e.g., Philips, Mindray).
+                    \item \textbf{1. B2B Edge Node Appliance:} Direct sales of turnkey Jetson hardware workstations at \textbf{Rs. 1.50L -- 2.00L / node}.
+                    \item \textbf{2. SaaS Telemetry Subscription:} Annual maintenance, model updates \& telemetry auditing at \textbf{Rs. 25,000 / node / year}.
+                    \item \textbf{3. OEM Engine Licensing:} Licensing the PyTorch FL engine to patient monitor OEMs (Philips, Mindray).
                 \end{itemize}
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonTeal}{Local MSME Fabrication \& 12-Month Plan}}
+            \begin{block}{\textcolor{neonTeal}{\textbf{Coimbatore MSME Hardware Ecosystem}}}
                 \scriptsize
+                Leveraging local MSME manufacturing clusters:
                 \begin{itemize}
-                    \item \textbf{Local MSME Partnership:} Teamed up with Coimbatore electronics MSMEs for PCB assembly and custom metallic node enclosure fabrication.
-                    \item \textbf{12-Month Target:} Complete ISO 13485 quality pack, CDSCO Class B filing, and initial 3-hospital tele-ICU pilot run.
+                    \item \textbf{PCB Electronics Assembly:} SMT component mounting \& carrier board fabrication with Coimbatore electronics MSMEs.
+                    \item \textbf{Metallic Cabinet Enclosure:} Powder-coated sheet metal node fabrication with local industrial MSMEs.
+                    \item \textbf{12-Month Target:} Complete ISO 13485 quality pack, CDSCO Class B filing, and 3-hospital tele-ICU pilot run.
                 \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
+    
+    \vspace{0.15cm}
+    \begin{block}{}
+        \centering
+        \tiny \textcolor{neonAmber}{\textbf{Market Scaling Traction:}} Target Year 1--2 SOM of \textbf{Rs. 40 Crores} across 12 regional hospital chains representing 2,500 ICU beds.
+    \end{block}
 \end{frame}
 
 % =========================================================================================
