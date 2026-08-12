@@ -9,7 +9,6 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{hyperref}
-\usepackage{multimedia}
 \usetikzlibrary{calc, shadows}
 
 % Branding Colors (Premium MedTech Startup Palette)
@@ -277,36 +276,46 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 7: PRODUCT VALIDATION & OPERATIONAL VIDEO DEMO (TRL 4/5)
+% SLIDE 7: VENTURE VALIDATION & BEDSIDE SOFTWARE MODULES (REPLACED VIDEO WITH REAL UI SHOWCASE)
 % =========================================================================================
-\begin{frame}{Venture Validation \& Operational Video Demo (TRL 4/5)}
+\begin{frame}{Venture Validation \& Operational Workstation UI (TRL 4/5)}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{Product Benchmark Performance}}
+            \begin{block}{\textcolor{neonCyan}{Clinical Benchmark Performance}}
                 \scriptsize
                 Validated on multi-center PhysioNet ICU cohorts:
                 \begin{itemize}
-                    \item \textbf{86.51\% Accuracy:} Superior to FedAvg (75.94\%) and FedProx (78.85\%) under non-IID splits.
-                    \item \textbf{0.8214 AUROC Score:} High predictive accuracy for early crash detection.
+                    \item \textbf{86.51\% Accuracy:} Outperforms FedAvg (75.94\%) and FedProx (78.85\%) under non-IID data splits.
+                    \item \textbf{0.8214 AUROC Score:} High predictive discrimination for early sepsis crash detection.
                     \item \textbf{38\% Bandwidth Savings:} 1.52 GB vs 2.48 GB in standard FL.
                 \end{itemize}
             \end{block}
             
-            \begin{block}{\textcolor{neonTeal}{Commercial Software Stack}}
+            \begin{block}{\textcolor{neonTeal}{Commercial Software Architecture}}
                 \scriptsize
-                FastAPI REST backend, SQLite relational warehouse (`clinical\_warehouse.db`), and React Vite bedside UI fully operational.
+                FastAPI REST engine, SQLite relational warehouse (\texttt{clinical\_warehouse.db}), and React Vite touchscreen UI fully operational.
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{Bedside Workstation Video Demo}}
+            \begin{block}{\textcolor{neonAmber}{Clinician Bedside Portal UI}}
                 \centering
-                \vspace{0.05cm}
-                \movie[poster,showcontrols=true,width=0.92\textwidth,height=0.26\textheight]{}{assets/FPDAF.mp4} \\
-                \vspace{0.15cm}
-                \href{run:assets/FPDAF.mp4}{\textcolor{white}{\colorbox{neonAmber}{\scriptsize\textbf{~[PLAY] Launch Video Demo (FPDAF.mp4)~}}}} \\
-                \vspace{0.08cm}
-                \tiny \textcolor{neonCyan}{\textbf{Interactive Video Clip:}} Live demonstration of real-time telemetry streaming, AD-CUSUM drift alerts, \& bedside XAI heatmaps.
+                \vspace{0.03cm}
+                \begin{tikzpicture}
+                    \node[draw=neonCyan!50, fill=cardBg, rounded corners=4pt, inner sep=2pt, drop shadow] {
+                        \includegraphics[width=0.92\textwidth,height=0.20\textheight,keepaspectratio]{images/dashboarddoctor.png}
+                    };
+                \end{tikzpicture}
+            \end{block}
+            
+            \begin{block}{\textcolor{neonRose}{Admin Telemetry \& Drift Portal UI}}
+                \centering
+                \vspace{0.03cm}
+                \begin{tikzpicture}
+                    \node[draw=neonTeal!50, fill=cardBg, rounded corners=4pt, inner sep=2pt, drop shadow] {
+                        \includegraphics[width=0.92\textwidth,height=0.20\textheight,keepaspectratio]{images/dashboardadmin.png}
+                    };
+                \end{tikzpicture}
             \end{block}
         \end{column}
     \end{columns}
