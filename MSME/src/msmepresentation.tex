@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{tikz}
 \usepackage{hyperref}
+\usepackage{multimedia}
 \usetikzlibrary{calc, shadows}
 
 % Branding Colors (Premium MedTech Startup Palette)
@@ -71,7 +72,7 @@
 \begin{document}
 
 % =========================================================================================
-% SLIDE 1: STARTUP TITLE PAGE (SOLE FOUNDER & MENTORS)
+% SLIDE 1: STARTUP VENTURE PITCH TITLE PAGE
 % =========================================================================================
 \begin{frame}[plain]
     \begin{tikzpicture}[remember picture,overlay]
@@ -100,48 +101,86 @@
             \vspace{0.1cm}
             \textcolor{textColor}{\textbf{Lead Student Founder \& Innovator:} Sheela Akshar Sakhi}\\
             \textcolor{mutedText}{\textbf{Faculty Mentors:} Dr. Ramya G. R. (Lead Mentor) \& Dr. Vandhana S. (Co-Mentor)}\\
-            \tiny \textcolor{neonTeal}{\textbf{Department of Computer Science and Engineering, Amrita School of Computing, Coimbatore}}
+            \tiny \textcolor{neonTeal}{\textbf{Department of Computer Science and Engineering, Amrita School of Computing}}
             \vspace{0.05cm}
         \end{block}
     \end{minipage}
 \end{frame}
 
 % =========================================================================================
-% SLIDE 2: MARKET OPPORTUNITY & CLINICAL PAIN POINT
+% SLIDE 2: CLINICAL PATHOLOGY & PROBLEM (WHAT IS SEPSIS?)
 % =========================================================================================
-\begin{frame}{Market Opportunity \& Unmet Healthcare Need}
+\begin{frame}{Clinical Pathology: What is Sepsis \& Why Time Matters}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonRose}{[Pain Point]} High ICU Mortality Burden}
+            \begin{block}{\textcolor{neonRose}{Clinical Definition of Sepsis}}
                 \scriptsize
                 \begin{itemize}
-                    \item \textbf{3.0 Million Annual Deaths} in India due to sepsis (\textbf{30\%} of national deaths).
-                    \item \textbf{8\% Survival Drop} per hour of delayed diagnosis.
-                    \item \textbf{Traditional Alarms Fail:} High false alarm rate (85\%+) causes alarm fatigue.
+                    \item \textbf{Dysregulated Immune Response:} Life-threatening organ dysfunction caused by a severe, systemic immune reaction to infection.
+                    \item \textbf{Progression to Shock:} Causes capillary leakage, tissue hypoxia, Multi-Organ Dysfunction Syndrome (MODS), and rapid circulatory collapse.
+                    \item \textbf{The Golden Window:} Patient survival drops by \textbf{8\% for every hour} diagnosis and antimicrobial treatment are delayed.
                 \end{itemize}
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{[Market Gap]} Cloud AI Privacy Bottleneck}
+            \begin{block}{\textcolor{neonAmber}{Why Current ICU Alarms Fail}}
                 \scriptsize
                 \begin{itemize}
-                    \item \textbf{DPDPA Privacy Compliance:} Cloud AI startups cannot centralize hospital patient charts.
-                    \item \textbf{Hospital Data Drift:} Patient demographics vary across regions, breaking static cloud models.
+                    \item \textbf{Static Threshold Alarms:} Legacy monitors trigger alerts only after vitals breach rigid limits (e.g., HR > 100).
+                    \item \textbf{Severe Alarm Fatigue:} \textbf{85\%--95\%} of bedside alarms are false positives, causing clinicians to desensitize.
+                    \item \textbf{Missed Temporal Signals:} Fails to detect complex, multi-vital co-dependencies occurring hours prior to septic crash.
                 \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
     
     \vspace{0.1cm}
-    \begin{alertblock}{\textcolor{neonCyan}{FPDAF Value Proposition}}
+    \begin{alertblock}{\textcolor{neonCyan}{Indian Healthcare Mortality Impact}}
         \scriptsize
-        FPDAF delivers a zero-cloud-upload Edge-AI workstation node that trains collaboratively across hospitals while guaranteeing 100\% DPDPA data privacy.
+        Sepsis accounts for \textbf{3.0 Million deaths annually in India} (\textbf{30\%} of total hospital deaths), making early automated crash prediction an urgent national healthcare priority.
     \end{alertblock}
 \end{frame}
 
 % =========================================================================================
-% SLIDE 3: PRODUCT ARCHITECTURE & EDGE HARDWARE FLOW (ENLARGED DIAGRAM)
+% SLIDE 3: MARKET SIZE (TAM / SAM / SOM) & DPDPA REGULATORY MOAT
+% =========================================================================================
+\begin{frame}{Market Opportunity (TAM / SAM / SOM) \& Regulatory Moat}
+    \begin{columns}[t]
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textcolor{neonCyan}{Market Opportunity \& TAM/SAM/SOM}}
+                \scriptsize
+                Addressing India's critical ICU monitoring shortage:
+                \begin{itemize}
+                    \item \textbf{TAM (Total Addressable Market):} \textbf{Rs. 8,500 Crores} (150,000+ ICU beds across 70,000 Indian hospitals).
+                    \item \textbf{SAM (Serviceable Addressable Market):} \textbf{Rs. 1,200 Crores} (30,000 tertiary care beds requiring AI decision support).
+                    \item \textbf{SOM (3-Year Target Market):} \textbf{Rs. 40 Crores} (2,500 beds across 12 regional hospital chains).
+                \end{itemize}
+            \end{block}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textcolor{neonAmber}{DPDPA 2023 Regulatory Moat}}
+                \scriptsize
+                Zero-cloud-upload privacy paradigm:
+                \begin{itemize}
+                    \item \textbf{Cloud AI Legal Liability:} DPDPA 2023 bans uploading raw patient charts to third-party cloud servers.
+                    \item \textbf{Demographic Data Drift:} Regional patient variations degrade static central AI models.
+                    \item \textbf{FPDAF Solution:} On-device Edge-AI node performing collaborative federated learning without data leaving hospital premises.
+                \end{itemize}
+            \end{block}
+        \end{column}
+    \end{columns}
+    
+    \vspace{0.1cm}
+    \begin{exampleblock}{\textcolor{neonTeal}{FPDAF Value Proposition}}
+        \scriptsize
+        A zero-cloud-upload Edge-AI workstation node that trains collaboratively across hospitals while guaranteeing 100\% DPDPA data privacy.
+    \end{exampleblock}
+\end{frame}
+
+% =========================================================================================
+% SLIDE 4: PRODUCT ARCHITECTURE & EDGE HARDWARE FLOW (ENLARGED DIAGRAM)
 % =========================================================================================
 \begin{frame}{Product Architecture \& Edge Node Dataflow}
     \centering
@@ -159,9 +198,9 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 4: PROPRIETARY IP & INNOVATION MOAT
+% SLIDE 5: PROPRIETARY IP & INNOVATION MOAT
 % =========================================================================================
-\begin{frame}{Proprietary IP \& Innovation Moat}
+\begin{frame}{Proprietary IP \& Technological Innovation Moat}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
             \begin{block}{\textcolor{neonCyan}{1. Dynamic Dual-Phase (DDP) Attention}}
@@ -194,7 +233,7 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 5: COMPETITOR & COST BENCHMARKING ANALYSIS
+% SLIDE 6: COMPETITOR ANALYSIS & COST DISRUPTION
 % =========================================================================================
 \begin{frame}{Competitor Analysis \& Cost Benchmarking}
     \scriptsize
@@ -238,9 +277,9 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 6: VENTURE VALIDATION & PERFORMANCE BENCHMARKS
+% SLIDE 7: PRODUCT VALIDATION & OPERATIONAL VIDEO DEMO (TRL 4/5)
 % =========================================================================================
-\begin{frame}{Venture Validation \& Product Readiness (TRL 4/5)}
+\begin{frame}{Venture Validation \& Operational Video Demo (TRL 4/5)}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
             \begin{block}{\textcolor{neonCyan}{Product Benchmark Performance}}
@@ -260,36 +299,21 @@
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonAmber}{Algorithm Performance vs Industry Standards}}
-                \tiny
-                \setlength{\tabcolsep}{3pt}
-                \renewcommand{\arraystretch}{1.2}
-                \begin{tabular}{l c c c}
-                \hline
-                \rowcolor{lightCyanBg}
-                \textbf{Model Paradigm} & \textbf{Accuracy} & \textbf{AUROC} & \textbf{Bandwidth} \\
-                \hline
-                Centralized BiLSTM & 75.09\% & 0.8058 & 0 MB (N/A) \\
-                FedAvg Baseline & 75.94\% & 0.7844 & 1.24 GB \\
-                FedProx Baseline & 78.85\% & 0.7933 & 1.24 GB \\
-                \textbf{FPDAF (Product)} & \textbf{86.51\%} & \textbf{0.8214} & \textbf{1.52 GB (Saved 38\%)} \\
-                \hline
-                \end{tabular}
-            \end{block}
-            
-            \begin{block}{\textcolor{neonRose}{Bedside Product Modules}}
-                \scriptsize
-                \begin{itemize}
-                    \item \textbf{Clinician Bedside Portal:} Live patient vital timelines, risk dials, and temporal XAI heatmaps.
-                    \item \textbf{Admin Telemetry Portal:} AD-CUSUM drift control curves \& federated round health indicators.
-                \end{itemize}
+            \begin{block}{\textcolor{neonAmber}{Bedside Workstation Video Demo}}
+                \centering
+                \vspace{0.05cm}
+                \movie[poster,showcontrols=true,width=0.92\textwidth,height=0.26\textheight]{}{assets/FPDAF.mp4} \\
+                \vspace{0.15cm}
+                \href{run:assets/FPDAF.mp4}{\textcolor{white}{\colorbox{neonAmber}{\scriptsize\textbf{~[PLAY] Launch Video Demo (FPDAF.mp4)~}}}} \\
+                \vspace{0.08cm}
+                \tiny \textcolor{neonCyan}{\textbf{Interactive Video Clip:}} Live demonstration of real-time telemetry streaming, AD-CUSUM drift alerts, \& bedside XAI heatmaps.
             \end{block}
         \end{column}
     \end{columns}
 \end{frame}
 
 % =========================================================================================
-% SLIDE 7: FINANCIAL PLAN & RS. 10.0 LAKHS TECH EXPENDITURE ITEMIZATION
+% SLIDE 8: FINANCIAL PLAN & RS. 10.0 LAKHS TECH EXPENDITURE ITEMIZATION
 % =========================================================================================
 \begin{frame}{Itemized Technology Expenditure Breakdown (\textbf{Rs. 10.0 Lakhs})}
     \tiny
@@ -303,7 +327,7 @@
     \textbf{A. Edge Hardware Prototyping \& MSME Assembly} & 
     $\bullet$ 3x NVIDIA Jetson Orin Nano (8GB) Kits @ Rs 48K/ea = \textbf{1.44L} \newline
     $\bullet$ 3x Medical 15.6" Touch Monitors \& HDMI Controllers = \textbf{0.66L} \newline
-    $\bullet$ 3x NEMA Metallic Bedside Cabinets (Coimbatore MSME) = \textbf{0.75L} \newline
+    $\bullet$ 3x NEMA Metallic Bedside Cabinets (Regional MSME) = \textbf{0.75L} \newline
     $\bullet$ Custom SMT Carrier PCB \& Medical Power Assembly = \textbf{0.75L} & 
     \textbf{\textcolor{neonCyan}{Rs. 3.60 Lakhs}} \\
     \hline
@@ -325,36 +349,42 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 8: BUSINESS MODEL & LOCAL MSME MANUFACTURING PARTNERSHIP
+% SLIDE 9: BUSINESS MODEL, UNIT ECONOMICS & MSME MANUFACTURING NETWORK
 % =========================================================================================
-\begin{frame}{Business Model \& Local MSME Partnership}
+\begin{frame}{Business Model, Unit Economics \& MSME Ecosystem}
     \begin{columns}[t]
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonCyan}{\textbf{Commercialization \& Revenue Streams}}}
-                \scriptsize
+            \begin{block}{\textcolor{neonCyan}{\textbf{Monetization \& Revenue Model}}}
+                \tiny
                 Triple-tier monetization model for healthcare scaling:
                 \begin{itemize}
-                    \item \textbf{1. B2B Edge Node Appliance:} Direct sales of turnkey Jetson hardware workstations at \textbf{Rs. 1.50L -- 2.00L / node}.
-                    \item \textbf{2. SaaS Telemetry Subscription:} Annual maintenance, model updates \& telemetry auditing at \textbf{Rs. 25,000 / node / year}.
-                    \item \textbf{3. OEM Engine Licensing:} Licensing the PyTorch FL engine to patient monitor OEMs (Philips, Mindray).
+                    \item \textbf{1. B2B Edge Node Appliance:} Selling hardware nodes at \textbf{Rs. 1.50L -- 2.00L / node}.
+                    \item \textbf{2. SaaS Telemetry Subscription:} Model maintenance \& drift auditing at \textbf{Rs. 25,000 / node / year}.
+                    \item \textbf{3. OEM Engine Licensing:} Licensing PyTorch FL engine to monitor OEMs (Philips, Mindray).
                 \end{itemize}
+            \end{block}
+            
+            \begin{block}{\textcolor{neonTeal}{\textbf{Node Unit Economics}}}
+                \tiny
+                \textbf{Selling Price:} Rs. 1,75,000 \quad | \quad \textbf{BOM Cost:} Rs. 65,000 \\
+                \textbf{Gross Margin per Node:} \textbf{\textcolor{neonTeal}{63\% Profit Margin}}
             \end{block}
         \end{column}
         
         \begin{column}{0.48\textwidth}
-            \begin{block}{\textcolor{neonTeal}{\textbf{Coimbatore MSME Hardware Ecosystem}}}
-                \scriptsize
-                Leveraging local MSME manufacturing clusters:
+            \begin{block}{\textcolor{neonAmber}{\textbf{Domestic MSME Manufacturing Network}}}
+                \tiny
+                Leveraging domestic electronics \& sheet metal MSME clusters:
                 \begin{itemize}
-                    \item \textbf{PCB Electronics Assembly:} SMT component mounting \& carrier board fabrication with Coimbatore electronics MSMEs.
-                    \item \textbf{Metallic Cabinet Enclosure:} Powder-coated sheet metal node fabrication with local industrial MSMEs.
-                    \item \textbf{12-Month Target:} Complete ISO 13485 quality pack, CDSCO Class B filing, and 3-hospital tele-ICU pilot run.
+                    \item \textbf{PCB Electronics Assembly:} SMT component mounting \& carrier board fabrication with regional electronics MSMEs.
+                    \item \textbf{Metallic Cabinet Enclosure:} Powder-coated sheet metal node fabrication with regional industrial MSMEs.
+                    \item \textbf{12-Month Roadmap:} ISO 13485 quality pack, CDSCO Class B filing, and 3-hospital tele-ICU pilot run.
                 \end{itemize}
             \end{block}
         \end{column}
     \end{columns}
     
-    \vspace{0.15cm}
+    \vspace{0.05cm}
     \begin{block}{}
         \centering
         \tiny \textcolor{neonAmber}{\textbf{Market Scaling Traction:}} Target Year 1--2 SOM of \textbf{Rs. 40 Crores} across 12 regional hospital chains representing 2,500 ICU beds.
@@ -362,7 +392,7 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 9: CONCLUSION & VENTURE PITCH CLOSING
+% SLIDE 10: VENTURE PITCH CLOSING
 % =========================================================================================
 \begin{frame}[plain]
     \begin{tikzpicture}[remember picture,overlay]
