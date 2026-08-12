@@ -107,42 +107,48 @@
 \end{frame}
 
 % =========================================================================================
-% SLIDE 2: CLINICAL PATHOLOGY & PROBLEM (WHAT IS SEPSIS?)
+% SLIDE 2: CLINICAL PATHOLOGY & PROBLEM (WHAT IS SEPSIS? WITH SEPSIS PATHOPHYSIOLOGY IMAGE)
 % =========================================================================================
 \begin{frame}{Clinical Pathology: What is Sepsis \& Why Time Matters}
-    \begin{columns}[t]
+    \begin{columns}[c]
         \begin{column}{0.48\textwidth}
             \begin{block}{\textcolor{neonRose}{Clinical Definition of Sepsis [1,2]}}
                 \tiny
                 \begin{itemize}
-                    \item \textbf{Dysregulated Immune Response:} Life-threatening organ dysfunction caused by a severe, systemic immune reaction to infection.
-                    \item \textbf{Progression to Shock:} Causes capillary leakage, tissue hypoxia, Multi-Organ Dysfunction Syndrome (MODS), and rapid collapse.
-                    \item \textbf{The Golden Window:} Patient survival drops by \textbf{8\% for every hour} diagnosis and antimicrobial treatment are delayed.
+                    \item \textbf{Dysregulated Immune Response:} Systemic immune reaction causing organ dysfunction, capillary leakage, MODS \& septic shock.
+                    \item \textbf{The Golden Window:} Patient survival drops by \textbf{8\% for every hour} treatment is delayed.
                 \end{itemize}
             \end{block}
-        \end{column}
-        
-        \begin{column}{0.48\textwidth}
+            
             \begin{block}{\textcolor{neonAmber}{Why Current ICU Alarms Fail [4]}}
                 \tiny
                 \begin{itemize}
-                    \item \textbf{Static Threshold Alarms:} Legacy monitors trigger alerts only after vitals breach rigid limits (e.g., HR > 100).
-                    \item \textbf{Severe Alarm Fatigue:} \textbf{85\%--95\%} of bedside alarms are false positives, causing clinicians to desensitize.
-                    \item \textbf{Missed Temporal Signals:} Fails to detect complex, multi-vital co-dependencies occurring hours prior to septic crash.
+                    \item \textbf{Alarm Fatigue:} \textbf{85\%--95\%} of bedside alerts are false positives from rigid static thresholds.
+                    \item \textbf{Missed Temporal Signals:} Fails to track complex multi-vital co-dependencies.
                 \end{itemize}
+            \end{block}
+
+            \begin{alertblock}{\textcolor{neonCyan}{Indian Healthcare Mortality Burden [3]}}
+                \tiny
+                Sepsis causes \textbf{3.0M deaths/yr in India} (\textbf{30\%} of hospital mortality).
+            \end{alertblock}
+        \end{column}
+        
+        \begin{column}{0.48\textwidth}
+            \begin{block}{\textcolor{neonCyan}{Sepsis Pathophysiology \& Infection Mechanism}}
+                \centering
+                \begin{tikzpicture}
+                    \node[draw=neonCyan!50, fill=cardBg, rounded corners=4pt, inner sep=2pt, drop shadow] {
+                        \includegraphics[width=0.92\textwidth,height=0.38\textheight,keepaspectratio]{images/sepsisdiagram.png}
+                    };
+                \end{tikzpicture}
             \end{block}
         \end{column}
     \end{columns}
-    
-    \vspace{0.02cm}
-    \begin{alertblock}{\textcolor{neonCyan}{Indian Healthcare Mortality Impact [3]}}
-        \tiny
-        Sepsis accounts for \textbf{3.0 Million deaths annually in India} (\textbf{30\%} of total hospital deaths), making early automated crash prediction an urgent national healthcare priority.
-    \end{alertblock}
 
-    \vspace{0.02cm}
+    \vspace{0.01cm}
     \begin{block}{}
-        \tiny \textcolor{neonCyan}{\textbf{Clinical References:}} \textcolor{mutedText}{[1] Singer et al., JAMA 2016 (Sepsis-3). [2] Kumar et al., Crit Care Med 2006 (8\%/hr mortality rise). [3] Rudd et al., Lancet 2020 (3.0M Indian deaths/yr). [4] Drew et al., PLoS ONE 2014 (85\%-95\% false alarms).}
+        \tiny \textcolor{neonCyan}{\textbf{Clinical References:}} \textcolor{mutedText}{[1] Singer et al., JAMA 2016 (Sepsis-3). [2] Kumar et al., Crit Care Med 2006 (8\%/hr mortality rise). [3] Rudd et al., Lancet 2020 (3.0M Indian deaths/yr). [4] Drew et al., PLoS ONE 2014.}
     \end{block}
 \end{frame}
 
